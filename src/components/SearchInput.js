@@ -1,0 +1,44 @@
+import React, { Component } from "react";
+import {
+  TextInput,
+  View,
+  Animated,
+  Text,
+  TouchableOpacity,
+  Platform,
+  Image
+} from "react-native";
+import Icons from "react-native-vector-icons/Ionicons";
+import styles from "../styles";
+import { string } from "../utilities/languages/i18n";
+import { normalize } from "../utilities/helpers/normalizeText";
+import colors from "../utilities/config/colors";
+
+export default  SearchInput = (props) =>{
+    return <View style={[styles.searchView,{backgroundColor:props.backgroundColor ? props.backgroundColor :'rgba(150,197,15,0.05)'}]}>
+    <View style={{flex:0.1,alignSelf:'center',paddingLeft:16}}>
+    <Icons  name={'ios-search'} size={22} color={'#96C50F'} />
+
+    </View>
+    <TouchableOpacity 
+    activeOpacity={0.9}
+    style={{flex:0.9}} onPress={()=> props.onPress ? props.onPress() : null}>
+    <TextInput
+          style={{
+            height: 40,
+            fontSize: normalize(14),
+            textAlign: "left",
+            // fontWeight: "500",
+            color: "#96C50F",
+            // fontFamily: fonts.sourcesanspro
+            // lineHeight:16
+            // borderBottomWidth: 1, borderBottomColor: isFocused ? '#75B152' : 'rgba(0,0,0,0.11)'
+          }}
+          placeholder={props.placeHolder}
+          placeholderTextColor={'#96C50F'}
+          {...props}
+          // secureTextEntry={this.props.secureTextEntry?this.props.secureTextEntry:false}
+        />
+    </TouchableOpacity>
+</View>
+}

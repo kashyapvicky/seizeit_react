@@ -1,0 +1,85 @@
+"use strict";
+import {
+  createAppContainer,
+  createStackNavigator,
+  createSwitchNavigator
+} from "react-navigation";
+import { Easing, Animated } from "react-native";
+
+import Home from "./Home";
+import SubCategory from "./SubCategory";
+import Filter from "./Filter";
+import SearchProduct from "./SearchProduct";
+import ProductDetails from "../Products/ProductDetails";
+import ChangeLocation from "./ChangeLocation";
+
+import Cart from "./Cart";
+import Checkout from "./Checkout";
+import OrderSuccessFull from "./OrderSuccessfull";
+
+// Stack 
+const ModalStack = createStackNavigator({
+  Filter: {
+      screen: Filter,
+      params:{isModal : true},
+    },
+    SearchProduct: {
+      screen: SearchProduct,
+      params:{isModal : true},
+    },
+    ChangeLocation: {
+      screen: ChangeLocation,
+      params:{isModal : true},
+    },
+    Cart: {
+      screen: Cart,
+      params:{isModal : true},
+    },
+    Checkout: {
+      screen: Checkout,
+      params:{isModal : true},
+    },
+    OrderSuccessFull: {
+      screen: OrderSuccessFull,
+      params:{isModal : true},
+    },
+  },
+  
+  {
+    mode: 'modal',
+    headerMode: 'none',
+})
+const CardStack =  createStackNavigator({
+    Home:Home,
+    SubCategory:SubCategory,
+    ProductDetails:ProductDetails,
+
+},
+{
+  initialRouteName: 'Home',
+  headerMode:'none',
+  mode:'card'
+})
+
+export const HomeNavigator = createStackNavigator({
+  CardStack:CardStack,
+  ModalStack:{screen:ModalStack,
+    params:{isModalStack : true},
+
+  }
+},{
+  initialRouteName:'CardStack',
+  headerMode:'none',
+  mode:'modal',
+  transitionConfig: () => ({
+    transitionSpec: {
+      duration: 300,
+      easing: Easing.out(Easing.poly(8)),
+      timing: Animated.timing,
+    }
+  })
+})
+
+
+ 
+export const HomeNavigatorStack = createAppContainer(HomeNavigator);
