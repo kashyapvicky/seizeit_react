@@ -14,7 +14,7 @@ export default container = StyleSheet.create({
           ios: {
             ...fontsCustom.ios.regular
           }
-        })
+        }),
       },
       bold: {
         ...Platform.select({
@@ -383,7 +383,7 @@ lineHeight:24,
         color: '#000000',
         fontFamily: fonts.sourcesanspro,
         fontSize: fontSizes.small,
-        lineHeight: lineHeight.normal,
+        lineHeight: lineHeight.medium,
 
     },
     accountSetting: {

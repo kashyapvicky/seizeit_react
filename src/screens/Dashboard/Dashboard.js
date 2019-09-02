@@ -78,7 +78,7 @@ class Home extends Component {
   renderListForProducts = (item, index) => {
     return (
       <View key={index} tabLabel={item.title} style={{ paddingVertical: 16 ,paddingHorizontal:8}}>
-        <View style={{ paddingHorizontal: 16 }}>
+        <View style={{ paddingHorizontal: 16,paddingVertical:8 }}>
           <Text p={{ color: "#6B7580", fontSize: normalize(14) }}>
             2 Orders in total
           </Text>
@@ -104,7 +104,7 @@ class Home extends Component {
           {
             backgroundColor: "white",
             paddingVertical: 8,
-            marginTop: 8,
+            marginTop: 16,
             shadowRadius: 0.1
           }
         ]}

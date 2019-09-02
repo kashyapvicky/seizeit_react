@@ -8,7 +8,8 @@ import {
   ScrollView,
   FlatList,
   Keyboard,
-  TextInput
+  TextInput,
+  TouchableWithoutFeedback
 } from "react-native";
 // import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -24,7 +25,14 @@ import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import TextInputComponent from "../../components/TextInput";
 import DropDownList from "../../components/DropDownList";
+const rightIcon=require('../../assets/images/ic_dd_g.png')
 
+let initalSetDropdownState = {
+  openDropDownCat: false,
+  openDropDownProductPrice: false,
+  openDropDownProductSize: false,
+  openDropDownSubCat: false
+};
 class AddNewProduct extends Component {
   constructor(props) {
     super(props);
@@ -32,12 +40,16 @@ class AddNewProduct extends Component {
       accountNumber: "",
       confirmAccountNumber: "",
       ifscNumber: "",
+      productCategory: "",
+      productSubCategory: "",
+      productSize: "",
+      noOfTimeUsed: "",
       name: "",
       loader: false,
       securePassword: true,
       visible: false,
       refreshToken: null,
-      openDropDown:false
+      openDropDown: false
     };
   }
 
@@ -161,226 +173,265 @@ class AddNewProduct extends Component {
       />
     );
   };
-  
-  
+  pressButton = ()=>{
+
+  }
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <Header
-          isRightIcon={Images.close_g}
-          hideLeftIcon={true}
-          headerStyle={[
-            styles.shadow,
-            {
-              backgroundColor: "#FFFFFF",
-              shadowRadius: 0.1
-            }
-          ]}
-          title={"Add a Product"}
-          backPress={() => this.props.navigation.goBack()}
-        />
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-          <View style={{ height: 16 }} />
-          {this.renderTopSection()}
-          <View style={styles.borderSalesReport} />
-          <View
-            style={{ marginTop: 10, paddingHorizontal: 24, paddingBottom: 8 }}
-          >
-            {this.renderLabel("Product Details")}
-            <TextInputComponent
-              user={this.props.user}
-              onPress={() => this.setState({
-                openDropDownCat:!this.state.openDropDownCat
-            })}
-              openDropDown={this.state.openDropDownCat}
-              label={"Product category"}
-              editable={false}
-              inputMenthod={input => {
-                this.productCateRef = input;
-              }}
+      <TouchableWithoutFeedback
+        onPress={() =>
+          this.setState({
+            ...this.state,
+            ...initalSetDropdownState
+          })
+        }
+      >
+        <View style={{ flex: 1 }}>
+          <Header
+            isRightIcon={Images.close_g}
+            hideLeftIcon={true}
+            headerStyle={[
+              styles.shadow,
+              {
+                backgroundColor: "#FFFFFF",
+                shadowRadius: 0.1
+              }
+            ]}
+            title={"Add a Product"}
+            onRightPress={() => this.props.navigation.goBack()}
+          />
+          <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+            <View style={{ height: 16 }} />
+            {this.renderTopSection()}
+            <View style={styles.borderSalesReport} />
+            <View
+              style={{ marginTop: 10, paddingHorizontal: 24, paddingBottom: 8 }}
+            >
+              {this.renderLabel("Product Details")}
+              <TextInputComponent
+                user={this.props.user}
+                onPress={() =>
+                  this.setState({
+                    openDropDownCat: !this.state.openDropDownCat
+                  })
+                }
+                selectItem={(item)=> this.setState({
+                  productCategory:item,
+                  openDropDownCat:false
+                })}
+                openDropDown={this.state.openDropDownCat}
+                label={"Product category"}
+                editable={false}
+                inputMenthod={input => {
+                  this.productCateRef = input;
+                }}
+                // placeholder={'6985 9685 9452 6623'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                textInputStyle={[styles.addProductTextInputStyle]}
+                viewTextStyle={styles.addProductTextInputView}
+                value={this.state.productCategory}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.productCatFieldFocus}
+                onFocus={() => this.setState({ productCatFieldFocus: true })}
+                onBlur={() => this.setState({ productCatFieldFocus: false })}
+                //   onChangeText={productTitle => this.setState({ productTitle })}
+                rightIcon={rightIcon}
+                onSubmitEditing={event => {
+                  this.productSubCateRef.focus();
+                }}
+              />
+              <View style={{ height: 10 }} />
+              <TextInputComponent
+                user={this.props.user}
+                label={"Sub Category"}
+                inputMenthod={input => {
+                  this.productSubCateRef = input;
+                }}
+                onPress={() =>
+                  this.setState({
+                    openDropDownSubCat: !this.state.openDropDownSubCat,
+                 
 
-              // placeholder={'6985 9685 9452 6623'}
-              placeholderTextColor="rgba(62,62,62,0.55)"
-              selectionColor="#96C50F"
-              returnKeyType="next"
-              autoCorrect={false}
-              autoCapitalize="none"
-              blurOnSubmit={false}
-              textInputStyle={[styles.addProductTextInputStyle]}
-              viewTextStyle={styles.addProductTextInputView}
-              value={this.state.productCategory}
-              underlineColorAndroid="transparent"
-              isFocused={this.state.productCatFieldFocus}
-              onFocus={() => this.setState({ productCatFieldFocus: true })}
-              onBlur={() => this.setState({ productCatFieldFocus: false })}
-              //   onChangeText={productTitle => this.setState({ productTitle })}
-              rightIcon={"ios-arrow-down"}
-              onSubmitEditing={event => {
-                this.productSubCateRef.focus();
-              }}
-            />
-            <View style={{ height: 10 }} />
-            <TextInputComponent
-              user={this.props.user}
-              label={"Sub Category"}
-              inputMenthod={input => {
-                this.productSubCateRef = input;
-              }}
-              onPress={() => this.setState({
-                openDropDownSubCat:!this.state.openDropDownSubCat
-            })}
-              openDropDown={this.state.openDropDownSubCat}
-              editable={false}
-              // placeholder={'6985 9685 9452 6623'}
-              placeholderTextColor="rgba(62,62,62,0.55)"
-              selectionColor="#96C50F"
-              returnKeyType="next"
-              autoCorrect={false}
-              autoCapitalize="none"
-              blurOnSubmit={false}
-              textInputStyle={[styles.addProductTextInputStyle]}
-              viewTextStyle={styles.addProductTextInputView}
-              value={this.state.productSubCategory}
-              underlineColorAndroid="transparent"
-              isFocused={this.state.productSubCatFieldFocus}
-              onFocus={() => this.setState({ productSubCatFieldFocus: true })}
-              onBlur={() => this.setState({ productSubCatFieldFocus: false })}
-              //   onChangeText={productTitle => this.setState({ productTitle })}
-              rightIcon={"ios-arrow-down"}
-              onSubmitEditing={event => {
-                this.productTitleRef.focus();
-              }}
-            />
-            <View style={{ height: 10 }} />
-            <TextInputComponent
-              user={this.props.user}
-              label={"Product Title"}
-              inputMenthod={input => {
-                this.productTitleRef = input;
-              }}
-              // placeholder={'6985 9685 9452 6623'}
-              placeholderTextColor="rgba(62,62,62,0.55)"
-              selectionColor="#96C50F"
-              returnKeyType="next"
-              autoCorrect={false}
-              autoCapitalize="none"
-              blurOnSubmit={false}
-              textInputStyle={[styles.addProductTextInputStyle]}
-              viewTextStyle={styles.addProductTextInputView}
-              value={this.state.productTitle}
-              underlineColorAndroid="transparent"
-              isFocused={this.state.productTitleFieldFocus}
-              onFocus={() => this.setState({ productTitleFieldFocus: true })}
-              onBlur={() => this.setState({ productTitleFieldFocus: false })}
-              onChangeText={productTitle => this.setState({ productTitle })}
-              onSubmitEditing={event => {
-                this.productDesRef.focus();
-              }}
-              // textInputStyle={styles.textInputStyle}
-            />
-            <View style={{ height: 10 }} />
-            <TextInputComponent
-              label={"Product Description"}
-              inputMenthod={input => {
-                this.productDesRef = input;
-              }}
-              // placeholder={'Vikram Bawa'}
-              placeholderTextColor="rgba(62,62,62,0.55)"
-              selectionColor="#96C50F"
-              returnKeyType="next"
-              autoCorrect={false}
-              autoCapitalize="none"
-              textInputStyle={[styles.addProductTextInputStyle, { height: 72 }]}
-              blurOnSubmit={false}
-              multiline
-              viewTextStyle={[styles.addProductTextInputView, { height: 72 }]}
-              value={this.state.productDes}
-              underlineColorAndroid="transparent"
-              isFocused={this.state.productDesFieldFocus}
-              onFocus={() => this.setState({ productDesFieldFocus: true })}
-              onBlur={() => this.setState({ productDesFieldFocus: false })}
-              onChangeText={productDes => this.setState({ productDes })}
-              onSubmitEditing={event => {
-                this.productSizeRef.focus();
-              }}
-            />
-            <View style={{ height: 10 }} />
-            <TextInputComponent
-              user={this.props.user}
-              label={"Size"}
-              inputMenthod={input => {
-                this.productSizeRef = input;
-              }}
-              editable={false}
-              // placeholder={'6985 9685 9452 6623'}
-              placeholderTextColor="rgba(62,62,62,0.55)"
-              selectionColor="#96C50F"
-              returnKeyType="next"
-              autoCorrect={false}
-              autoCapitalize="none"
-              blurOnSubmit={false}
-              textInputStyle={[styles.addProductTextInputStyle]}
-              viewTextStyle={styles.addProductTextInputView}
-              value={this.state.productSize}
-              underlineColorAndroid="transparent"
-              rightIcon={"ios-arrow-down"}
-              onPress={() => this.setState({
-                openDropDownProductSize:!this.state.openDropDownProductSize
-            })}
-              openDropDown={this.state.openDropDownProductSize}
-              isFocused={this.state.productSizeFieldFocus}
-              onFocus={() => this.setState({ productSizeFieldFocus: true })}
-              onBlur={() => this.setState({ productSizeFieldFocus: false })}
-              //   onChangeText={productTitle => this.setState({ productTitle })}
-              onSubmitEditing={event => {
-                this.productNameOfTimeRef.focus();
-              }}
-              // textInputStyle={styles.textInputStyle}
-            />
-            <View style={{ height: 10 }} />
-            <TextInputComponent
-              user={this.props.user}
-              label={"Number of time it is used"}
-              inputMenthod={input => {
-                this.productNameOfTimeRef = input;
-              }}
-              editable={false}
-              placeholder={"in $$"}
-              placeholderTextColor="rgba(62,62,62,0.55)"
-              selectionColor="#96C50F"
-              returnKeyType="next"
-              autoCorrect={false}
-              autoCapitalize="none"
-              blurOnSubmit={false}
-              textInputStyle={[styles.addProductTextInputStyle]}
-              viewTextStyle={styles.addProductTextInputView}
-              value={this.state.productPrice}
-              onPress={() => this.setState({
-                openDropDownProductPrice:!this.state.openDropDownProductPrice
-            })}
-              openDropDown={this.state.openDropDownProductPrice}
-              underlineColorAndroid="transparent"
-              rightIcon={"ios-arrow-down"}
-              isFocused={this.state.productPriceFieldFocus}
-              onFocus={() => this.setState({ productPriceFieldFocus: true })}
-              onBlur={() => this.setState({ productPriceFieldFocus: false })}
-              //   onChangeText={productTitle => this.setState({ productTitle })}
-              onSubmitEditing={event => {
-                Keyboard.dismiss();
-              }}
-              // textInputStyle={styles.textInputStyle}
-            />
-          </View>
-          <View style={styles.borderSalesReport} />
-          <View style={{ paddingHorizontal: 24 }}>
-            {this.renderLabel("Product Images")}
-            <View style={{ height: 10 }} />
-            {this.renderProductImgaes()}
-          </View>
-          <View style={{ height: 20 }} />
-        </ScrollView>
-        {this.renderButton("Add a Product")}
-      </View>
+                  })
+                }
+                selectItem={(item)=> this.setState({
+                  productSubCategory:item,
+                  openDropDownSubCat:false
+                })}
+                openDropDown={this.state.openDropDownSubCat}
+                editable={false}
+                // placeholder={'6985 9685 9452 6623'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                textInputStyle={[styles.addProductTextInputStyle]}
+                viewTextStyle={styles.addProductTextInputView}
+                value={this.state.productSubCategory}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.productSubCatFieldFocus}
+                onFocus={() => this.setState({ productSubCatFieldFocus: true })}
+                onBlur={() => this.setState({ productSubCatFieldFocus: false })}
+                //   onChangeText={productTitle => this.setState({ productTitle })}
+                rightIcon={rightIcon}
+                onSubmitEditing={event => {
+                  this.productTitleRef.focus();
+                }}
+              />
+              <View style={{ height: 10 }} />
+              <TextInputComponent
+                user={this.props.user}
+                label={"Product Title"}
+                inputMenthod={input => {
+                  this.productTitleRef = input;
+                }}
+                // placeholder={'6985 9685 9452 6623'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                textInputStyle={[styles.addProductTextInputStyle]}
+                viewTextStyle={styles.addProductTextInputView}
+                value={this.state.productTitle}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.productTitleFieldFocus}
+                onFocus={() => this.setState({ productTitleFieldFocus: true })}
+                onBlur={() => this.setState({ productTitleFieldFocus: false })}
+                onChangeText={productTitle => this.setState({ productTitle })}
+                onSubmitEditing={event => {
+                  this.productDesRef.focus();
+                }}
+                // textInputStyle={styles.textInputStyle}
+              />
+              <View style={{ height: 10 }} />
+              <TextInputComponent
+                label={"Product Description"}
+                inputMenthod={input => {
+                  this.productDesRef = input;
+                }}
+                // placeholder={'Vikram Bawa'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                textInputStyle={[
+                  styles.addProductTextInputStyle,
+                  { height: 72 }
+                ]}
+                blurOnSubmit={false}
+                multiline
+                viewTextStyle={[styles.addProductTextInputView, { height: 72 }]}
+                value={this.state.productDes}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.productDesFieldFocus}
+                onFocus={() => this.setState({ productDesFieldFocus: true })}
+                onBlur={() => this.setState({ productDesFieldFocus: false })}
+                onChangeText={productDes => this.setState({ productDes })}
+                onSubmitEditing={event => {
+                  this.productSizeRef.focus();
+                }}
+              />
+              <View style={{ height: 10 }} />
+              <TextInputComponent
+                user={this.props.user}
+                label={"Size"}
+                inputMenthod={input => {
+                  this.productSizeRef = input;
+                }}
+                selectItem={(item)=> this.setState({
+                  productSize:item,
+                  openDropDownProductSize:false
+                })}
+                editable={false}
+                // placeholder={'6985 9685 9452 6623'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                textInputStyle={[styles.addProductTextInputStyle]}
+                viewTextStyle={styles.addProductTextInputView}
+                value={this.state.productSize}
+                underlineColorAndroid="transparent"
+                rightIcon={rightIcon}
+                onPress={() =>
+                  this.setState({
+                    openDropDownProductSize: !this.state.openDropDownProductSize
+                  })
+                }
+                openDropDown={this.state.openDropDownProductSize}
+                isFocused={this.state.productSizeFieldFocus}
+                onFocus={() => this.setState({ productSizeFieldFocus: true })}
+                onBlur={() => this.setState({ productSizeFieldFocus: false })}
+                //   onChangeText={productTitle => this.setState({ productTitle })}
+                onSubmitEditing={event => {
+                  this.productNameOfTimeRef.focus();
+                }}
+                // textInputStyle={styles.textInputStyle}
+              />
+              <View style={{ height: 10 }} />
+              <TextInputComponent
+                user={this.props.user}
+                label={"Number of time it is used"}
+                inputMenthod={input => {
+                  this.productNameOfTimeRef = input;
+                }}
+                selectItem={(item)=> this.setState({
+                  noOfTimeUsed:item,
+                  openDropDownProductPrice:false
+                })}
+                editable={false}
+                placeholder={"in $$"}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                textInputStyle={[styles.addProductTextInputStyle]}
+                viewTextStyle={styles.addProductTextInputView}
+                value={this.state.noOfTimeUsed}
+                onPress={() =>
+                  this.setState({
+                    openDropDownProductPrice: !this.state
+                      .openDropDownProductPrice
+                  })
+                }
+                openDropDown={this.state.openDropDownProductPrice}
+                underlineColorAndroid="transparent"
+                rightIcon={rightIcon}
+                isFocused={this.state.productPriceFieldFocus}
+                onFocus={() => this.setState({ productPriceFieldFocus: true })}
+                onBlur={() => this.setState({ productPriceFieldFocus: false })}
+                //   onChangeText={productTitle => this.setState({ productTitle })}
+                onSubmitEditing={event => {
+                  Keyboard.dismiss();
+                }}
+                // textInputStyle={styles.textInputStyle}
+              />
+            </View>
+            <View style={styles.borderSalesReport} />
+            <View style={{ paddingHorizontal: 24 }}>
+              {this.renderLabel("Product Images")}
+              <View style={{ height: 10 }} />
+              {this.renderProductImgaes()}
+            </View>
+            <View style={{ height: 20 }} />
+          </ScrollView>
+          {this.renderButton("Add a Product")}
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

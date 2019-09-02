@@ -350,7 +350,7 @@ class Signup extends Component {
               onBlur={() => this.setState({ passwordFieldFocus: false })}
               onChangeText={password => this.setState({ password })}
               onSubmitEditing={event => {
-                this.partnerIdField.focus();
+               Keyboard.dismiss()
               }}
             />
           </View>

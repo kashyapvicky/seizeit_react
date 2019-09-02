@@ -17,6 +17,8 @@ const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 import ProductDetailBanner from "./Templates/ProductDetailBanner";
 import ProductItemDetail from "./Templates/ProductItemDetail";
 import { FeatureLabel } from "./Templates/Feature";
+import Button from "../../components/Button";
+import colors from "../../utilities/config/colors";
 import Listitems from "../Home/Templates/ListItem";
 import Features from "./Templates/Feature";
 import styles from "../../styles";
@@ -32,6 +34,8 @@ export default class ProductDetail extends Component {
         // iOS has negative initial scroll value because content inset...
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
+      isbarShow:false,
+
       refreshing: false
     };
   }
@@ -44,6 +48,26 @@ export default class ProductDetail extends Component {
       </View>
     );
   };
+  renderButton = (title, transparent) => {
+    return (
+      <Button
+        buttonStyle={{
+          height: 48,
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 0,
+          backgroundColor: transparent ? "transparent" : colors.primary
+        }}
+        fontSize={18}
+        color={transparent ? colors.primary : "#FFFFFF"}
+        onPress={() => this.pressButton(title)}
+        title={title.toUpperCase()}
+      />
+    );
+  };
+  pressButton = ()=>{
+
+  }
   renderDescription = () => {
     return (
       <View>
@@ -133,7 +157,42 @@ export default class ProductDetail extends Component {
       </View>
     );
   }
-
+  handleScroll = event => {
+    if(Platform.OS == 'ios'){
+      if (
+        event.nativeEvent.contentOffset.y < 0 &&
+        event.nativeEvent.contentOffset.y > -159
+      ) {
+        this.setState({
+          isbarShow: true
+        });
+      } else if (
+        event.nativeEvent.contentOffset.y < -160 &&
+        event.nativeEvent.contentOffset.y > -200
+      ) {
+        this.setState({
+          isbarShow: false
+        });
+      }
+    }else if(Platform.OS == 'android'){
+      if (
+        event.nativeEvent.contentOffset.y > 55 &&
+        event.nativeEvent.contentOffset.y > 70
+      ) {
+        this.setState({
+          isbarShow: true
+        });
+      } else if (
+        event.nativeEvent.contentOffset.y < 55 &&
+        event.nativeEvent.contentOffset.y > 0
+      ) {
+        this.setState({
+          isbarShow: false
+        });
+      }
+    }
+   
+  };
   render() {
     // Because of content inset the scroll value will be negative on iOS so bring
     // it back to 0.
@@ -179,8 +238,11 @@ export default class ProductDetail extends Component {
           style={detailStyles.fill}
           scrollEventThrottle={1}
           onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
-            { useNativeDriver: true }
+            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }  ],
+            {listener:event => {
+              this.handleScroll(event);
+             }},
+            { useNativeDriver: true },
           )}
           refreshControl={
             <RefreshControl
@@ -204,7 +266,6 @@ export default class ProductDetail extends Component {
           {this._renderScrollViewContent()}
         </Animated.ScrollView>
         <Animated.View
-          pointerEvents="none"
           style={[
             detailStyles.header,
             { transform: [{ translateY: headerTranslate }] }
@@ -223,7 +284,8 @@ export default class ProductDetail extends Component {
                 "https://cdn.andamen.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/0/1/01_3_19.jpg"
             }}
           />
-          <TouchableOpacity style={{flex:0.2,flexDirection:'row',justifyContent:'space-between',paddingHorizontal:16}}>
+          <TouchableOpacity style={{flex:0.2,zIndex:10,
+            flexDirection:'row',justifyContent:'space-between',paddingHorizontal:16}}>
            <TouchableOpacity 
             style={{ alignSelf: "center",zIndex:1000 }} onPress={() => this.props.navigation.goBack()}>
               <Image source={require("../../assets/images/ic_back.png")} />
@@ -235,12 +297,17 @@ export default class ProductDetail extends Component {
             </TouchableOpacity>
            </TouchableOpacity>
         </Animated.View>
+        {
+          this.state.isbarShow ?
+
         <Animated.View
           style={[
             detailStyles.bar,
             {
+              zIndex:0,
               opacity: titleOpacity,
-              transform: [{ scale: titleScale }, { translateY: titleTranslate }]
+              paddingHorizontal:24
+              // transform: [{ scale: titleScale }, { translateY: titleTranslate }]
             }
           ]}
          >
@@ -250,15 +317,14 @@ export default class ProductDetail extends Component {
             </TouchableOpacity>
             <View>
             <Text style={detailStyles.title}>T-Shirt</Text>
-
             </View>
-
             <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Cart')}
             style={{ alignSelf: "center" }}>
               <Image source={require("../../assets/images/ic_cart.png")} />
             </TouchableOpacity>
-        </Animated.View>
+        </Animated.View>:null}
+        {this.renderButton('ADD TO CART')}
       </View>
     );
   }

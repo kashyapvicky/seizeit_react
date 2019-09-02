@@ -18,7 +18,7 @@ style={[
   styles.shadow,
   {
     backgroundColor: "white",
-    paddingVertical: 8,
+    paddingVertical: 16,
     marginBottom: 8,
     shadowRadius: 0.1
   }

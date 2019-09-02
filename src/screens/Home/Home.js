@@ -36,12 +36,14 @@ class Home extends Component {
     super(props);
     this.state = {
       visible2: false,
+      isbarShow: false,
       scrollY: new Animated.Value(
         // iOS has negative initial scroll value because content inset...
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
       refreshing: false
     };
+    this.isbarShow = false;
   }
   renderButton = title => {
     return (
@@ -62,18 +64,25 @@ class Home extends Component {
       />
     );
   };
-  renderSearchInput = () => {
-    return <SearchInput 
-    editable={false}
-    backgroundColor={'white'}
-    pointerEvents="none"
-    onPress={() =>this.props.navigation.navigate('SearchProduct')}
-    placeHolder={"What are you looking for?"} />;
+  renderSearchInput = style => {
+    return (
+      <SearchInput
+        editable={false}
+        //backgroundColor={'white'}
+        style={style && style}
+        pointerEvents="none"
+        onPress={() => this.props.navigation.navigate("SearchProduct")}
+        placeHolder={"What are you looking for?"}
+      />
+    );
   };
-showAllCateItems = ({ item, index }) => {
+  showAllCateItems = ({ item, index }) => {
     return (
       <View index={index} style={styles.showAllPetProductsView}>
-        <TouchableOpacity activeOpacity={9} onPress={() => this.props.navigation.navigate('SubCategory')}>
+        <TouchableOpacity
+          activeOpacity={9}
+          onPress={() => this.props.navigation.navigate("SubCategory")}
+        >
           <View
             style={{
               alignItems: "center",
@@ -103,7 +112,7 @@ showAllCateItems = ({ item, index }) => {
           autoplay={true}
           horizontal={true}
           snapToInterval={300}
-          data={["1", "2", "3", "3","1", "2", "3", "3","1", "2", "3", "3"]}
+          data={["1", "2", "3", "3", "1", "2", "3", "3", "1", "2", "3", "3"]}
           pagingEnabled={true}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index + "flatlist"}
@@ -122,18 +131,24 @@ showAllCateItems = ({ item, index }) => {
     );
   };
   renderItems = (item, index, imageHeight) => {
-    return <Listitems 
-    onPress={()=> this.props.navigation.navigate('ProductDetails')}
-    item={item} index={index} imageHeight={imageHeight} />;
+    return (
+      <Listitems
+        onPress={() => this.props.navigation.navigate("ProductDetails")}
+        item={item}
+        index={index}
+        imageHeight={imageHeight}
+      />
+    );
   };
   renderProductsList = (array, label, imageHeight) => {
     return (
-      <View style={{ flex: 1,  }}>
+      <View style={{ flex: 1 }}>
         {this.renderLabel(label)}
         <View style={{ height: 10 }} />
         <FlatList
           bounces={true}
-          numColumns={2}
+          // numColumns={2}
+          horizontal={true}
           showsVerticalScrollIndicator={false}
           data={array}
           keyExtractor={(item, index) => index + "product"}
@@ -141,6 +156,7 @@ showAllCateItems = ({ item, index }) => {
             this.renderItems(item, index, imageHeight)
           }
         />
+
       </View>
     );
   };
@@ -150,7 +166,7 @@ showAllCateItems = ({ item, index }) => {
     return (
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 16 }}>
-        <View style={{ flex: 1, marginVertical: 16,borderRadius:16, }}>
+          <View style={{ flex: 1, marginVertical: 16, borderRadius: 16 }}>
             <BannerCarousel />
           </View>
           <View style={{ height: 28 }} />
@@ -170,7 +186,42 @@ showAllCateItems = ({ item, index }) => {
       </View>
     );
   }
-
+  handleScroll = event => {
+    if(Platform.OS == 'ios'){
+      if (
+        event.nativeEvent.contentOffset.y < 0 &&
+        event.nativeEvent.contentOffset.y > -159
+      ) {
+        this.setState({
+          isbarShow: true
+        });
+      } else if (
+        event.nativeEvent.contentOffset.y < -160 &&
+        event.nativeEvent.contentOffset.y > -200
+      ) {
+        this.setState({
+          isbarShow: false
+        });
+      }
+    }else if(Platform.OS == 'android'){
+      if (
+        event.nativeEvent.contentOffset.y > 55 &&
+        event.nativeEvent.contentOffset.y > 70
+      ) {
+        this.setState({
+          isbarShow: true
+        });
+      } else if (
+        event.nativeEvent.contentOffset.y < 55 &&
+        event.nativeEvent.contentOffset.y > 0
+      ) {
+        this.setState({
+          isbarShow: false
+        });
+      }
+    }
+   
+  };
   render() {
     /************ Animation Type */
     const scrollY = Animated.add(
@@ -182,41 +233,25 @@ showAllCateItems = ({ item, index }) => {
       outputRange: [0, -HEADER_SCROLL_DISTANCE],
       extrapolate: "clamp"
     });
-
-    const imageOpacity = scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-      outputRange: [1, 1, 0],
-      extrapolate: "clamp"
-    });
-    const imageTranslate = scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 100],
-      extrapolate: "clamp"
-    });
-    const titleScale = scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-      outputRange: [1, 1, 0.8],
-      extrapolate: "clamp"
-    });
-    const titleTranslate = scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
-      outputRange: [0, 0, -8],
-      extrapolate: "clamp"
-    });
     const titleOpacity = scrollY.interpolate({
       inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
       outputRange: [0, 0, 1],
       extrapolate: "clamp"
     });
-
+    console.log(this.state.isbarShow, "this.isbarShow ");
     /**************** End Animation Type ************************/
-    return(
+    return (
       <View style={detailStyles.fill}>
         <Animated.ScrollView
           style={detailStyles.fill}
           scrollEventThrottle={1}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+            {
+              listener: event => {
+                this.handleScroll(event);
+              }
+            },
             { useNativeDriver: true }
           )}
           refreshControl={
@@ -241,74 +276,72 @@ showAllCateItems = ({ item, index }) => {
           {this._renderScrollViewContent()}
         </Animated.ScrollView>
         <Animated.View
-          pointerEvents="none"
           style={[
             detailStyles.header,
-            {transform: [{ translateY: headerTranslate }] }
+            { transform: [{ translateY: headerTranslate }] }
           ]}
         >
-          <View style={{ paddingTop:16,}}> 
-          <Header
-          isRightIcon={Images.cart}
-          hideLeftIcon={true}
-          headerStyle={{ flex: 1 }}
-          title={"Chandigarh"}
-          isLocation
-          onRightPress={() => this.props.navigation.navigate('Cart')}
-          onPressLocation={() => this.props.navigation.navigate('ChangeLocation')}
-          backPress={() => this.props.navigation.goBack()}
-        />
-        </View>
-        <Animated.View style={[styles.shadow, styles.homeShadowView]}>
-          {this.renderSearchInput()}
-          <View style={{ height: 25 }} />
-          {this.renderCategory()}
-         </Animated.View>
+          <Animated.View style={{ paddingTop: 16, flex: 1, zIndex: 100 }}>
+            <Header
+              isRightIcon={Images.cart}
+              hideLeftIcon={true}
+              headerStyle={{ flex: 1, zIndex: 1000 }}
+              title={"Chandigarh"}
+              isLocation
+              onRightPress={() => this.props.navigation.navigate("Cart")}
+              onPressLocation={() =>
+                this.props.navigation.navigate("ChangeLocation")
+              }
+              backPress={() => this.props.navigation.goBack()}
+            />
+          </Animated.View>
+          <Animated.View
+            style={[styles.shadow, styles.homeShadowView, { zIndex: 0 }]}
+          >
+            {this.renderSearchInput()}
+            <View style={{ height: 25 }} />
+            {this.renderCategory()}
+          </Animated.View>
         </Animated.View>
-        <Animated.View
-          style={[
-            detailStyles.bar,
-            // styles.shadow,
-            {
-              flex:1,
-              opacity: titleOpacity,
-              transform: [{ scale: titleScale }, { translateY: titleTranslate }]
-            }
-          ]}
-         >
-          <View style={{flex:1}}>
-           {this.renderSearchInput()}
-         </View>
-        </Animated.View>
-        </View>
-    )
-    // return (
-    //   <View style={{ flex: 1, backgroundColor: "#F5F8FA" }}>
-    //     <Header
-    //       isRightIcon={Images.cart}
-    //       hideLeftIcon={true}
-    //       headerStyle={{ flex: 0.15 }}
-    //       title={"Chandigarh"}
-    //       isLocation
-    //       onRightPress={() => this.props.navigation.navigate('Cart')}
-    //       onPressLocation={() => this.props.navigation.navigate('ChangeLocation')}
-    //       backPress={() => this.props.navigation.goBack()}
-    //     />
-    //     <View style={[styles.shadow, styles.homeShadowView]}>
-    //       {this.renderSearchInput()}
-    //       <View style={{ height: 24 }} />
-    //       {this.renderCategory()}
-    //     </View>
-       
-    //   </View>
-    // );
+        {this.state.isbarShow ? (
+          <Animated.View
+            style={[
+              detailStyles.bar,
+              // styles.shadow,
+              {
+                flex: 1,
+                paddingVertical: 16,
+                opacity: titleOpacity,
+                // transform: [
+                //   { scale: titleScale },
+                //   { translateY: titleTranslate }
+                // ]
+              }
+            ]}
+          >
+            <View
+              style={[
+                styles.shadow,
+                {
+                  flex: 1,
+                  justifyContent: "center",
+                  shadowRadius: 2,
+                  shadowOpacity: 0.2
+                }
+              ]}
+            >
+              {this.renderSearchInput({ backgroundColor: "white",borderRadius:40/2 })}
+            </View>
+          </Animated.View>
+        ) : null}
+      </View>
+    );
   }
 }
 export default Home;
 const detailStyles = StyleSheet.create({
   fill: {
     // flex: 1,
-
   },
   content: {
     flex: 1
@@ -319,7 +352,7 @@ const detailStyles = StyleSheet.create({
     left: 0,
     right: 0,
     overflow: "hidden",
-    backgroundColor: "white",
+    backgroundColor: "white"
 
     //  height: HEADER_MAX_HEIGHT
   },
@@ -333,25 +366,26 @@ const detailStyles = StyleSheet.create({
     resizeMode: "cover"
   },
   bar: {
-    margin:0,
-    marginTop: Platform.OS === "ios" ? 22 : 28,
+    margin: 0,
+    marginTop: Platform.OS === "ios" ? 18 : 28,
     // alignItems: "center",
     //justifyContent: "center",
     position: "absolute",
-    height:65,
-    backgroundColor:'white',
+    zIndex: 0,
+    height: 52,
+    backgroundColor: "transparent",
     // top: 0,
-     width:screenDimensions.width,
-    borderRadius:65/2,
+    width: screenDimensions.width,
+    borderRadius:52/2,
     // left: 0,
-    flexDirection:'row',
+    flexDirection: "row",
     // justifyContent:'space-between',
     // right: 0,
-    // flex:1
+    flex: 1
   },
   title: {
     color: "#000000",
-    fontWeight:'bold',
+    fontWeight: "bold",
     fontSize: normalize(22)
   },
   scrollViewContent: {

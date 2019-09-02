@@ -9,7 +9,9 @@ import {
   ScrollView,
   Platform
 } from "react-native";
+import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 
+import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
 //Local imports
 import homelogo from "../../assets/images/Logo.png";
 import backButton from "../../assets/images/ic_back.png";
@@ -25,7 +27,6 @@ import colors from '../../utilities/config/colors';
 import { normalize } from "../../utilities/helpers/normalizeText";
 import { Images } from "../../utilities/contsants";
 
-// import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
 // import firebase from 'react-native-firebase';
 
 // const initialState =
@@ -43,7 +44,9 @@ class Login extends Component {
       refreshToken: null
     };
   }
-
+  componentDidMount(){
+  this.configureGoogleSignIn();
+}
   ValidationRules = () => {
     let { email, password } = this.state;
     let { lang } = this.props.userCommon;
@@ -63,6 +66,7 @@ class Login extends Component {
       }
     ];
   };
+ 
   loginByEmail = () => {
     // if (!this.props.userCommon.netStatus) {
     //     return this.props.actions.showOptionsAlert('Check your internet connection!')
@@ -129,38 +133,54 @@ class Login extends Component {
     //     }
     // }
   };
-
+  configureGoogleSignIn =() =>{
+    GoogleSignin.configure()
+  }
+  googleSignin = async () => {
+    debugger
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      debugger
+      this.setState({ userInfo });
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (f.e. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  };
   facebookLogin = async () => {
-    // if (!this.props.userCommon.netStatus) {
-    //     return this.props.showOptionsAlert('Check your internet connection!')
-    // }
-    // else {
-    //     this.setState({ visible: true })
-    //     debugger
-    //     LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
-    //         if (result.isCancelled) {
-    //             debugger
-    //             this.setState({ visible: false })
-    //             ToastMessage(string('logincancelled'))
-    //             // console.log("Login cancelled");
-    //         } else {
-    //             debugger
-    //             AccessToken.getCurrentAccessToken().then((data) => {
-    //                 debugger
-    //                 const { accessToken } = data
-    //                 this.getUserInfofacebook(accessToken)
-    //             })
-    //         }
-    //     }).catch((error) => {
-    //         debugger
-    //         ToastMessage(error)
-    //         console.log("Login fail with error: " + error);
-    //     })
-    // }
+       // this.setState({ visible: true })
+        LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
+            if (result.isCancelled) {
+                debugger
+                this.setState({ visible: false })
+               // ToastMessage(string('logincancelled'))
+                // console.log("Login cancelled");
+            } else {
+                debugger
+                AccessToken.getCurrentAccessToken().then((data) => {
+                    debugger
+                    const { accessToken } = data
+                    this.getUserInfofacebook(accessToken)
+                })
+            }
+        }).catch((error) => {
+            debugger
+            // ToastMessage(error)
+            console.log("Login fail with error: " + error);
+        })
+  
   };
 
   getUserInfofacebook = token => {
-    //     debugger
+    debugger
     //     fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
     //         .then((response) => response.json())
     //         .then((json) => {
@@ -251,7 +271,8 @@ class Login extends Component {
     //     }
   };
   pressButton = () => {
-      this.props.navigation.navigate('TabNavigator')
+    //this.googleSignin()
+     this.props.navigation.navigate('TabNavigator')
   };
   renderButton = (title,transparent,imageLeft,color,fontSize) => {
     return (

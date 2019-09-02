@@ -28,6 +28,7 @@ export default class BlogDetail extends Component {
         // iOS has negative initial scroll value because content inset...
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
+      isbarShow:false,
       refreshing: false,
       item:{ id: 2,  blog_desc: 'El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que eEl ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.  El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.  n 2019 iniciará la construcción de una refinería en Tabasco.  El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.' },
     };
@@ -45,7 +46,42 @@ export default class BlogDetail extends Component {
       </View>
     );
   }
-
+  handleScroll = event => {
+    if(Platform.OS == 'ios'){
+      if (
+        event.nativeEvent.contentOffset.y < 0 &&
+        event.nativeEvent.contentOffset.y > -159
+      ) {
+        this.setState({
+          isbarShow: true
+        });
+      } else if (
+        event.nativeEvent.contentOffset.y < -160 &&
+        event.nativeEvent.contentOffset.y > -200
+      ) {
+        this.setState({
+          isbarShow: false
+        });
+      }
+    }else if(Platform.OS == 'android'){
+      if (
+        event.nativeEvent.contentOffset.y > 55 &&
+        event.nativeEvent.contentOffset.y > 70
+      ) {
+        this.setState({
+          isbarShow: true
+        });
+      } else if (
+        event.nativeEvent.contentOffset.y < 55 &&
+        event.nativeEvent.contentOffset.y > 0
+      ) {
+        this.setState({
+          isbarShow: false
+        });
+      }
+    }
+   
+  };
   render() {
     // Because of content inset the scroll value will be negative on iOS so bring
     // it back to 0.
@@ -101,6 +137,11 @@ export default class BlogDetail extends Component {
           scrollEventThrottle={1}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+            {
+              listener: event => {
+                this.handleScroll(event);
+              }
+            },
             { useNativeDriver: true }
           )}
           refreshControl={
@@ -125,7 +166,6 @@ export default class BlogDetail extends Component {
           {this._renderScrollViewContent()}
         </Animated.ScrollView>
         <Animated.View
-          pointerEvents="none"
           style={[
             detailStyles.header,
             { transform: [{ translateY: headerTranslate }] }
@@ -154,7 +194,8 @@ export default class BlogDetail extends Component {
                 flex: 0.3,
                 flexDirection: "row",
                 justifyContent: "space-between",
-                paddingHorizontal: 16
+                paddingHorizontal: 16,
+                zIndex:10,
               }}
             >
               <TouchableOpacity
@@ -191,15 +232,18 @@ export default class BlogDetail extends Component {
             </Animated.View>
         </LinearGradient>
         </Animated.View>
-       
+
+        {this.state.isbarShow ? 
         <Animated.View
           style={[
             detailStyles.bar,
             {
               flex:1,
+              paddingHorizontal:24,
+              zIndex:0,
             //   backgroundColor:'red',
               opacity: titleOpacity,
-              transform: [{ scale: titleScale }, { translateY: titleTranslate }]
+              // transform: [{ scale: titleScale }, { translateY: titleTranslate }]
             }
           ]}
         >
@@ -220,9 +264,7 @@ export default class BlogDetail extends Component {
           >
           <Image source={require("../../assets/images/ic_share_w.png")} />
           </TouchableOpacity>
-        </Animated.View>
-
-     
+        </Animated.View> : null}
       </View>
     );
   }

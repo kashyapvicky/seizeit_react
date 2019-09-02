@@ -82,10 +82,12 @@ class ChooseType extends Component {
             marginBottom: 24,
             elevation:2,
             backgroundColor: "#FFFFFF",
+
             width: 168,
             height: 192,
             borderRadius: 24,
-            borderColor: colors.primary
+            borderColor: item.isSelect  ? colors.primary : 'transparent',
+            borderWidth:1
           }
         ]}
       >

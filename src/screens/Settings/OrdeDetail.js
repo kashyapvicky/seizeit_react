@@ -153,7 +153,7 @@ class OrderDetails extends Component {
           ]}
           hideLeftIcon={true}
           title={"Order details"}
-          backPress={() => this.props.navigation.goBack()}
+          onRightPress={() => this.props.navigation.goBack()}
         />
         <ScrollView style={{flex:1}} showsVerticalScrollIndicator={false}>
         {this.renderOrdersItem()}

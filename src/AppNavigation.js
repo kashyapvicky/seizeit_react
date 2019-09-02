@@ -24,14 +24,29 @@ import * as todoActions from "./redux/actions/todoActions";
 import Indicator from "./components/Indicator";
 //Components
 import Toast from "./components/Toast";
-
 import { styles } from "./styles";
+
+//Get Active Screen
+function getActiveRouteName(navigationState) {
+  if (!navigationState) {
+    return null;
+  }
+  const route = navigationState.routes[navigationState.index];
+  // dive into nested navigators
+  if (route.routes) {
+    return getActiveRouteName(route);
+  }
+  return route.routeName;
+}
+
 class AppNavigation extends React.Component {
   static socket;
   constructor(props) {
     super(props);
     this.state = {
-      isShowToast: false
+      isShowToast: false,
+      topBarColor:'transparent',
+      bottomBarColor:'transparent'
     };
     this._bootStrapApp();
   }
@@ -56,6 +71,18 @@ class AppNavigation extends React.Component {
       2000
     );
   };
+  changeSafeAreaViewColor = (screen)=>{
+    let bottomBarArray = ['Cart','AddNewProduct','Checkout']
+      if(bottomBarArray.findIndex(x=> x == screen) > -1){
+        this.setState({
+          bottomBarColor:'#96C50F'
+        })
+      }else{
+        this.setState({
+          bottomBarColor:'white'
+        })
+      }
+  }
   render() {
     return (
       <Fragment>
@@ -63,11 +90,16 @@ class AppNavigation extends React.Component {
           <StatusBar barStyle="dark-content" translucent />
         )}
         {this.props.loader && <Indicator />}
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 0,backgroundColor:this.state.topBarColor }} />
+        <SafeAreaView style={{flex:1,backgroundColor: this.state.bottomBarColor }}>
           <AppStack
             screenProps={{
               ...this.props,
               toastRef: { show: (text, color) => this.showMessage(text, color) }
+            }}
+            onNavigationStateChange={(prevState, currentState, action) => {
+              this.currentScreen = getActiveRouteName(currentState);
+              this.changeSafeAreaViewColor(this.currentScreen)
             }}
           />
 

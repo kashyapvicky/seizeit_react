@@ -165,7 +165,9 @@ class ReturnDetail extends Component {
               {
                 color: "#000000",
                 fontWeight: "normal",
-                fontSize: normalize(16)
+                fontSize: normalize(16),
+                lineHeight:24
+
               }
             ]}
           >
@@ -216,7 +218,8 @@ class ReturnDetail extends Component {
               {
                 color: "#000000",
                 fontWeight: "normal",
-                fontSize: normalize(16)
+                fontSize: normalize(16),
+                lineHeight:24
               }
             ]}
           >
@@ -244,7 +247,8 @@ class ReturnDetail extends Component {
               {
                 color: "#000000",
                 fontWeight: "normal",
-                fontSize: normalize(16)
+                fontSize: normalize(16),
+                lineHeight:28
               }
             ]}
           >
@@ -268,7 +272,7 @@ class ReturnDetail extends Component {
           ]}
           hideLeftIcon={true}
           title={"Return details"}
-          backPress={() => this.props.navigation.goBack()}
+          onRightPress={() => this.props.navigation.goBack()}
         />
         <ScrollView style={{flex:1}} showsVerticalScrollIndicator={false}>
         {this.renderOrdersItem()}

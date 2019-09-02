@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
+import * as Animatable from "react-native-animatable";
 
 //local imports
 import Button from "../../components/Button";
@@ -29,7 +30,9 @@ class Products extends Component {
     super(props);
     this.state = {
       visible2: false,
-      cartItems: []
+      products: ['1',1,2,2,2,2],
+      selectedStatus:'',
+      selectedIndex:-1
     };
   }
 
@@ -50,6 +53,80 @@ class Products extends Component {
       />
     );
   };
+
+  //Status Dropdown
+  openStatusDropDown = (index) =>{
+    this.setState({
+      selectedIndex:index == this.state.selectedIndex ? -1 :index,
+      
+    })
+  }
+  onSelectStatus = (statusI,parentItem) =>{
+    this.setState({
+      products : this.state.products.map((res) =>{
+            if(parentItem.id == res.id){
+                return {...res,status :statusI}
+            }else{
+              return {...res}
+            }
+      })
+    })
+  }
+  // Render drop dowm list
+  renderDropDownListItem = (parentItem) =>{
+    return (
+      <ScrollView
+        style={[
+          styles.shadow,
+          {
+            flex:0.1,
+            backgroundColor: "white",
+            paddingHorizontal: 16,
+            borderWidth: 0.5,
+            borderColor: "#96C50F",
+            zIndex: 100,
+            shadowOpacity: 0.1,
+            shadowRadius: 6,
+            height: 100,
+            marginBottom: 10,
+            marginTop:5
+          }
+        ]}
+      >
+        {[
+          "Active",
+          "Pending",
+          "Delivered",
+          "Return",
+          "Ongoing",
+        ].map((item, index) => {
+          return (
+            <TouchableOpacity onPress={() =>  this.onSelectStatus(item,parentItem)}>
+            <Animatable.View
+              animation="slideInDown"
+              //   duration={'500'} direction={'normal'}
+              style={[
+                {
+                  paddingVertical: 8
+                }
+              ]}
+            >
+              <Text
+                p
+                style={{ fontSize: normalize(16), color: "#96C50F" }}
+              >
+                {item}
+              </Text>
+            </Animatable.View>
+            </TouchableOpacity>
+          );
+        })
+        }
+        </ScrollView>
+    )
+  }
+
+  //Render Item
   renderItems = ({ item, index }) => {
     return (
       <TouchableOpacity
@@ -119,7 +196,8 @@ class Products extends Component {
               <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
                 $1,256
               </Text>
-              <View
+              <TouchableOpacity
+                onPress={() => this.openStatusDropDown(index)}
                 style={{
                   // flex: 0.5,
                   borderWidth: 1,
@@ -141,8 +219,19 @@ class Products extends Component {
                 >
                   ACTIVE <Image source={Images.drop} />
                 </Text>
-              </View>
+              </TouchableOpacity>
             </View>
+            {
+              index == this.state.selectedIndex ?
+              <View style={{flexDirection:'row'}}>
+              <View style={{flex:0.9}} />
+              {this.renderDropDownListItem(item)}
+  
+              </View> : null
+            }
+           
+           
+
           </View>
         </View>
       </TouchableOpacity>
@@ -159,7 +248,7 @@ class Products extends Component {
           // extraData={this.state}
           // pagingEnabled={true}
           showsVerticalScrollIndicator={false}
-          data={[1, 2, 3, 4, 5]}
+          data={this.state.products}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
           // refreshing={this.state.isRefreshing}

@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View,StyleSheet } from "react-native";
+import { ScrollView, View,StyleSheet,Image } from "react-native";
 
 import { LineChart } from "react-native-chart-kit";
 import Feather from "react-native-vector-icons/Feather";
@@ -12,6 +12,7 @@ import Text from "../../../components/Text";
 import { string } from "../../../utilities/languages/i18n";
 import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
+import { Images } from "../../../utilities/contsants";
 
 
 export default CustomerInfo = props => {
@@ -27,7 +28,7 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
   </Text>
 </View>
 <View style={{ flexDirection: "row",paddingBottom:16 }}>
-  <View style={{ marginTop: 10, flex: 0.8 }}>
+  <View style={{ marginTop: 10, flex: 0.9 }}>
     <Text
       style={[
         styles.profileLabel,
@@ -42,7 +43,8 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
         {
           color: "#000000",
           fontWeight: "normal",
-          fontSize: normalize(16)
+          fontSize: normalize(16),
+          lineHeight:28,
         }
       ]}
     >
@@ -76,17 +78,24 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
   </View>
   <View
     style={{
-      flex: 0.2,
+       flex: 0.135,
+      height:40,
+      width:40,
+      borderRadius:40/2,
+      marginLeft:16,
+      backgroundColor:'#96C50F',
       justifyContent: "center",
-      alignItems: "center"
+      alignItems: "center",
+      marginTop:25
     }}
   >
-    <Feather
+    <Image   source={Images.phoneCall} style={{alignSelf:'center'}}/>
+    {/* <Feather
       name={"phone-call"}
       size={28}
       color={"#96C50F"}
       style={{ alignSelf: "center" }}
-    />
+    /> */}
   </View>
 </View>
 </View>

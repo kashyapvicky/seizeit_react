@@ -75,6 +75,47 @@ class AddNewBankAccount extends Component {
       />
        <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
           <View  style={{ marginTop: 25,paddingHorizontal:16 }}>
+          <TextInputComponent
+                user={this.props.user}
+                label={'Select Bank name'}
+                inputMenthod={input => {
+                  this.accountNumberRef = input;
+                }}
+                onPress={() =>
+                  this.setState({
+                    openDropDownBank: !this.state.openDropDownBank
+                  })
+                }
+                selectItem={(item)=> this.setState({
+                  bankAccount:item,
+                  openDropDownBank:false
+                })}
+                editable={false}
+
+                openDropDown={this.state.openDropDownBank}
+                bankAccount
+                placeholder={'ICICI Bank'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                viewTextStyle={styles.viewcardTextStyle}
+                value={this.state.accountNumber}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.accountFieldFocus}
+                onFocus={() => this.setState({ accountFieldFocus: true })}
+                onBlur={() => this.setState({ accountFieldFocus: false })}
+                rightIcon={require('../../assets/images/ic_dd.png')}
+
+                // onChangeText={accountNumber => this.setState({ accountNumber })}
+                onSubmitEditing={event => {
+                  this.confirmAccountNumberRef.focus();
+                }}
+                textInputStyle={styles.textInputStyle}
+              />
+            <View style={{ height: 10 }} />
               <TextInputComponent
                 user={this.props.user}
                 label={'Enter Account Number'}

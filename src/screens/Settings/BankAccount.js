@@ -96,8 +96,8 @@ class BankAccount extends Component {
           title={"Bank Account"}
           backPress={() => this.props.navigation.goBack()}
         />
-         <View style={{paddingHorizontal:24,marginBottom: 8,marginTop:16}}>
-        <RenderLabel label={'Saved Address'}/>
+         <View style={{paddingHorizontal:24,marginBottom: 8,marginTop:24}}>
+        <RenderLabel label={'Saved Bank Account'}/>
         </View>
         {this.renderBankList()}
         <View style={{ flex: 0.2, paddingHorizontal: 16 }}>

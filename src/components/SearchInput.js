@@ -15,14 +15,16 @@ import { normalize } from "../utilities/helpers/normalizeText";
 import colors from "../utilities/config/colors";
 
 export default  SearchInput = (props) =>{
-    return <View style={[styles.searchView,{backgroundColor:props.backgroundColor ? props.backgroundColor :'rgba(150,197,15,0.05)'}]}>
+    return <TouchableOpacity 
+    onPress={()=> props.onPress ? props.onPress() : null}
+    style={[styles.searchView,props.style && props.style]}>
     <View style={{flex:0.1,alignSelf:'center',paddingLeft:16}}>
     <Icons  name={'ios-search'} size={22} color={'#96C50F'} />
 
     </View>
     <TouchableOpacity 
     activeOpacity={0.9}
-    style={{flex:0.9}} onPress={()=> props.onPress ? props.onPress() : null}>
+    style={{flex:0.9,justifyContent:'center'}} onPress={()=> props.onPress ? props.onPress() : null}>
     <TextInput
           style={{
             height: 40,
@@ -40,5 +42,5 @@ export default  SearchInput = (props) =>{
           // secureTextEntry={this.props.secureTextEntry?this.props.secureTextEntry:false}
         />
     </TouchableOpacity>
-</View>
+</TouchableOpacity>
 }

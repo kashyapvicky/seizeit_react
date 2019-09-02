@@ -72,7 +72,7 @@ export default class TextInputLabel extends Component {
                 fontSize: normalize(20),
                 textAlign: "left",
                 // fontWeight: "500",
-                color: isFocused ? "#000000" : "rgba(0,0,0,0.56)",
+                color: '#000000',
                 fontFamily: fonts.sourcesanspro,
 
              
@@ -98,18 +98,21 @@ export default class TextInputLabel extends Component {
                 alignItems: "flex-end"
               }}
             >
-              <Ionicons
+              {
+                <Image source={this.props.rightIcon} />
+              }
+              {/* <Ionicons
                 name={this.props.rightIcon}
                 size={18}
                 color={"#96C50F"}
-              />
+              /> */}
             </View>
           ) : null}
 
           {/* <View style={{ height: 20 }} /> */}
         </TouchableOpacity>
         {this.props.openDropDown ? <DropDownList 
-          
+            {...this.props}
          /> : null}
 
       </View>

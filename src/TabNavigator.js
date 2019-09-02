@@ -52,6 +52,17 @@ const getActiveRouteState = route => {
     };
   };
 //VendorTabNavigator
+ProductsNavigatorStack.navigationOptions = ({ navigation }) => {
+    const activeRoute = getActiveRouteState(navigation.state);
+    let tabBarVisible = false;
+    if (activeRoute.routeName == "Products") {
+        tabBarVisible = true
+    }
+    return {
+      tabBarVisible
+    };
+  };
+
 export const VendorTabNavigator = createBottomTabNavigator(
   {
       DashBoard: {
@@ -154,7 +165,7 @@ export const VendorTabNavigator = createBottomTabNavigator(
 );
 
 //CustorTabNavigator
-export const CustorTabNavigator = createBottomTabNavigator(
+export const CustomerTabNavigator = createBottomTabNavigator(
     {
         Home: {
             screen: HomeNavigatorStack,

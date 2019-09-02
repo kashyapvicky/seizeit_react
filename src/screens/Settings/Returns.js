@@ -99,7 +99,7 @@ class Returns extends Component {
               {/* <Ionicons  name={'dots-vertical'} size={28} color={'#D8D8D8'} /> */}
             </View>
             <View>
-              <Text p style={{ color: "#000000" }}>
+              <Text p style={{ color: "#000000",lineHeight:26 }}>
                 Dotted Red payjama bottom wear
               </Text>
             </View>

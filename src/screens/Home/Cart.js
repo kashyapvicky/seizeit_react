@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component,Fragment } from "react";
 import {
   View,
   SafeAreaView,
@@ -55,7 +55,7 @@ class Cart extends Component {
     return (
       <Button
         buttonStyle={{
-          height: 52,
+          height: 32,
           justifyContent: "center",
           alignItems: "center",
           //   borderRadius: 5,
@@ -100,6 +100,7 @@ class Cart extends Component {
 
   render() {
     return (
+
       <View style={{ flex: 1 }}>
         <Header
           isRightIcon={Images.close_g}
@@ -119,12 +120,13 @@ class Cart extends Component {
           style={{
             flex: 0.12,
             justifyContent: "flex-end",
+            paddingHorizontal:8,
             justifyContent: "center",
             flexDirection: "row",
             backgroundColor: colors.primary
           }}
         >
-          <View
+          {/* <View
             style={{
               flex: 0.4,
               justifyContent: "center",
@@ -141,12 +143,13 @@ class Cart extends Component {
             >
               $120
             </Text>
-          </View>
-          <View style={{ flex: 0.6, justifyContent: "center" }}>
+          </View> */}
+          <View style={{ flex: 1, justifyContent: "center" }}>
             {this.renderButton("Proceed to Checkout")}
           </View>
         </View>
-      </View>
+        </View>
+
     );
   }
 }

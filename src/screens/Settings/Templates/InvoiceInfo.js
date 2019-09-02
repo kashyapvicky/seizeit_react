@@ -77,7 +77,7 @@ export default (InvoiceInfo = props => {
       />
       <View
         style={{
-          marginTop: 10,
+          marginTop: 16,
           justifyContent: "space-between",
           flexDirection: "row"
         }}

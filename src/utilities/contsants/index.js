@@ -65,13 +65,14 @@ round:require('../../assets/images/ic_round_check_0.png'),
 notification:require('../../assets/images/ic_notification.png'),
 close_g :require('../../assets/images/ic_close_g.png'),
 cart:require('../../assets/images/ic_cart.png'),
-  addCart:require("../../assets/images/ic_add_cart.png"),
-  removeCart:require("../../assets/images/ic_remove_cart.png"),
-
+addCart:require("../../assets/images/ic_add_cart.png"),
+removeCart:require("../../assets/images/ic_remove_cart.png"),
  checkBoxTrue : require("../../assets/images/ic_check_box_1.png"),
  checkBoxFalse : require("../../assets/images/ic_check_box_0.png"),
  radioBoxTrue : require("../../assets/images/ic_radio_1.png"),
  radioBoxFalse : require("../../assets/images/ic_radio_0.png"),
- inputClose : require("../../assets/images/ic_close_s.png")
+ inputClose : require("../../assets/images/ic_close_s.png"),
+ phoneCall : require("../../assets/images/ic_phone.png"),
+ dropGreen : require("../../assets/images/ic_dd_g.png")
 
 };

@@ -55,7 +55,7 @@ class Earnings extends Component {
           borderRadius: 5,
           backgroundColor: transparent ? "transparent" : colors.primary
         }}
-        fontSize={14}
+        fontSize={normalize(13)}
         color={transparent ? colors.primary : "#FFFFFF"}
         onPress={() => this.pressButton(title)}
         title={title}
@@ -74,7 +74,7 @@ class Earnings extends Component {
             paddingVertical: 8,
             marginTop: 8,
             // borderBottomWidth:1,
-            paddingHorizontal: 16,
+            marginHorizontal: 16,
             shadowRadius: 0.1
           }
         ]}
@@ -143,9 +143,11 @@ class Earnings extends Component {
             {
               shadowRadius: 0.1,
               paddingHorizontal: 16,
-              paddingTop: 12,
+              paddingTop: 16,
               paddingBottom: 16,
-              backgroundColor: "#FFFFFF"
+              backgroundColor: "#FFFFFF",
+              justifyContent:'space-between',
+              flexDirection:'row'
             }
           ]}
         >
@@ -158,6 +160,9 @@ class Earnings extends Component {
           >
             Last 30 Days
           </Text>
+          <TouchableOpacity>
+            <Image source={Images.dropGreen} style={{alignSelf:'center'}} />
+          </TouchableOpacity>
         </View>
         <FlatList
           bounces={true}
