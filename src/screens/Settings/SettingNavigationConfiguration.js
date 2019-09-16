@@ -25,9 +25,11 @@ import AddNewCard from "./AddNewCard";
 import PaymentsCards from "./PaymentsCards";
 import Blogs from "./Blogs";
 import BlogDetail from "./BlogDetail";
+import {TransitionConfig} from "../../AppNavigationConfiguration";
+import EditProfile from "./EditProfile";
 
 export const SettingNavigator = createStackNavigator(
-    {
+      {
         Setting:Setting,
         Orders:Orders,
         Returns:Returns,
@@ -46,20 +48,14 @@ export const SettingNavigator = createStackNavigator(
         AddNewCard:AddNewCard,
         Blogs:Blogs,
         BlogDetail:BlogDetail,
-
-
+        EditProfile:EditProfile,
     },
   {
     initialRouteName: "Setting",
     headerMode: "none",
     mode: "card",
-    transitionConfig: () => ({
-      transitionSpec: {
-        duration: 300,
-        easing: Easing.out(Easing.poly(8)),
-        timing: Animated.timing
-      }
-    })
+    initialRouteParams: { transition: 'horizontal' },
+    transitionConfig: TransitionConfig
   }
 );
  

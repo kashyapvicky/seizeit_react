@@ -10,6 +10,7 @@ import {
   Platform
 } from "react-native";
 import CodeInput from "react-native-confirmation-code-input";
+import {postRequest} from '../../redux/request/Service'
 
 //Local imports
 import backButton from "../../assets/images/ic_back.png";
@@ -27,7 +28,7 @@ import { screenDimensions } from "../../utilities/contsants";
 
 //Utilities
 const initialState = {
-  email: "",
+  code: "",
   emailFieldFocus: false,
   loader: false,
   securePassword: true,
@@ -49,31 +50,58 @@ class Verify extends Component {
     // this.props.navigation.navigate('App')
     // console.log("this.props.navigation", this.props.navigation)
   };
-  ValidationRules = () => {
-    let { email } = this.state;
-    let { lang } = this.props.userCommon;
-    debugger;
-    return [
-      {
-        field: email.trim(),
-        name: string("email"),
-        rules: "required|email|no_space",
-        lang: lang
-      }
-    ];
-  };
 
   backToFirst = () => {
     this.props.navigation.navigate("Login");
-  };
-  onSubmitOtp = code => {
-   // this.props.navigation.navigate("Verify");
+   };
 
+  onSubmitOtp = () => {
+    let { netStatus } = this.props.screenProps.user;
+    let {setLoggedUserData} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    if(this.state.code.length < 6 ){
+       return toastRef.show('Please add code first')
+    }else {
+      if (!netStatus) {
+        return toastRef.show(string('NetAlert'))
+      }else{
+        let {params} = this.props.navigation.state
+        let data = {}
+        data['otp'] = this.state.code
+        data['user_id'] = params.user.user
+        postRequest('user/varifyOtp',data).then((res) => {
+          if(res){
+            setLoggedUserData(res.success)
+            if(res.success.user_type == 'customer'){
+              this.props.navigation.navigate('CustomerTabNavigator')
+             }else if(res.success.user_type == 'vendor'){
+              this.props.navigation.navigate('VendorTabNavigator')
+             }
+          }
+        }).catch((err) => {
+
+        })
+      }
+    }
   };
-  pressButton = () => {
-    this.props.navigation.navigate('TabNavigator')
-};
-  renderButton = (title, transparent, imageLeft, color, fontSize) => {
+pressButton = () => {
+  this.onSubmitOtp()
+ };
+
+ // Resend Otp Sent
+ resendOtp = () =>{
+     let {toastRef} = this.props.screenProps
+      let {params} = this.props.navigation.state
+      let data = {}
+      data['phone'] =params.mobile
+      data['user_id'] = params.user.user
+      postRequest('user/resendVerification',data).then((res) => {
+        if(res){
+          toastRef.show(res.success)
+        }
+      })
+ }
+renderButton = (title, transparent, imageLeft, color, fontSize) => {
     return (
       <CustomeButton
         buttonStyle={{
@@ -93,6 +121,8 @@ class Verify extends Component {
     );
   };
   render() {
+    let {params} = this.props.navigation.state
+
     return (
       <View style={{ flex: 1, paddingHorizontal: 24 }}>
         <ScrollView>
@@ -110,7 +140,7 @@ class Verify extends Component {
             <View style={{ marginVertical: 15 }}>
               <Text style={styles.forgetPassMessage}>
                 {string("enter6Digit")}
-                <Text style={{ fontWeight: "bold" }}> 566-615-2170</Text>
+                <Text style={{ fontWeight: "bold" }}> {`${params.mobile}`}</Text>
               </Text>
             </View>
             <View>
@@ -139,7 +169,7 @@ class Verify extends Component {
                 height:48
               }}
               containerStyle={{ flex: 0.3, justifyContent: "center" }}
-              onFulfill={code => this.onSubmitOtp(code)}
+              onFulfill={code => this.setState({code})}
             />
             </View>
             <View style={{ height: 20 }} />
@@ -159,11 +189,12 @@ class Verify extends Component {
                   {string("otpNotReceive")}
                   <Text
                     style={[styles.becomePartner, { color: colors.primary }]}
-                    onPress={() => alert("Resend")}
+                    onPress={() => this.resendOtp()}
                   >
                     {" "}
                     {string("resendOTP")}
                   </Text>
+                
                 </Text>
               </View>
             </View>

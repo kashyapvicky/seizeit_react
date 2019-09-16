@@ -10,8 +10,9 @@ import {
   Platform
 } from "react-native";
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
-
 import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
+import {postRequest} from '../../redux/request/Service'
+
 //Local imports
 import homelogo from "../../assets/images/Logo.png";
 import backButton from "../../assets/images/ic_back.png";
@@ -19,7 +20,6 @@ import TextInputComponent from "../../components/TextInput";
 import CustomeButton from "../../components/Button";
 import styles from "../../styles";
 import Text from '../../components/Text'
-
 import { string } from "../../utilities/languages/i18n";
 //Utilities
 import Validation from "../../utilities/validations";
@@ -28,7 +28,6 @@ import { normalize } from "../../utilities/helpers/normalizeText";
 import { Images } from "../../utilities/contsants";
 
 // import firebase from 'react-native-firebase';
-
 // const initialState =
 class Login extends Component {
   constructor(props) {
@@ -45,11 +44,11 @@ class Login extends Component {
     };
   }
   componentDidMount(){
-  this.configureGoogleSignIn();
-}
+   this.configureGoogleSignIn();
+  }
   ValidationRules = () => {
     let { email, password } = this.state;
-    let { lang } = this.props.userCommon;
+    let { lang } = this.props.screenProps.user;
     debugger;
     return [
       {
@@ -68,76 +67,48 @@ class Login extends Component {
   };
  
   loginByEmail = () => {
-    // if (!this.props.userCommon.netStatus) {
-    //     return this.props.actions.showOptionsAlert('Check your internet connection!')
-    // }
-    // else {
-    //     let { email, password } = this.state
-    //     let validation = Validation.validate(this.ValidationRules())
-    //     if (validation.length != 0) {
-    //         return ToastMessage(validation[0])
-    //     }
-    //     else {
-    //         this.setState({ visible: true })
-    //         let data = {}
-    //         data['email'] = email.trim()
-    //         data['password'] = password.trim()
-    //         // data['fcm_id'] = this.state.refreshToken
-    //         data['device_type'] = Platform.OS == 'ios' ? 'ios' : 'android'
-    //         data['device_id'] = DeviceInfo.getUniqueID()
-    //         // data['role_id'] = Math.floor(Math.random() * 11)
-    //         // return ToastMessage(JSON.stringify(data))
-    //         this.props.loginActions.totatCartItem(0)
-    //         this.props.loginActions.logInUser(data).then((res) => {
-    //             if (res && res.status == 200) {
-    //                 debugger
-    //                 if (res && res.data.status == 200) {
-    //                     this.setState({ visible: false })
-    //                     // ToastMessage(res.data.message)
-    //                     ToastMessage(string('loginsuccess'))
-    //                     this.props.loginActions.logInUserActionype(res.data)
-    //                     this.props.loginActions.totatCartItem(JSON.parse(res.data.cart))
-    //                     setTimeout(() => {
-    //                         this.props.navigation.navigate('App')
-    //                     }, 2000);
-    //                 }
-    //                 else if (res && res.data.status == 600) {
-    //                     this.setState({
-    //                         resendVerificationcode: true,
-    //                         visible: false
-    //                     })
-    //                     ToastMessage(res.data.message)
-    //                 }
-    //                 else {
-    //                     this.setState({ visible: false })
-    //                     ToastMessage(res.data.message)
-    //                 }
-    //             }
-    //             else {
-    //                 if (res.response && res.response.data && res.response.data.msg != '') {
-    //                     this.setState({ visible: false }, () => {
-    //                         ToastMessage(res.response.data.msg)
-    //                     })
-    //                 }
-    //                 else {
-    //                     debugger
-    //                     // alert("Something went wrong from server")
-    //                     this.setState({ visible: false })
-    //                 }
-    //             }
-    //         }).catch((err) => {
-    //             debugger
-    //             this.setState({ visible: false })
-    //             // alert("Something went wrong")
-    //         })
-    //     }
-    // }
+    let { netStatus,fcm_id } = this.props.screenProps.user;
+    let {setToastMessage,setLoggedUserData} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    let validation = Validation.validate(this.ValidationRules());
+    if (validation.length != 0) {
+        //this.setError(true,colors.danger)
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validation[0].message)
+    }
+    else {
+      if (!netStatus) {
+        return toastRef.show(string('NetAlert'))
+      }else{
+        let { email, password } = this.state
+        let data = {}
+        debugger
+        data['email'] = email.trim()
+        data['password'] = password.trim()
+        data['device_token'] = '1234'+Math.random(10)
+        data['device_type'] = Platform.OS == 'ios' ? 'ios' : 'android'
+        postRequest('user/login',data).then((res) => {
+          if(res.success){
+            setLoggedUserData(res.success)
+            if(res.success.user_type == 'customer'){
+              this.props.navigation.navigate('CustomerTabNavigator')
+             }else if(res.success.user_type == 'vendor'){
+              this.props.navigation.navigate('VendorTabNavigator')
+             }
+          }
+        }).catch((err) => {
+        })
+      }
+    }
   };
   configureGoogleSignIn =() =>{
     GoogleSignin.configure()
   }
+
+// Facebook Signin
   googleSignin = async () => {
-    debugger
+    alert ('In Progress')
+    return
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
@@ -155,124 +126,82 @@ class Login extends Component {
       }
     }
   };
+  // Facebook Login
   facebookLogin = async () => {
-       // this.setState({ visible: true })
-        LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
-            if (result.isCancelled) {
-                debugger
-                this.setState({ visible: false })
-               // ToastMessage(string('logincancelled'))
-                // console.log("Login cancelled");
-            } else {
-                debugger
-                AccessToken.getCurrentAccessToken().then((data) => {
-                    debugger
-                    const { accessToken } = data
-                    this.getUserInfofacebook(accessToken)
-                })
-            }
-        }).catch((error) => {
-            debugger
-            // ToastMessage(error)
-            console.log("Login fail with error: " + error);
-        })
-  
-  };
+    let { netStatus,fcm_id } = this.props.screenProps.user;
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    if(!netStatus){
+      return toastRef.show(string('NetAlert'))
+    }else{
+      setIndicator(true)
+      LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
+        if (result.isCancelled) {
+           setIndicator(false)
+           toastRef.show(string('logincancelled'))
+        } else {
+            AccessToken.getCurrentAccessToken().then((data) => {
+                const { accessToken } = data
+                this.getUserInfofacebook(accessToken)
+            })
+        }
+    }).catch((error) => {
+        debugger
+        toastRef.show(error)
+        // ToastMessage(error)
+        console.log("Login fail with error: " + error);
+    })
+    }
 
-  getUserInfofacebook = token => {
-    debugger
-    //     fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
-    //         .then((response) => response.json())
-    //         .then((json) => {
-    //             // this.setState({ visible: false })
-    //             console.log(json, "user data")
-    //             let user = {}
-    //             user.name = json.name
-    //             user.social_id = json.id
-    //             user.email = json.email
-    //             user.image = json.picture.data.url
-    //             user.device_id = DeviceInfo.getUniqueID()
-    //             user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
-    //             debugger
-    //             this.props.loginActions.totatCartItem(0)
-    //             this.props.loginActions.socialMediaLogin(user).then((res) => {
-    //                 debugger
-    //                 if (res && res.status == 200) {
-    //                     if (res && res.data.status == 200) {
-    //                         this.setState({ visible: false })
-    //                         // ToastMessage(res.data.message)
-    //                         ToastMessage(string('loginsuccess'))
-    //                         this.props.loginActions.logInUserActionype(res.data)
-    //                         this.props.loginActions.totatCartItem(JSON.parse(res.data.cart))
-    //                         setTimeout(() => {
-    //                             this.props.navigation.navigate('App')
-    //                         }, 2000);
-    //                     }
-    //                     else if (res && res.data.status == 600) {
-    //                         this.setState({
-    //                             resendVerificationcode: true,
-    //                             visible: false
-    //                         })
-    //                         ToastMessage(res.data.message)
-    //                     }
-    //                     else {
-    //                         this.setState({ visible: false })
-    //                         ToastMessage(res.data.message)
-    //                     }
-    //                 }
-    //                 else {
-    //                     this.setState({ visible: false })
-    //                     // ToastMessage("Something went wrong from server")
-    //                 }
-    //             }).catch((err) => {
-    //                 this.setState({ visible: false })
-    //                 // ToastMessage("Something went wrong from server")
-    //                 console.log(err)
-    //             })
-    //         })
-    //         .catch((err) => {
-    //             debugger
-    //             this.setState({ visible: false })
-    //             console.log('ERROR GETTING DATA FROM FACEBOOK')
-    //         })
-    // }
-    // recentVerifcationCode = () => {
-    //     if (this.state.email != "" || this.state.email != null) {
-    //         this.setState({ visible: true })
-    //         this.props.loginActions.recentVerifcationCode(this.state.email).then((res) => {
-    //             if (res && res.status == 200) {
-    //                 if (res && res.data && res.data.status == 200) {
-    //                     this.setState({
-    //                         visible: false
-    //                     }, () => {
-    //                         ToastMessage(res.data.message)
-    //                     })
-    //                 }
-    //                 else {
-    //                     this.setState({
-    //                         visible: false
-    //                     }, () => {
-    //                         ToastMessage(res.data.message)
-    //                     })
-    //                 }
-    //             }
-    //             else {
-    //                 this.setState({
-    //                     visible: false
-    //                 })
-    //             }
-    //         }).catch((err) => {
-    //             this.setState({ visible: false })
-    //             console.log(err)
-    //         })
-    //     }
-    //     else {
-    //         ToastMessage('Please enter the valid email')
-    //     }
   };
-  pressButton = () => {
+  // Save Social Request
+   postSocialRequest = (user) =>{
+    let {setToastMessage,setIndicator,setLoggedUserData} = this.props.screenProps.actions
+    postRequest('user/verifySocialAccount',user).then((res) => {
+      debugger
+      if(res.success){
+        setLoggedUserData(res.success)
+        if(res.success.user_type == 'customer'){
+          this.props.navigation.navigate('CustomerTabNavigator')
+         }else if(res.success.user_type == 'vendor'){
+          this.props.navigation.navigate('VendorTabNavigator')
+         }
+      }
+      setIndicator(false)
+    }).catch((err) => {
+    })
+   }
+  getUserInfofacebook = token => {
+    let {toastRef} = this.props.screenProps
+        fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
+            .then((response) => response.json())
+            .then((json) => {
+                let user = {}
+                user.name = json.name
+                user.provider_user_id = json.id
+                user.email = json.email
+                user.profile_pic = json.picture.data.url
+                user.device_id = 'tetttee'
+                user.provider = 'facebook'
+                
+                user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
+                user.device_token ='1234'+Math.random(10)
+                this.postSocialRequest()
+               })
+            .catch((err) => {
+              toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
+                console.log('ERROR GETTING DATA FROM FACEBOOK')
+            })
+    }
+  pressButton = (title) => {
     //this.googleSignin()
-     this.props.navigation.navigate('TabNavigator')
+    if(title == 'CONTINUE'){
+      this.loginByEmail()
+    }else if(title == 'CONTINUE USING FACEBOOK'){
+      this.facebookLogin()
+    }else if(title == 'CONTINUE USING GOOGLE'){
+      this.googleSignin()
+    }
   };
   renderButton = (title,transparent,imageLeft,color,fontSize) => {
     return (

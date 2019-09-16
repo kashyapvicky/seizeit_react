@@ -65,8 +65,30 @@
 			</dict>
 		</dict>
 	</dict>
+<key>NSAppleMusicUsageDescription</key>
+	<string>Play using while you are hiking</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app need to access your Bluetooth.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app need to access your calendar events</string>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) wants you to allow access your Camera for profile picture.</string>
+	<key>NSLocationAlwaysUsageDescription would like access to your location to get your current location as address</key>
+	<string>$(PRODUCT_NAME) </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>$(PRODUCT_NAME) would like to access  your current location in order to deliver the  order at the time of order delivery</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This $(PRODUCT_NAME) uses the microphone to record your speech and convert it to text.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>$(PRODUCT_NAME) does not request this permission or utilize this functionality but it is included in our info.plist since our app utilizes the react-native-permissions library, which references this permission in its code.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like to save photos to your photo gallery</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) wants you to allow access your Photo Gallary for profile picture.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>recognize speech</string>
+
+
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

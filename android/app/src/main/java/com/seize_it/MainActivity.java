@@ -1,4 +1,4 @@
-package com.seize_it;
+package com.seizeit;
 
 import com.facebook.react.ReactActivity;
 

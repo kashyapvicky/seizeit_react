@@ -128,8 +128,9 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.seize_it"
+        applicationId "com.seizeit"
         minSdkVersion rootProject.ext.minSdkVersion
+    vectorDrawables.useSupportLibrary = true
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
@@ -197,6 +198,7 @@ android {
 }
 
 dependencies {
+    implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-gesture-handler')
     implementation fileTree(dir: "libs", include: ["*.jar"])

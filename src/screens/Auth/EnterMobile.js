@@ -13,6 +13,7 @@ import {
 import backButton from "../../assets/images/ic_back.png";
 import TextInputComponent from "../../components/TextInput";
 import Text from '../../components/Text'
+import {postRequest} from '../../redux/request/Service'
 
 import CustomeButton from "../../components/Button";
 import styles from "../../styles";
@@ -46,19 +47,51 @@ class EnterMobile extends Component {
     // console.log("this.props.navigation", this.props.navigation)
   };
   ValidationRules = () => {
-    let { email } = this.state;
-    let { lang } = this.props.userCommon;
+    let { phoneNumber } = this.state;
+    let { lang } = this.props.screenProps.user;
     debugger;
     return [
       {
-        field: email.trim(),
-        name: string("email"),
-        rules: "required|email|no_space",
+        field: phoneNumber,
+        name: string("mobilenumber"),
+        rules: 'required|numeric|no_space|min:10|max:10',
         lang: lang
       }
     ];
   };
-  forgetPassword = () => {
+  addPhoneNumber = () => {
+    let { netStatus } = this.props.screenProps.user;
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    let validation = Validation.validate(this.ValidationRules());
+    if (validation.length != 0) {
+        //this.setError(true,colors.danger)
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validation[0].message)
+    }
+    else {
+      if (!netStatus) {
+        return toastRef.show(string('NetAlert'))
+      }else{
+        let { phoneNumber } = this.state
+        let {params} = this.props.navigation.state
+        let data = {}
+        data['mobile'] = phoneNumber
+        data['user_id'] = params.user.user
+        postRequest('user/varifyregister',data).then((res) => {
+          debugger
+          if(res){
+            this.props.navigation.navigate('Verify',{
+              user:params.user,
+              mobile:phoneNumber
+            })
+          }
+        }).catch((err) => {
+
+        })
+
+      }
+    }
     // if (!this.props.userCommon.netStatus) {
     //     return this.props.actions.showOptionsAlert('Check your internet connection!')
     // }
@@ -124,7 +157,7 @@ class EnterMobile extends Component {
     );
   };
   pressButton = () => {
-      this.props.navigation.navigate("Verify");
+    this.addPhoneNumber()
   };
   render() {
     return (
@@ -161,12 +194,12 @@ class EnterMobile extends Component {
                 autoCapitalize="none"
                 blurOnSubmit={false}
                 viewTextStyle={styles.viewTextStyle}
-                value={this.state.email}
+                value={this.state.phoneNumber}
                 underlineColorAndroid="transparent"
                 isFocused={this.state.emailFieldFocus}
                 onFocus={() => this.setState({ emailFieldFocus: true })}
                 onBlur={() => this.setState({ emailFieldFocus: false })}
-                onChangeText={email => this.setState({ email })}
+                onChangeText={phoneNumber => this.setState({ phoneNumber })}
                 onSubmitEditing={event => {
                   Keyboard.dismiss();
                 }}

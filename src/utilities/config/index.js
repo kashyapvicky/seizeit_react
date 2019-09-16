@@ -1,7 +1,7 @@
 'use-strict';
 module.exports = {
-  apiUrl : 'http://192.168.102.85:8100/api/v1/',
-  baseUrl:'http://192.168.102.85:8100',
+  apiUrl : 'http://192.168.100.153:8000/api/v1/',
+  baseUrl:'ttp://192.168.100.153:8000',
    headers :  {
     "Accept": "application/json",
     //"Content-Type": "multipart/form-data",

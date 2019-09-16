@@ -12,6 +12,7 @@ import Filter from "./Filter";
 import SearchProduct from "./SearchProduct";
 import ProductDetails from "../Products/ProductDetails";
 import ChangeLocation from "./ChangeLocation";
+import {TransitionConfig} from "../../AppNavigationConfiguration";
 
 import Cart from "./Cart";
 import Checkout from "./Checkout";
@@ -71,13 +72,8 @@ export const HomeNavigator = createStackNavigator({
   initialRouteName:'CardStack',
   headerMode:'none',
   mode:'modal',
-  transitionConfig: () => ({
-    transitionSpec: {
-      duration: 300,
-      easing: Easing.out(Easing.poly(8)),
-      timing: Animated.timing,
-    }
-  })
+  initialRouteParams: { transition: 'horizontal' },
+  transitionConfig: TransitionConfig,
 })
 
 

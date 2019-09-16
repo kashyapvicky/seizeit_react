@@ -1,4 +1,4 @@
-package com.seize_it;
+package com.seizeit;
 
 import android.app.Application;
 import android.util.Log;

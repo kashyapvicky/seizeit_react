@@ -1,9 +1,16 @@
 "use strict";
 import React from "react";
-
 import * as type from "../actionType";
 
 
+/********************** CHECK ACTION TYPE *****************************/
+
+export const checkInternet = (netStatus) => {
+  return {
+    type: type.CHECK_INTERNET_CONNECTION,
+    netStatus
+  }
+}
 // Set Logged User Data
 export const setLoggedUserType = payload => {
     return {
@@ -11,7 +18,6 @@ export const setLoggedUserType = payload => {
       payload
     };
   };
-
 // Set Logged User Data Dispatch
 export const setLoggedUserData =(user)=>{
     return (dispatch, getState) => {
@@ -22,8 +28,7 @@ export const setLoggedUserData =(user)=>{
             }
         })
     };
-  }
-
+}
 // Set Toast Message
 export const setToastMessage = (message, errorColor) => {
     debugger;
@@ -46,6 +51,7 @@ export const logOutUser = () => {
     type: type.LOGOUT_SUCCESS
   };
 };
+
 export const logOutUserSuccess = lang => {
   return (dispatch, getState) => {
     return new Promise((resolve, reject) => {
@@ -54,3 +60,4 @@ export const logOutUserSuccess = lang => {
     });
   };
 };
+

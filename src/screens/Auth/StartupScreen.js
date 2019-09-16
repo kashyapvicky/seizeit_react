@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 //local imports
+import {getRequest} from '../../redux/request/Service'
 import Button from '../../components/Button'
 import Text from '../../components/Text'
 import styles from '../../styles'
@@ -23,14 +24,23 @@ class StartScreen extends Component {
       visible2: false,
       cartItems: []
     }
+     this.props.screenProps.actions.setIndicator(false)
   }
+
   shopasguest = () => {
     this.props.navigation.navigate('App')
   }
-  pressButton = () => {
-    this.props.navigation.navigate('Login')
+
+  pressButton = (title) => {
+    if(title == 'Login'){
+      this.props.navigation.navigate('Login')
+    }else{
+      this.props.navigation.navigate('CustomerTabNavigator')
+
+    }
 
   }
+
   renderButton = (title,transparent) => {
     return (
       <Button
@@ -48,6 +58,7 @@ class StartScreen extends Component {
       />
     );
   };
+  
   render() {
     return (
         <View style={{ flex: 1 ,paddingHorizontal:16}}>
@@ -59,10 +70,14 @@ class StartScreen extends Component {
               <View style={{ height: 20 }} />
               {this.renderButton('Login','transparent')}
               <View style={{ height: 20 }} />
-              <View style={styles.dontHaveAnAccountView}>
+              <TouchableOpacity 
+               onPress={()=> this.props.navigation.navigate("Signup",{
+                role:'Vendor'
+              })}
+              style={styles.dontHaveAnAccountView}>
                 <Text style={styles.whatisPetPartner}>{string('BecomeAVendor')}
                 </Text>
-              </View>
+              </TouchableOpacity>
               <View style={{ height: 20 }} />
             </View>
         </View>

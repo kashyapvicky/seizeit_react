@@ -12,7 +12,6 @@ import styles from "./styles";
 import { AuthNavigatorStack } from "./screens/Auth/AuthNavigationConfiguration";
 import {VendorTabNavigator,CustomerTabNavigator} from './TabNavigator'
 
-const TabNavigator = CustomerTabNavigator
 const {
   forHorizontal,
   forVertical,
@@ -23,10 +22,12 @@ const {
 export const MainNavigator = createSwitchNavigator(
   {
     AuthNavigatorStack: { screen: AuthNavigatorStack },
-    TabNavigator:{screen:TabNavigator}
+    VendorTabNavigator:{screen:VendorTabNavigator},
+    CustomerTabNavigator:{screen:CustomerTabNavigator}
   },
+  //customercare@vodafoneidea.com
   {
-    initialRouteName: "TabNavigator",
+    initialRouteName: "AuthNavigatorStack",
     initialRouteParams: { transition: 'horizontal' },
     transitionConfig: TransitionConfig,
     mode: Platform.OS === "ios" ? "card" : "card",
@@ -41,7 +42,7 @@ const TransitionSpec = {
   easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
   timing: Animated.timing,
 };
-const TransitionConfig = () => {
+export const TransitionConfig = () => {
   return {
     transitionSpec: TransitionSpec,
     screenInterpolator: (sceneProps) => {

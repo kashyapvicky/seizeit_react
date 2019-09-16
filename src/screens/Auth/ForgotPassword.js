@@ -13,6 +13,7 @@ import {
 import backButton from "../../assets/images/ic_back.png";
 import TextInputComponent from "../../components/TextInput";
 import Text from '../../components/Text'
+import {postRequest} from '../../redux/request/Service'
 
 import CustomeButton from "../../components/Button";
 import styles from "../../styles";
@@ -47,7 +48,7 @@ class ForgetPassword extends Component {
   };
   ValidationRules = () => {
     let { email } = this.state;
-    let { lang } = this.props.userCommon;
+    let { lang } = this.props.screenProps.user;
     debugger;
     return [
       {
@@ -59,46 +60,27 @@ class ForgetPassword extends Component {
     ];
   };
   forgetPassword = () => {
-    // if (!this.props.userCommon.netStatus) {
-    //     return this.props.actions.showOptionsAlert('Check your internet connection!')
-    // }
-    // else {
-    //     let { email } = this.state
-    //     let validation = Validation.validate(this.ValidationRules())
-    //     if (validation.length != 0) {
-    //         return ToastMessage(validation[0])
-    //     }
-    //     else {
-    //         this.setState({ visible: true })
-    //         let data = {}
-    //         data['email'] = email.trim()
-    //         this.props.loginActions.forgetPassword(data).then((res) => {
-    //             if (res && res.status == 200) {
-    //                 debugger
-    //                 if (res.data.status == 200) {
-    //                     debugger
-    //                     ToastMessage(res.data.message)
-    //                     setTimeout(() => {
-    //                         this.props.navigation.navigate('Login')
-    //                     }, 2000);
-    //                 }
-    //                 else {
-    //                     debugger
-    //                     this.setState({ visible: false })
-    //                     ToastMessage(res.data.message)
-    //                     // this.props.navigation.navigate('App')
-    //                 }
-    //             }
-    //             else {
-    //                 this.setState({ visible: false })
-    //             }
-    //         }).catch((err) => {
-    //             debugger
-    //             this.setState({ visible: false })
-    //             // alert("Something went wrong")
-    //         })
-    //     }
-    // }
+    let { netStatus,fcm_id } = this.props.screenProps.user;
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    let validation = Validation.validate(this.ValidationRules());
+    if (validation.length != 0) {
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validation[0].message)
+    }
+    else {
+        let { email } = this.state;
+        let data ={}
+        data['email'] = email.trim()
+        postRequest('user/password-reset',data).then((res) => {
+          if(res){
+            toastRef.show(res.success)
+            this.props.navigation.navigate('Login')
+          }
+        }).catch((err) => {
+          debugger
+        })
+    }
   };
 
   backToFirst = () => {
@@ -123,6 +105,11 @@ class ForgetPassword extends Component {
       />
     );
   };
+  pressButton = (title) => {
+    if(title =='RESET PASSWORD'){
+      this.forgetPassword()
+    }
+  }
   render() {
     return (
       <View style={{ flex: 1,paddingHorizontal:24 }}>

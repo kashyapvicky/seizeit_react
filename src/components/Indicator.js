@@ -11,7 +11,6 @@ const Indicator = (props) => {
         <BarIndicator color={colors.primary}
         size={28}
         count={4}
-        
         />
     </View>
 

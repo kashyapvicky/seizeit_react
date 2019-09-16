@@ -1,13 +1,14 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import {TouchableOpacity, View } from "react-native";
 // import Toast, { DURATION } from "react-native-easy-toast";
+import Text from './Text'
 import * as Animatable from 'react-native-animatable';
 const ToastShow = props => {
   return (
     <Animatable.View 
     animation={'slideInDown'}
     duration={500}
-    style={[styles.container, { top: 20 }]} 
+    style={[styles.container, { top: 0 }]} 
       pointerEvents="none">
       <View
         style={[
@@ -20,7 +21,7 @@ const ToastShow = props => {
         {React.isValidElement(props.message) ? (
           props.message
         ) : (
-          <Text style={styles.text}>{props.message}</Text>
+          <Text p style={styles.text}>{props.message}</Text>
         )}
       </View>
     </Animatable.View>
@@ -44,7 +45,7 @@ content: {
 },
 text: {
     color: 'white',
-    fontSize:14
+    // fontSize:16
 }
 };
 export default ToastShow;

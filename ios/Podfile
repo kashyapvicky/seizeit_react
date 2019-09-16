@@ -33,6 +33,8 @@ target 'seize_it' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'seize_itTests' do
     inherit! :search_paths
     # Pods for testing

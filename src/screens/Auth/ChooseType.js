@@ -25,21 +25,21 @@ class ChooseType extends Component {
         {
           name: "Vendor",
           icon: Images.vendorIcon,
-          isSelect: true
+          isSelect: false
         },
         {
           name: "Customer",
           icon: Images.customerIcon,
-          isSelect: false
+          isSelect: true
         }
       ]
     };
   }
-  shopasguest = () => {
-    this.props.navigation.navigate("App");
-  };
-  pressButton = () => {
-    this.props.navigation.navigate("Signup");
+  
+  pressButton = (role) => {
+    this.props.navigation.navigate("Signup",{
+      role:role
+    });
   };
   renderButton = (title, transparent) => {
     return (
@@ -73,7 +73,7 @@ class ChooseType extends Component {
   renderType = () => {
     return this.state.chooseType.map(item => (
       <TouchableOpacity
-      onPress={() => this.pressButton()}
+      onPress={() => this.pressButton(item.name)}
         style={[
           styles.shadow,
           {

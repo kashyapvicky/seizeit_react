@@ -35,9 +35,19 @@ function getNavigationProps() {
 function getScreenPropsOfNavigation(){
   return _navigator.props.screenProps
 }
-function updateBadgeCount(count){
-   return getScreenPropsOfNavigation().updateNotiFicationBadge(count);
+function showToastMessage(message,color){
+  return _navigator.props.screenProps.toastRef.show(message,color)
 }
+function setIndicator(status){
+  return _navigator.props.screenProps.actions.setIndicator(status)
+}
+function checkNetStatus(status){
+  return _navigator.props.screenProps.user.netStatus
+}
+function getUser(){
+  return _navigator.props.screenProps.user.user ? _navigator.props.screenProps.user.user : null
+}
+
 // add other navigation functions that you need and export them
 export default {
   navigate,
@@ -46,5 +56,8 @@ export default {
   getNavigationProps,
   navigateToSubRoute,
   getScreenPropsOfNavigation,
-  updateBadgeCount
+  showToastMessage,
+  setIndicator,
+  checkNetStatus,
+  getUser
 };

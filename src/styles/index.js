@@ -176,6 +176,27 @@ lineHeight:24,
         flex: 1,
         backgroundColor: 'white'
     },
+    modalBottomContent: {
+        backgroundColor: "#FFFFFF",
+        // height: height / 640 * 195,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        borderRadius: 4,
+        borderTopRightRadius: 15,
+        borderTopLeftRadius: 15,
+        borderColor: "rgba(0, 0, 0, 0.1)"
+      },
+      bottomModal: {
+        backgroundColor: "rgba(52, 52, 52, 0.8)",
+        justifyContent: "flex-end",
+        margin: 0,
+        zIndex: 100,
+        shadowOffset: { width: 0, height: 1 },
+        shadowColor: "rgba(0,0,0,0.11)",
+        shadowOpacity: 1,
+        shadowRadius: 4,
+        elevation: 1
+      },
     buttonStyle: {
         marginHorizontal: 20,
 
@@ -1391,7 +1412,7 @@ lineHeight:24,
         justifyContent: 'space-between',
     },
     buttonText: {
-        color: colors.titleColor,
+        color: colors.black,
         fontSize: fontSizes.normal,
         fontWeight: 'bold',
         lineHeight: 24,

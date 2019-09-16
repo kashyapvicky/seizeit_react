@@ -10,9 +10,12 @@ import {
   Dimensions,
   StyleSheet,
   Animated,
+  Alert,
   RefreshControl
 } from "react-native";
 import FlipView from "react-native-flip-view";
+import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
+import {getRequest, postRequest} from '../../redux/request/Service'
 
 //local imports
 import Button from "../../components/Button";
@@ -37,9 +40,10 @@ class Settings extends Component {
         // iOS has negative initial scroll value because content inset...
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
-      username: "",
-      isbarShow:false,
-      mobileNumber: "",
+      name: "",
+      isbarShow: false,
+      phone: "",
+      phone_code:'',
       isFlipped: false,
       visible: false,
       userImage: require("../../assets/images/profile.jpeg"),
@@ -86,8 +90,46 @@ class Settings extends Component {
         }
       ]
     };
+    this.getUserInfo()
   }
-
+  // Check User Type
+  checkUserTypeAndShowMenu = () => {
+    let { user } = this.props.screenProps.user;
+    if (user && user.user_type == "customer") {
+      let toRemoveAccountM = ["Bank"];
+      let toRemoveOrderM = ["Order History"];
+      let accountArray = this.state.accountSettingArr;
+      let orderArray = this.state.ordersArray;
+      const accountSettingArr = accountArray.filter(function(x) {
+        return toRemoveAccountM.indexOf(x.name) < 0;
+      });
+      const ordersArray = orderArray.filter(function(x) {
+        return toRemoveOrderM.indexOf(x.name) < 0;
+      });
+      this.setState({
+        accountSettingArr,
+        ordersArray
+      });
+    } else if (user && user.user_type == "vendor") {
+      let toRemoveAccountM = ["Wishlist", "Addess", "Cards"];
+      let toRemoveOrderM = ["Order Placed"];
+      let accountArray = this.state.accountArray;
+      let orderArray = this.state.ordersArray;
+      const accountSettingArr = accountArray.filter(function(x) {
+        return toRemoveAccountM.indexOf(x.name) < 0;
+      });
+      const ordersArray = orderArray.filter(function(x) {
+        return toRemoveOrderM.indexOf(x.name) < 0;
+      });
+      this.setState({
+        accountSettingArr,
+        ordersArray
+      });
+    }
+  };
+  componentDidMount() {
+    this.checkUserTypeAndShowMenu();
+  }
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -106,7 +148,20 @@ class Settings extends Component {
     );
   };
 
-  closeModal = () => {};
+   // Open And Close modal 
+   openModal() {
+    Animated.timing(this.state.modalY, {
+        duration: 300,
+        toValue: 0
+    }).start();
+  }
+
+closeModal() {
+    Animated.timing(this.state.modalY, {
+        duration: 0,
+        toValue: -deviceHeight
+    }).start();
+}
   _flip = () => {
     this.setState({ isFlipped: !this.state.isFlipped });
   };
@@ -225,8 +280,9 @@ class Settings extends Component {
       </View>
     );
   };
+  // Handle Scrolll
   handleScroll = event => {
-    if(Platform.OS == 'ios'){
+    if (Platform.OS == "ios") {
       if (
         event.nativeEvent.contentOffset.y < 0 &&
         event.nativeEvent.contentOffset.y > -159
@@ -242,7 +298,7 @@ class Settings extends Component {
           isbarShow: false
         });
       }
-    }else if(Platform.OS == 'android'){
+    } else if (Platform.OS == "android") {
       if (
         event.nativeEvent.contentOffset.y > 55 &&
         event.nativeEvent.contentOffset.y > 70
@@ -259,7 +315,6 @@ class Settings extends Component {
         });
       }
     }
-   
   };
   _renderFront = () => {
     /************ Animation Type */
@@ -279,6 +334,7 @@ class Settings extends Component {
       extrapolate: "clamp"
     });
 
+    let { user } = this.props.screenProps.user;
     /**************** End Animation Type ************************/
     return (
       <View style={detailStyles.fill}>
@@ -286,11 +342,13 @@ class Settings extends Component {
           style={detailStyles.fill}
           scrollEventThrottle={1}
           onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }  ],
-            {listener:event => {
-              this.handleScroll(event);
-             }},
-            { useNativeDriver: true },
+            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+            {
+              listener: event => {
+                this.handleScroll(event);
+              }
+            },
+            { useNativeDriver: true }
           )}
           refreshControl={
             <RefreshControl
@@ -325,7 +383,7 @@ class Settings extends Component {
             onPress={() => this.closeModal()}
           >
             <View style={{ flex: 1, paddingTop: 16 }}>
-              {/* {this.renderModal()} */}
+              {this.renderModal()}
 
               {/* {this.props && this.props.user ? */}
               <View style={styles.profileView} activeOpacity={0.7}>
@@ -343,13 +401,13 @@ class Settings extends Component {
                     />
                   </TouchableOpacity>
                   <Text style={[styles.notificationTitle, { paddingTop: 5 }]}>
-                    {"Leo Harmon"}
+                    {`${this.state.name}`}
                   </Text>
                   <Text
                     style={[styles.mobileNumberText, { paddingTop: 5 }]}
-                  >{`+91 902-319-4565`}</Text>
+                  >{`${this.state.phone_code} ${this.state.phone}`}</Text>
                 </View>
-                <TouchableOpacity onPress={() => null}>
+                <TouchableOpacity onPress={() => this.rightButton()}>
                   <View>
                     <Image source={Images.setting} />
                   </View>
@@ -365,59 +423,178 @@ class Settings extends Component {
             </View>
           </TouchableOpacity>
         </Animated.View>
-
-        {this.state.isbarShow ? 
-        <Animated.View
-          style={[
-            detailStyles.bar,
-            {
-              opacity: titleOpacity,
-              paddingHorizontal: 24,
-              paddingVertical: 16
-            }
-          ]}
-        >
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <TouchableOpacity onPress={() => null} style={styles.shadow}>
-              <Image
-                source={this.state.userImage}
-                style={{
-                  height: 48,
-                  width: 48,
-                  borderRadius: 48 / 2,
-                  borderColor: "#FFFFFF",
-                  borderWidth: 4
-                }}
-              />
+        {this.state.isbarShow ? (
+          <Animated.View
+            style={[
+              detailStyles.bar,
+              {
+                opacity: titleOpacity,
+                paddingHorizontal: 24,
+                paddingVertical: 16
+              }
+            ]}
+          >
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <TouchableOpacity onPress={() => null} style={styles.shadow}>
+                <Image
+                  source={this.state.userImage}
+                  style={{
+                    height: 48,
+                    width: 48,
+                    borderRadius: 48 / 2,
+                    borderColor: "#FFFFFF",
+                    borderWidth: 4
+                  }}
+                />
+              </TouchableOpacity>
+              <View style={{ paddingLeft: 16 }}>
+                <Text
+                  style={[
+                    styles.notificationTitle,
+                    { paddingTop: 5, fontSize: normalize(14) }
+                  ]}
+                >
+          {`${this.state.name}`} 
+           </Text>
+                <Text
+                  style={[
+                    styles.mobileNumberText,
+                    { paddingTop: 5, fontSize: normalize(14) }
+                  ]}
+                  >{`${this.state.phone_code} ${this.state.phone}`}</Text>
+              </View>
+            </View>
+            <TouchableOpacity disabled onPress={() =>null}>
+              {/* <View>
+                <Image source={Images.setting} />
+              </View> */}
             </TouchableOpacity>
-            <View style={{ paddingLeft: 16 }}>
-              <Text
-                style={[
-                  styles.notificationTitle,
-                  { paddingTop: 5, fontSize: normalize(14) }
-                ]}
-              >
-                {"Leo Harmon"}
-              </Text>
-              <Text
-                style={[
-                  styles.mobileNumberText,
-                  { paddingTop: 5, fontSize: normalize(14) }
-                ]}
-              >{`+91 902-319-4565`}</Text>
-            </View>
-          </View>
-          <TouchableOpacity onPress={() => null}>
-            <View>
-              <Image source={Images.setting} />
-            </View>
-          </TouchableOpacity>
-        </Animated.View>
-        :null
-        }
+          </Animated.View>
+        ) : null}
       </View>
     );
   };
+/******************** Modal Function  **************/
+  rightButton = () => {
+    this.openModal()
+}
+logout = async () => {
+  let {logOutUserSuccess} = this.props.screenProps.actions
+  getRequest('user/logout').then((res) => {
+    if(res.success){
+      if(this.state.facebookuser) {
+             LoginManager.logOut()
+       }     
+       logOutUserSuccess(res.success)
+       setTimeout(() =>{
+        this.props.navigation.navigate('AuthNavigatorStack')
+       },100)
+    }
+    setIndicator(false)
+  }).catch((err) => {
+  })
+
+}
+logOutSuccess = () => {
+  Alert.alert(
+      '',
+      string('surelogout'),
+      [
+          { text: string('cancel'), onPress: () => this.closeModal() },
+          {
+
+              text: string('OK'),
+              onPress: () => {
+                  this.logout()
+              },
+              // style:'cancel'
+          }
+      ],
+      { cancelable: false }
+  )
+}
+editprofile = () => {
+  this.closeModal()
+  this.props.navigation.navigate('EditProfile', { 
+    getUserInfo: () => this.getUserInfo() })
+}
+
+// Get User Info
+getUserInfo = () =>{
+  postRequest('user/user-details',{}).then((res) => {
+          if (res) {
+                  this.setState({
+                      name:`${res.success.first_name} ${res.success.last_name}` ,
+                      phone_code:res.success.phone_code,
+                      phone:res.success.phone
+                  })
+          }
+    })
+}
+
+  renderModal() {
+    return (
+        <Animated.View style={[styles.modal,styles.shadow,
+        { transform: [{ translateY: this.state.modalY }] }, {
+            // height: height / 640 * 200,
+            zIndex: 2000,
+           backgroundColor: '#FAFAFA',
+            shadowRadius:0.2,
+            shadowOpacity:0.1,
+        }]}>
+          <TouchableOpacity onPress={() => this.editprofile()}
+                underlayColor="green" style={[styles.button, {
+                    paddingVertical:8,
+                    paddingLeft:8,
+                    borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth
+                }]}>
+                <View>
+                    <Text style={styles.buttonText}>{string('edit')}</Text>
+                </View>
+          </TouchableOpacity>
+            {/* {
+                this.state.facebookuser == null ?
+
+
+                    <TouchableOpacity
+                        onPress={() => this.changePassword()}
+                        underlayColor="green" style={[styles.button, {
+                            borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth
+                        }]}>
+                        <View>
+                            <Text style={styles.buttonText}>{string('changepassword')}</Text>
+                        </View>
+
+                    </TouchableOpacity>
+                    :
+                    null
+            } */}
+
+            {/* {
+                this.props.user && this.props.user.role_id == 2 ?
+                    null
+                    :
+                    <TouchableOpacity
+                        onPress={() => this.referForPetPartner()}
+                        underlayColor="green" style={[styles.button, {
+                            borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth
+                        }]}>
+                        <View>
+                            <Text style={styles.buttonText}>{string('refer')}</Text>
+                        </View>
+
+                    </TouchableOpacity>
+            } */}
+            <TouchableOpacity
+                onPress={() => this.logOutSuccess()} underlayColor="green"
+                 style={[styles.button,{ paddingLeft:8,}]}>
+                <Text style={styles.buttonText}>{string('logout')}</Text>
+            </TouchableOpacity>
+        </Animated.View>
+
+    )
+}
+/******************** Modal Function  **************/
 
   render() {
     return (

@@ -18,14 +18,14 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
       style={[
         {
           backgroundColor: "transparent",
-          paddingVertical: 8,
+          paddingVertical: 16,
           flex: 0.5,
           width:screenDimensions.width/2-24,
           marginRight: (index + 1) % 2 != 0 ? 16 : 0
         }
       ]}
     >
-    <View style={{position:'absolute',right:8,top:12,zIndex:100}}>
+    <View style={{position:'absolute',right:8,top:20,zIndex:100}}>
           <Image source={require('../../../assets/images/ic_favourite_0.png')} />
     </View>
     <View style={{ paddingBottom: 6 }}>
@@ -94,7 +94,6 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
           </View>
         </View>
       </View>
-      <View style={{ height: 16 }} />
 
     </TouchableOpacity>
   );

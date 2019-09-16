@@ -9,6 +9,8 @@ import {
   ScrollView,
   Platform
 } from "react-native";
+import DeviceInfo from 'react-native-device-info';
+import {postRequest} from '../../redux/request/Service'
 
 import { Images } from "../../utilities/contsants";
 import backButton from "../../assets/images/ic_back.png";
@@ -24,10 +26,6 @@ import colors from "../../utilities/config/colors";
 import { normalize } from "../../utilities/helpers/normalizeText";
 
 //Utilities
-// import Validation from '../utilities/validations'
-// import { ToastMessage } from '../components/Toast'
-
-// import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
 const initialState = {
   firstName: "",
   lastName: "",
@@ -51,8 +49,8 @@ class Signup extends Component {
   }
   //Form validations
   ValidationRules = () => {
-    let { firstName, lastName, partnerId, email, password } = this.state;
-    let { lang } = this.props.userCommon;
+    let { firstName, lastName, email, password } = this.state;
+    let { lang } = this.props.screenProps.user;
     debugger;
     return [
       {
@@ -91,35 +89,109 @@ class Signup extends Component {
   };
 
   //Signup process
-  Signup = () => {};
-  facebookLogin = async () => {
-    // if (!this.props.userCommon.netStatus) {
-    //     return this.props.showOptionsAlert('Check your internet connection!')
-    // }
-    // else {
-    //     this.setState({ visible: true })
-    //     LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
-    //         if (result.isCancelled) {
-    //             debugger
-    //             this.setState({ visible: false })
-    //             ToastMessage(string('logincancelled'))
-    //             // console.log("Login cancelled");
-    //         } else {
-    //             debugger
-    //             AccessToken.getCurrentAccessToken().then((data) => {
-    //                 debugger
-    //                 const { accessToken } = data
-    //                 this.getUserInfofacebook(accessToken)
-    //             })
-    //         }
-    //     }).catch((error) => {
-    //         debugger
-    //         ToastMessage(error)
-    //         console.log("Login fail with error: " + error);
-    //     })
-    // }
-  };
+  signUpRequest = () => {
+    let { netStatus,fcm_id } = this.props.screenProps.user;
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    let validation = Validation.validate(this.ValidationRules());
+    if (validation.length != 0) {
+        //this.setError(true,colors.danger)
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validation[0].message)
+    }
+    else {
+      if (!netStatus) {
+        return toastRef.show(string('NetAlert'))
+      }else{
+        let { firstName, lastName, email, password } = this.state;
+        let {params} = this.props.navigation.state
+        let data = {}
+        data['email'] = email.trim()
+        data['firstname'] = firstName.trim()
+        data['lastname'] = lastName.trim()
+        data['type'] = params.role == 'Customer' ? 1 :2  
+        data['password'] = password.trim()
+        data['device_token'] = '1234'+Math.random(10)
+        postRequest('user/register',data).then((res) => {
+          if(res){
+            this.props.navigation.navigate('EnterMobile',{
+                user:res
+            })
+          }
+        }).catch((err) => {
+          debugger
+        })
+  
+      }
+    }
 
+  };
+  googleSignin = async () => {
+    alert ('In Progress') 
+  }
+  facebookLogin = async () => {
+    let { netStatus,fcm_id } = this.props.screenProps.user;
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    if(!netStatus){
+      return toastRef.show(string('NetAlert'))
+    }else{
+      setIndicator(true)
+      LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
+        if (result.isCancelled) {
+           setIndicator(false)
+           toastRef.show(string('logincancelled'))
+        } else {
+            AccessToken.getCurrentAccessToken().then((data) => {
+                const { accessToken } = data
+                this.getUserInfofacebook(accessToken)
+            })
+        }
+    }).catch((error) => {
+        debugger
+        toastRef.show(error)
+        // ToastMessage(error)
+        console.log("Login fail with error: " + error);
+    })
+    }
+
+  };
+    // Save Social Request
+    postSocialRequest = (user) =>{
+      let {setToastMessage,setIndicator,setLoggedUserData} = this.props.screenProps.actions
+      postRequest('user/verifySocialAccount',user).then((res) => {
+        debugger
+        if(res.success){
+          setLoggedUserData(res.success)
+          this.props.navigation.navigate('TabNavigator')
+        }
+        setIndicator(false)
+      }).catch((err) => {
+      })
+     }
+  getUserInfofacebook = token => {
+    let {toastRef} = this.props.screenProps
+        fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
+            .then((response) => response.json())
+            .then((json) => {
+                let user = {}
+                let {params} = this.props.navigation.state
+                user.name = json.name
+                user.provider_user_id = json.id
+                user.email = json.email
+                user.profile_pic = json.picture.data.url
+                user.device_id = 'tetttee'
+                user.provider = 'facebook'
+                data['type'] = params.role == 'Customer' ? 1 :2  
+                user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
+                user.device_token ='1234'+Math.random(10)
+                this.postSocialRequest()
+               })
+            .catch((err) => {
+              toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
+                console.log('ERROR GETTING DATA FROM FACEBOOK')
+            })
+    }
   getUserInfofacebook = token => {
     // debugger
     // fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
@@ -179,7 +251,12 @@ class Signup extends Component {
   };
   pressButton = (title) =>{
      if(title == 'CONTINUE'){
-      this.props.navigation.navigate('EnterMobile')
+       this.signUpRequest()
+       //this.props.navigation.navigate('EnterMobile')
+    }else if(title == 'CONTINUE USING FACEBOOK'){
+      this.facebookLogin()
+    }else if(title == 'CONTINUE USING GOOGLE'){
+      this.googleSignin()
     }
   }
   renderButton = (title, transparent, imageLeft, color, fontSize) => {
@@ -210,7 +287,7 @@ class Signup extends Component {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <View style={{ paddingTop: 40 }}>
+              <View style={{ paddingTop: 20 }}>
                 <Image source={backButton} />
               </View>
             </TouchableOpacity>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "103949650198",
+    "firebase_url": "https://seizet-react-it.firebaseio.com",
+    "project_id": "seizet-react-it",
+    "storage_bucket": "seizet-react-it.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103949650198:android:4c5684cb6819a9ad",
+        "android_client_info": {
+          "package_name": "com.seizeit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103949650198-s8295o45989jjuhi466ptl30jpqlm9b6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6EVde_Loun2QO0fMGRsw2SSGP6BxuW4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "103949650198-s8295o45989jjuhi466ptl30jpqlm9b6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

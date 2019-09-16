@@ -196,7 +196,7 @@ class Home extends Component {
           isbarShow: true
         });
       } else if (
-        event.nativeEvent.contentOffset.y < -160 &&
+        event.nativeEvent.contentOffset.y < -159 &&
         event.nativeEvent.contentOffset.y > -200
       ) {
         this.setState({
@@ -303,7 +303,11 @@ class Home extends Component {
             {this.renderCategory()}
           </Animated.View>
         </Animated.View>
-        {this.state.isbarShow ? (
+        {this.state.isbarShow
+        
+        
+        
+         ? (
           <Animated.View
             style={[
               detailStyles.bar,

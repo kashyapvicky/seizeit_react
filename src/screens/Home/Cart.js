@@ -47,6 +47,7 @@ class Cart extends Component {
         }
       ]
     };
+    console.log(this.props.navigation.state,"state")
   }
   pressButton = () => {
     this.props.navigation.navigate("Checkout");
