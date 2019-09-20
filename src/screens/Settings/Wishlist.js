@@ -21,6 +21,7 @@ import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import Listitems from "../Home/Templates/ListItem";
+import {ProductPlaceholder} from '../Home/Templates/PlaceHolderProduct'
 
 class Wishlist extends Component {
   constructor(props) {
@@ -29,6 +30,13 @@ class Wishlist extends Component {
       visible2: false,
       cartItems: []
     };
+      // Placeholder Product 
+      this.loaderComponent = new Promise(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, 1000);
+      });
+   
   }
   renderButton = (title, transparent) => {
     return (
@@ -63,9 +71,13 @@ class Wishlist extends Component {
           bounces={true}
           numColumns={2}
           showsVerticalScrollIndicator={false}
-          data={[1, 2, 3, 4, 5, 6]}
+          data={[]}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
+          ListEmptyComponent={<ProductPlaceholder  
+            array={[1, 2, 3, 4,5,6]}
+            loader={this.loaderComponent}
+          />}
         />
       </View>
     );

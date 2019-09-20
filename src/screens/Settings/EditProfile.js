@@ -76,7 +76,8 @@ class EditProfile extends Component {
             if (res) {
                     this.setState({
                         firstName:res.success.first_name,
-                        lastName:res.success.last_name
+                        lastName:res.success.last_name,
+                        avatarSource:res.success.pic
                     })
             }
       })
@@ -322,7 +323,7 @@ renderProfileView = () => {
     openImageLibrary={() => this.openImageLibrary()}
      launchCamera={()=> this.launchCamera()}
      closeModal ={() => this.closeModal()}
-            isModalVisible={this.state.isModalVisible}
+        isModalVisible={this.state.isModalVisible}
        />
   }
   render() {
@@ -402,7 +403,7 @@ renderProfileView = () => {
             onBlur={() => this.setState({ lastNameFieldFocus: false })}
             onChangeText={lastName => this.setState({ lastName })}
             onSubmitEditing={event => {
-              this.emailField.focus();
+              Keyboard.dismiss()
             }}
           />
         </ScrollView>
@@ -410,7 +411,7 @@ renderProfileView = () => {
           {this.renderButton("UPDATE", false, false, colors.primary, 16)}
           <View style={{ height: 30 }} />
         </View>
-        {this.renderBottomModal()}
+        {this.state.isModalVisible ? this.renderBottomModal() : null}
 
       </View>
     );

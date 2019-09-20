@@ -107,24 +107,52 @@ class Login extends Component {
 
 // Facebook Signin
   googleSignin = async () => {
-    alert ('In Progress')
-    return
+    debugger
+    let {toastRef} = this.props.screenProps
+    let { netStatus } = this.props.screenProps.user;
+    if(!netStatus){
+      return toastRef.show(string('NetAlert'))
+    }else{
     try {
       await GoogleSignin.hasPlayServices();
+      debugger
       const userInfo = await GoogleSignin.signIn();
       debugger
-      this.setState({ userInfo });
+      let json = userInfo.user
+      if(json){
+        let user = {}
+        user.name = json.name
+        user.provider_user_id = json.id
+        user.email = json.email
+        user.profile_pic = json.photo
+        user.device_id = 'tetttee'
+        user.provider = 'google'
+        user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
+        user.device_token ='1234'+Math.random(10)
+        this.postSocialRequest(user)
+      }else{
+        toastRef.show('User info not getting')
+      }
+      // this.setState({ userInfo });
     } catch (error) {
+      debugger
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        toastRef.show('You user cancels the sign in flow')
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
+        toastRef.show('Trying to invoke another sign in flow (or any of the other operations) when previous one has not yet finished',colors.danger)
         // operation (f.e. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+         toastRef.show('Play services are not available or outdated,')
         // play services not available or outdated
       } else {
+        toastRef.show('Error from api')
+
+        debugger
         // some other error happened
       }
     }
+  }
   };
   // Facebook Login
   facebookLogin = async () => {
@@ -159,11 +187,11 @@ class Login extends Component {
     let {setToastMessage,setIndicator,setLoggedUserData} = this.props.screenProps.actions
     postRequest('user/verifySocialAccount',user).then((res) => {
       debugger
-      if(res.success){
-        setLoggedUserData(res.success)
-        if(res.success.user_type == 'customer'){
+      if(res.statuscode == 200){
+        setLoggedUserData(res.result.user)
+        if(res.result.user.user_type == 'customer'){
           this.props.navigation.navigate('CustomerTabNavigator')
-         }else if(res.success.user_type == 'vendor'){
+         }else if(res.result.user.user_type == 'vendor'){
           this.props.navigation.navigate('VendorTabNavigator')
          }
       }
@@ -183,10 +211,9 @@ class Login extends Component {
                 user.profile_pic = json.picture.data.url
                 user.device_id = 'tetttee'
                 user.provider = 'facebook'
-                
                 user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
                 user.device_token ='1234'+Math.random(10)
-                this.postSocialRequest()
+                this.postSocialRequest(user)
                })
             .catch((err) => {
               toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
@@ -200,6 +227,7 @@ class Login extends Component {
     }else if(title == 'CONTINUE USING FACEBOOK'){
       this.facebookLogin()
     }else if(title == 'CONTINUE USING GOOGLE'){
+      debugger
       this.googleSignin()
     }
   };

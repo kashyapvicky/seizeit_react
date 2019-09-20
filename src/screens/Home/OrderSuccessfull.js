@@ -47,6 +47,7 @@ export default class OrderSuccessFull extends Component {
   constructor(props) {
     super(props);
     this.state = initialState;
+
   }
 
   componentDidMount() {

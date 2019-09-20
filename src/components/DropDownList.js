@@ -26,20 +26,7 @@ export default DropDownList = props => {
         }
       ]}
     >
-      {[
-        "Shirt",
-        "T-Shirt",
-        "Shoes",
-        "Shirt",
-        "T-Shirt",
-        "Shoes",
-        "Shirt",
-        "T-Shirt",
-        "Shoes",
-        "Shirt",
-        "T-Shirt",
-        "Shoes"
-      ].map((item, index) => {
+      {props.lists.map((item, index) => {
         return (
           <TouchableOpacity onPress={() =>  props.selectItem && props.selectItem(item)}>
 
@@ -56,7 +43,7 @@ export default DropDownList = props => {
               p
               style={{ fontSize: normalize(16), color: "rgba(0,0,0,0.56)" }}
             >
-              {item}
+              {item.name}
             </Text>
           </Animatable.View>
           </TouchableOpacity>

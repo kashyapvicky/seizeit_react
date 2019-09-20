@@ -16,10 +16,13 @@ import {
 import FlipView from "react-native-flip-view";
 import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
 import {getRequest, postRequest} from '../../redux/request/Service'
+import { GoogleSignin } from 'react-native-google-signin';
 
 //local imports
 import Button from "../../components/Button";
 import Text from "../../components/Text";
+import {GuestLoginView} from "../../components/GuestLoginView";
+
 import styles from "../../styles";
 import { string } from "../../utilities/languages/i18n";
 import colors from "../../utilities/config/colors";
@@ -46,7 +49,7 @@ class Settings extends Component {
       phone_code:'',
       isFlipped: false,
       visible: false,
-      userImage: require("../../assets/images/profile.jpeg"),
+      userImage: null,
       modalY: new Animated.Value(-deviceHeight),
       facebookuser: null,
       isModalVisible: true,
@@ -113,7 +116,7 @@ class Settings extends Component {
     } else if (user && user.user_type == "vendor") {
       let toRemoveAccountM = ["Wishlist", "Addess", "Cards"];
       let toRemoveOrderM = ["Order Placed"];
-      let accountArray = this.state.accountArray;
+      let accountArray = this.state.accountSettingArr;
       let orderArray = this.state.ordersArray;
       const accountSettingArr = accountArray.filter(function(x) {
         return toRemoveAccountM.indexOf(x.name) < 0;
@@ -197,8 +200,8 @@ closeModal() {
                       this.state.accountSettingArr.length - 1 != i ? 20 : 0
                   }
                 ]}
-                onPress={() =>
-                  this.props.navigation.navigate(account.routeName)
+                onPress={() =>null
+                  // this.props.navigation.navigate(account.routeName)
                 }
               >
                 <View style={[styles.contactUsView, { borderBottomWidth: 0 }]}>
@@ -384,13 +387,12 @@ closeModal() {
           >
             <View style={{ flex: 1, paddingTop: 16 }}>
               {this.renderModal()}
-
               {/* {this.props && this.props.user ? */}
               <View style={styles.profileView} activeOpacity={0.7}>
                 <View>
                   <TouchableOpacity onPress={() => null} style={styles.shadow}>
                     <Image
-                      source={this.state.userImage}
+                      source={{uri:this.state.userImage}}
                       style={{
                         height: 80,
                         width: 80,
@@ -402,10 +404,14 @@ closeModal() {
                   </TouchableOpacity>
                   <Text style={[styles.notificationTitle, { paddingTop: 5 }]}>
                     {`${this.state.name}`}
-                  </Text>
-                  <Text
+                   </Text>
+                  {
+                    this.state.phone ? 
+                    <Text
                     style={[styles.mobileNumberText, { paddingTop: 5 }]}
-                  >{`${this.state.phone_code} ${this.state.phone}`}</Text>
+                  >{`${this.state.phone_code} ${this.state.phone}`}</Text>:null
+                  }
+                
                 </View>
                 <TouchableOpacity onPress={() => this.rightButton()}>
                   <View>
@@ -437,7 +443,7 @@ closeModal() {
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
               <TouchableOpacity onPress={() => null} style={styles.shadow}>
                 <Image
-                  source={this.state.userImage}
+                  source={{uri:this.state.userImage}}
                   style={{
                     height: 48,
                     width: 48,
@@ -456,12 +462,15 @@ closeModal() {
                 >
           {`${this.state.name}`} 
            </Text>
+           {
+                    this.state.phone ?
                 <Text
                   style={[
                     styles.mobileNumberText,
                     { paddingTop: 5, fontSize: normalize(14) }
                   ]}
                   >{`${this.state.phone_code} ${this.state.phone}`}</Text>
+                  :null}
               </View>
             </View>
             <TouchableOpacity disabled onPress={() =>null}>
@@ -480,11 +489,15 @@ closeModal() {
 }
 logout = async () => {
   let {logOutUserSuccess} = this.props.screenProps.actions
-  getRequest('user/logout').then((res) => {
+  getRequest('user/logout').then(async (res) => {
     if(res.success){
-      if(this.state.facebookuser) {
-             LoginManager.logOut()
-       }     
+      let {user} = this.props.screenProps.user
+      if(user && user.login_from && user.login_from == 'facebook') {
+        await  LoginManager.logOut()
+      }else if(user && user.login_from && user.login_from == 'google'){
+        await GoogleSignin.revokeAccess();
+        await GoogleSignin.signOut();
+      }     
        logOutUserSuccess(res.success)
        setTimeout(() =>{
         this.props.navigation.navigate('AuthNavigatorStack')
@@ -522,16 +535,17 @@ editprofile = () => {
 // Get User Info
 getUserInfo = () =>{
   postRequest('user/user-details',{}).then((res) => {
-          if (res) {
+          if (res && res.success) {
                   this.setState({
-                      name:`${res.success.first_name} ${res.success.last_name}` ,
+                      name:`${res.success.first_name ? res.success.first_name :res.success.email} ${res.success.first_name ? res.success.last_name : ''}` ,
                       phone_code:res.success.phone_code,
-                      phone:res.success.phone
+                      phone:res.success.phone,
+                      userImage:res.success.pic
                   })
           }
     })
 }
-
+  
   renderModal() {
     return (
         <Animated.View style={[styles.modal,styles.shadow,
@@ -595,24 +609,32 @@ getUserInfo = () =>{
     )
 }
 /******************** Modal Function  **************/
-
-  render() {
-    return (
-      <FlipView
-        style={{ flex: 1 }}
-        ref={input => (this.flip = input)}
-        front={this._renderFront()}
-        back={this._renderBack()}
-        isFlipped={this.state.isFlipped}
-        onFlipped={val => {
-          console.log("Flipped: " + val);
-        }}
-        flipAxis="y"
-        flipEasing={Easing.out(Easing.ease)}
-        flipDuration={500}
-        perspective={1000}
+  renderMainView =()=>{
+    let {user} = this.props.screenProps.user
+    if(user){
+      return <FlipView
+      style={{ flex: 1 }}
+      ref={input => (this.flip = input)}
+      front={this._renderFront()}
+      back={this._renderBack()}
+      isFlipped={this.state.isFlipped}
+      onFlipped={val => {
+        console.log("Flipped: " + val);
+      }}
+      flipAxis="y"
+      flipEasing={Easing.out(Easing.ease)}
+      flipDuration={500}
+      perspective={1000}
+    />
+    }else{
+      return <GuestLoginView   
+      image={Images.propfileimage}
+      {...this.props}
       />
-    );
+    }
+  }
+  render() {
+    return this.renderMainView()
   }
 }
 export default Settings;

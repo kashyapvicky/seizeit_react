@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>158192168714-fsptkd1d2usmm6rrv2n5pkj65h4dfv9f.apps.googleusercontent.com</string>
+	<string>975435672956-eie60u79alruhhdqef9scpg47q8lk6km.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.158192168714-fsptkd1d2usmm6rrv2n5pkj65h4dfv9f</string>
+	<string>com.googleusercontent.apps.975435672956-eie60u79alruhhdqef9scpg47q8lk6km</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCsOKonBI8kwHrs4gd2sdZ0gWY3iWmojC8</string>
+	<string>AIzaSyBVaJEeZzq7u1tcJ2_HDi5t4uwBB3FLDhg</string>
 	<key>GCM_SENDER_ID</key>
-	<string>158192168714</string>
+	<string>975435672956</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.seizeIt</string>
+	<string>com.seizeit</string>
 	<key>PROJECT_ID</key>
-	<string>seizeit-f55c8</string>
+	<string>seizeit-1568700170733</string>
 	<key>STORAGE_BUCKET</key>
-	<string>seizeit-f55c8.appspot.com</string>
+	<string>seizeit-1568700170733.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:158192168714:ios:a22017d8eee3e734</string>
+	<string>1:975435672956:ios:d6007d7724ce87ff4908f9</string>
 	<key>DATABASE_URL</key>
-	<string>https://seizeit-f55c8.firebaseio.com</string>
+	<string>https://seizeit-1568700170733.firebaseio.com</string>
 </dict>
 </plist>

@@ -12,6 +12,7 @@ import {
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
 import * as Animatable from "react-native-animatable";
+import {postRequest,getRequest} from '../../redux/request/Service'
 
 //local imports
 import Button from "../../components/Button";
@@ -24,18 +25,37 @@ import { string } from "../../utilities/languages/i18n";
 import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
-
+import {ListEmptyComponent} from '../../components/ListEmptyComponent'
 class Products extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible2: false,
-      products: ['1',1,2,2,2,2],
+      products: [],
       selectedStatus:'',
       selectedIndex:-1
     };
   }
+  componentDidMount(){
+    this.getProducts()
+  }
+  /****************** Api Call ************/
+  getProducts = ()=>{
+    let {setIndicator} = this.props.screenProps.actions
+    getRequest('vendor/product-listing').then((res) => {  
+      debugger
+      if(res && res.success && res.success.length > 0){
+        this.setState({
+          products : res.success
+        })
+      }   
+      setIndicator(false)
+    }).catch((err) => {
+    })
+  }
 
+
+  /****************Api Call   **************/
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -65,11 +85,13 @@ class Products extends Component {
     this.setState({
       products : this.state.products.map((res) =>{
             if(parentItem.id == res.id){
-                return {...res,status :statusI}
+                return {...res,available :statusI == 'ACTIVE' ? 1 :0}
             }else{
               return {...res}
             }
-      })
+      }),
+      selectedIndex:-1
+
     })
   }
   // Render drop dowm list
@@ -94,17 +116,15 @@ class Products extends Component {
         ]}
       >
         {[
-          "Active",
-          "Pending",
-          "Delivered",
-          "Return",
-          "Ongoing",
+          "ACTIVE",
+          "SOLD OUT",
         ].map((item, index) => {
           return (
             <TouchableOpacity onPress={() =>  this.onSelectStatus(item,parentItem)}>
             <Animatable.View
               animation="slideInDown"
-              //   duration={'500'} direction={'normal'}
+              //  duration={'300'} 
+               direction={'normal'}
               style={[
                 {
                   paddingVertical: 8
@@ -113,7 +133,7 @@ class Products extends Component {
             >
               <Text
                 p
-                style={{ fontSize: normalize(16), color: "#96C50F" }}
+                style={{ fontSize: normalize(14), color: "#96C50F", }}
               >
                 {item}
               </Text>
@@ -183,7 +203,7 @@ class Products extends Component {
             </View>
             <View>
               <Text p style={{ color: "#000000" }}>
-                Dotted Red payjama bottom wear
+                {item.product_title}
               </Text>
             </View>
             <View
@@ -194,7 +214,7 @@ class Products extends Component {
               }}
             >
               <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-                $1,256
+               {`$${item.price}`}
               </Text>
               <TouchableOpacity
                 onPress={() => this.openStatusDropDown(index)}
@@ -208,16 +228,18 @@ class Products extends Component {
                   paddingVertical: 0,
                   // justifyContent:'center',
                   flexDirection: "row",
-                  borderColor: "#96C50F",
+                  borderColor:  item.available == 1? '#96C50F': "#E06D7B",
                   borderRadius: 4
                 }}
               >
                 <Text
-                  p
+                  h5
                   textAlign
-                  style={{ color: "#96C50F", fontSize: normalize(11) }}
+                  style={{ color: item.available == 1? '#96C50F': "#E06D7B", fontSize: normalize(11) }}
                 >
-                  ACTIVE <Image source={Images.drop} />
+                  {item.available == 1? 'ACTIVE':'SOLD OUT'} 
+                  
+                <Image source={Images.drop} />
                 </Text>
               </TouchableOpacity>
             </View>
@@ -241,7 +263,8 @@ class Products extends Component {
     return (
       <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}>
         <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
-          <Text p={styles.totalProduct}>5 Products in total</Text>
+        {this.state.products.length > 0 ?
+          <Text p={styles.totalProduct}>{`${this.state.products.length}`} Products in total</Text>:null}
         </View>
         <FlatList
           bounces={true}
@@ -256,13 +279,8 @@ class Products extends Component {
           // onEndReached={this.handleLoadMore}
           // onEndReachedThreshold={0.9}
           // ListFooterComponent={this.renderFooter}
-          // ListEmptyComponent={
-          //     (this.state.allProductsListForItem.length == 0) ?
-          //         ListEmpty2({ state: this.state.visible, margin: screenDimensions.height / 3 - 20, message: string('noproductfound') })
-
-          //         :
-          //         null
-          // }
+          ListEmptyComponent={() => !this.props.screenProps.loader ? <ListEmptyComponent /> : null
+          }
         />
       </View>
     );

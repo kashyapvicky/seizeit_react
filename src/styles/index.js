@@ -1430,9 +1430,23 @@ lineHeight:24,
     floatingItemsText: { borderRadius: 5, backgroundColor: 'white', paddingVertical: 10, paddingHorizontal: 10 },
 
     floatingText: { color: 'black', fontFamily: fonts.sourcesanspro },
-    floatingItemImageView: { height: 40, width: 40, borderRadius: 20, backgroundColor: '#E36C09', alignItems: 'center', marginLeft: 15, justifyContent: 'center' }
+    floatingItemImageView: { height: 40, width: 40, borderRadius: 20, backgroundColor: '#E36C09', alignItems: 'center', marginLeft: 15, justifyContent: 'center' },
 
-
+    placeholderContainer: {
+        // width: '90%',
+        backgroundColor: '#fff',
+        height: 'auto',
+        marginBottom:16
+      },
+      placeholder: {
+        height: 8,
+        marginTop: 6,
+        // marginLeft: 15,
+        alignSelf: 'flex-start',
+        justifyContent: 'center',
+        backgroundColor: '#eeeeee'
+      },
+     
 
 
 

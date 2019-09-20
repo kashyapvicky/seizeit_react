@@ -23,7 +23,7 @@ import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import AddressListItem from './Templates/AddressListItem'
 import RenderLabel from './Templates/Label'
-
+import {AddressPlaceholder} from './Templates/AddressPlaceholder'
 class Address extends Component {
   constructor(props) {
     super(props);
@@ -39,6 +39,12 @@ class Address extends Component {
 
       }]
     };
+     // Placeholder Product 
+     this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
   }
 
   renderButton = (title, transparent) => {
@@ -73,9 +79,13 @@ class Address extends Component {
         <FlatList
           bounces={true}
           showsVerticalScrollIndicator={false}
-          data={this.state.addressArray}
+          data={[]}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
+          ListEmptyComponent={<AddressPlaceholder  
+            array={[1, 2,3]}
+            loader={this.loaderComponent}
+          />}
         />
       </View>
     );

@@ -33,7 +33,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.158192168714-fsptkd1d2usmm6rrv2n5pkj65h4dfv9f</string>
+				<string>com.googleusercontent.apps.975435672956-eie60u79alruhhdqef9scpg47q8lk6km</string>
 			</array>
 		</dict>
 	</array>
@@ -65,7 +65,7 @@
 			</dict>
 		</dict>
 	</dict>
-<key>NSAppleMusicUsageDescription</key>
+	<key>NSAppleMusicUsageDescription</key>
 	<string>Play using while you are hiking</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>This app need to access your Bluetooth.</string>
@@ -73,10 +73,12 @@
 	<string>This app need to access your calendar events</string>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) wants you to allow access your Camera for profile picture.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs your location to show you places</string>
 	<key>NSLocationAlwaysUsageDescription would like access to your location to get your current location as address</key>
 	<string>$(PRODUCT_NAME) </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) would like to access  your current location in order to deliver the  order at the time of order delivery</string>
+	<string>$(PRODUCT_NAME) would like to access  your current locationto show you places</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This $(PRODUCT_NAME) uses the microphone to record your speech and convert it to text.</string>
 	<key>NSMotionUsageDescription</key>
@@ -87,8 +89,6 @@
 	<string>$(PRODUCT_NAME) wants you to allow access your Photo Gallary for profile picture.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>recognize speech</string>
-
-
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

@@ -44,7 +44,7 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
             style={{ borderRadius: 8, width: "100%", height: imageHeight }}
             source={{
               uri:
-                "https://cdn.andamen.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/0/1/01_3_19.jpg"
+                item.pic[0]
             }}
           />
         </View>
@@ -61,7 +61,7 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
                 // fontWeight: "600"
               }}
             >
-              CLOTHING
+              {item.category.toUpperCase()}
             </Text>
           </View>
           <View>
@@ -73,7 +73,8 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
                 fontWeight: "normal"
               }}
             >
-              Dotted Red payjama bottom wear
+            
+             {item.product_title}
             </Text>
           </View>
           <View
@@ -84,7 +85,7 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
             }}
           >
             <Text h5 style={{ color: "#000000", fontSize: normalize(13) }}>
-              $90
+              {`$${item.price}`}
             </Text>
             {
               item.isCart ?  <Image source={Images.removeCart} />

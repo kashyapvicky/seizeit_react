@@ -13,20 +13,27 @@ import {
 } from "react-native";
 // import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {postRequest,getRequest} from '../../redux/request/Service'
+
 import ToggleSwitch from "toggle-switch-react-native";
 //local imports
 import Button from "../../components/Button";
+import ImageSelectPickerModal from '../Settings/Templates/ImageSelectPicker'
+import ImagePicker from 'react-native-image-crop-picker';
+
 import Text from "../../components/Text";
 import styles from "../../styles";
 import Header from "../../components/Header";
 import { string } from "../../utilities/languages/i18n";
 import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
+import { screenDimensions } from "../../utilities/contsants";
+import Validation from "../../utilities/validations";
+
 import { normalize } from "../../utilities/helpers/normalizeText";
 import TextInputComponent from "../../components/TextInput";
 import DropDownList from "../../components/DropDownList";
 const rightIcon=require('../../assets/images/ic_dd_g.png')
-
 let initalSetDropdownState = {
   openDropDownCat: false,
   openDropDownProductPrice: false,
@@ -42,17 +49,176 @@ class AddNewProduct extends Component {
       ifscNumber: "",
       productCategory: "",
       productSubCategory: "",
+      sizes:[
+
+        {
+        id:1,
+        name:'X',
+      },{
+        id:2,
+        name:'M',
+    
+      },{
+        id:3,
+        name:'XL',
+      },
+      {
+        id:4,
+        name:'XXL',
+      }],
+      isModalVisible:false,
       productSize: "",
       noOfTimeUsed: "",
       name: "",
       loader: false,
+      productImages:[{
+        image :require('../../assets/images/ic_camera_c.png'),
+        type:'add'
+      }],
+      categories:[],
+      noOfTimeUsedList:[{
+        id:1,
+        name:'Once'
+      },{
+        id:1,
+        name:'Two'
+      },{
+        id:1,
+        name:'Three'
+      }],
+      subcategories:[],
       securePassword: true,
       visible: false,
       refreshToken: null,
       openDropDown: false
     };
   }
+  componentDidMount(){
+    this.getCategories()
+  }
 
+/*****************  Api Function  *************/
+  getSubCategories = (category_id)=>{
+    let {setIndicator} = this.props.screenProps.actions
+    let data ={}
+    data['category_id'] = category_id
+    postRequest('user/getsubcategory',data).then((res) => {  
+      if(res && res.success && res.success.length > 0){
+        this.setState({
+          subcategories : res.success
+        })
+      }   
+      setIndicator(false)
+    }).catch((err) => {
+    })
+  }
+  getCategories = ()=>{
+    let {setIndicator} = this.props.screenProps.actions
+    getRequest('user/fetchcategory').then((res) => {  
+      if(res && res.success && res.success.length > 0){
+        this.setState({
+          categories : res.success
+        })
+      }   
+      setIndicator(false)
+    }).catch((err) => {
+    })
+  }
+  selectCategory =(item)=>{
+    this.setState({
+      productCategory:item,
+      openDropDownCat:false
+    },() =>{
+      this.getSubCategories(item.id)
+    })
+  }
+  addProduct = ()=>{
+    let {setToastMessage} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    let { productCategory, productSubCategory,productTitle,productSize,
+      productImages,
+      productDes, noOfTimeUsed,productPrice,isOnAvailSale,isSoldOut} = this.state;
+    let validation = Validation.validate(this.ValidationRules());
+    if (validation.length != 0) {
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validation[0].message)
+    }else{
+      let formData = new FormData();
+      formData.append("product_category", productCategory.id);
+      formData.append("product_subcategory",productSubCategory.id);
+      formData.append("title", productTitle);
+      formData.append("description", productDes);
+      formData.append("size",productSize.id);
+      formData.append("times",noOfTimeUsed.id);
+      formData.append("price",productPrice);
+      formData.append("for_sale",isOnAvailSale ? 1 : 0);
+      formData.append("sold_out",isSoldOut ? 1 : 0);
+      if (productImages && productImages.length > 0) {
+        let myArr = productImages;
+        for (var i = 0; i < myArr.length; i++) {
+          formData.append(`pics[${i}]`, myArr[i]);
+        }
+      }
+      postRequest('vendor/AddProduct',formData).then((res) => {
+        if (res && res.success) {
+          setToastMessage(true,colors.green1)
+          toastRef.show(res.success) 
+          this.props.navigation.goBack()
+        }
+       })
+    }
+  }
+/*****************  Validation  *************/
+ValidationRules = () => {
+  let { productCategory, productSubCategory,productTitle,productSize,
+  productDes, noOfTimeUsed,productPrice} = this.state;
+  let { lang } = this.props.screenProps.user;
+  debugger;
+  return [
+    {
+      field: productCategory.name,
+      name: 'Category',
+      rules: "required",
+      lang: lang
+    },
+    {
+      field: productSubCategory.name,
+      name: 'Sub Category',
+      rules: "required",
+      lang: lang
+    },
+    {
+      field: productTitle,
+      name: 'Product Title',
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: productDes,
+      name: 'Product Description',
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: productSize.name,
+      name: 'Product Size',
+      rules: "required",
+      lang: lang
+    },
+    {
+      field: noOfTimeUsed.name,
+      name: 'Used time',
+      rules: "required",
+      lang: lang
+    },
+    {
+      field: productPrice,
+      name: 'Product price',
+      rules: "required|numeric",
+      lang: lang
+    }
+  ];
+};
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -65,11 +231,12 @@ class AddNewProduct extends Component {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.addProduct(title)}
         title={title.toUpperCase()}
       />
     );
   };
+
   renderTopSection = () => {
     return (
       <View style={{ flex: 1, paddingHorizontal: 24, paddingVertical: 16 }}>
@@ -138,45 +305,169 @@ class AddNewProduct extends Component {
       </View>
     );
   };
-  renderImages = () => {
-    return (
-      <View
-        style={[
-          styles.shadow,
-          {
-            flex: 0.3,
-            shadowColor: "rgba(0,0,0)",
-            shadowOpacity: 0.19,
-            shadowRadius: 0.1
-          }
-        ]}
-      >
-        <Image
-          style={{ height: 72, width: 72, borderRadius: 4 }}
-          source={{
-            uri:
-              "https://cdn.andamen.com/media/catalog/product/cache/1/list_image/500x/040ec09b1e35df139433887a97daa66f/o/p/openfileartboard15.jpg"
+  renderImages = ({item,index}) => {
+    if(item.type == 'add'){
+      return (
+        <TouchableOpacity
+        onPress={() => this.setState({
+          isModalVisible:true
+        })}
+          style={[
+            styles.shadow,
+            {
+              height:72,
+              width: screenDimensions.width/4-16,
+              marginTop:16,
+              marginLeft:index%4 == 0 ? 0:8,
+              alignSelf:'center',
+              justifyContent:'center',
+              shadowColor: "rgba(0,0,0)",
+              shadowOpacity: 0.19,
+              shadowRadius: 0.1,
+              backgroundColor:'rgba(255,255,255,0.12)',
+              borderColor:'rgba(74,86,108,0.12)',
+              borderWidth:1
+            }
+          ]}
+        >
+          <Image
+            style={{ height: 24, width: 24, borderRadius: 4,alignSelf:'center',
           }}
-        />
-      </View>
-    );
+            source={item.image}
+          />
+        </TouchableOpacity>
+      );
+    }else{
+      return (
+        <View
+          style={[
+            styles.shadow,
+            {
+              marginTop:16,
+              height:72,
+              marginLeft:index%4 == 0 ? 0:8,
+              width:screenDimensions.width/4-16,
+              shadowColor: "rgba(0,0,0)",
+              shadowOpacity: 0.19,
+              shadowRadius: 0.1
+            }
+          ]}
+        >
+          <Image
+            style={{ 
+            height: 72, 
+            width:'100%',
+            borderRadius: 4 
+           }}
+            source={{
+              uri:item.uri
+            }}
+          />
+        </View>
+      );
+    }
+   
   };
-  renderProductImgaes = () => {
+
+renderProductImgaes = () => {
     return (
       <FlatList
         bounces={true}
         numColumns={4}
+        extraData={this.state}
         showsVerticalScrollIndicator={false}
-        data={[1, 2, 3, 5]}
+        data={this.state.productImages}
         keyExtractor={(item, index) => index + "images"}
         renderItem={this.renderImages}
       />
     );
   };
-  pressButton = ()=>{
 
+
+/***************** Camera Function  *************/
+  closeModal=() =>{
+    this.setState({
+      isModalVisible :false
+    })
   }
+
+  renderBottomModal = () =>{
+    return <ImageSelectPickerModal   
+      openImageLibrary={() => this.openImageLibrary()}
+      launchCamera={()=> this.launchCamera()}
+      closeModal ={() => this.closeModal()}
+      isModalVisible={this.state.isModalVisible}
+       />
+  }
+  openImageLibrary = () => {
+    ImagePicker.openPicker({
+      width: 400,
+      height: 400, 
+      compressImageMaxHeight: 400,
+      mediaType: "photo",
+      compressImageMaxWidth: 400, cropping: true, multiple: true
+    }).then(response => {
+      this.closeModal()
+      let array
+      if(response && response.length > 0){
+        response.forEach((item,index) => {
+          let textOrder = "";
+          let possible = "dhsfkhkdshfkhdksjfsdf" + "mangal" + '_qazwsxedcvfrtgbnhyujmkiolp';
+          for (let i = 0; i < 60; i++) {
+              textOrder += possible.charAt(Math.floor(Math.random() * possible.length));
+          }
+          let finalTextOrder = textOrder.replace(/\s/g, '')
+          let image = {
+            uri:item.path,
+            name: finalTextOrder + '.jpg',
+            type: 'multipart/form-data',
+            id:index
+          }
+          array = this.state.productImages
+          array.unshift(image)
+        })
+        this.setState({
+          productImages :array
+         })
+      }
+         
+      })
+    }
+    launchCamera = () => {
+      ImagePicker.openCamera({
+        width: 300,
+        height: 400,
+        cropping: true,
+      }).then(image => {
+        console.log(image);
+        this.closeModal()
+      }).catch((err) =>{
+      })
+      // ImagePicker.openCamera(this.options, (response) => {
+      //     if (response.didCancel) {
+      //         this.closeModal()
+      //         console.log('User cancelled image picker');
+      //     } else if (response.error) {
+      //         this.closeModal()
+      //         this.openPermissionModal()
+      //     } else if (response.customButton) {
+      //         console.log('User tapped custom button: ', response.customButton);
+      //     } else {
+      //         this.setState({
+      //             avatarSource: response.uri,
+      //             isModalVisible: false,
+      //             clickEdit:true,
+      //             isModalVisible:false
+      //         })
+      //     }
+      //     this.closeModal()
+      // });
+  }
+/***************** Camera Function  *************/
+
   render() {
+    let {toastRef} = this.props.screenProps
+    let {setToastMessage} = this.props.screenProps.actions
     return (
       <TouchableWithoutFeedback
         onPress={() =>
@@ -215,10 +506,7 @@ class AddNewProduct extends Component {
                     openDropDownCat: !this.state.openDropDownCat
                   })
                 }
-                selectItem={(item)=> this.setState({
-                  productCategory:item,
-                  openDropDownCat:false
-                })}
+                selectItem={(item)=> this.selectCategory(item)}
                 openDropDown={this.state.openDropDownCat}
                 label={"Product category"}
                 editable={false}
@@ -229,12 +517,13 @@ class AddNewProduct extends Component {
                 placeholderTextColor="rgba(62,62,62,0.55)"
                 selectionColor="#96C50F"
                 returnKeyType="next"
+                lists={this.state.categories}
                 autoCorrect={false}
                 autoCapitalize="none"
                 blurOnSubmit={false}
                 textInputStyle={[styles.addProductTextInputStyle]}
                 viewTextStyle={styles.addProductTextInputView}
-                value={this.state.productCategory}
+                value={this.state.productCategory.name}
                 underlineColorAndroid="transparent"
                 isFocused={this.state.productCatFieldFocus}
                 onFocus={() => this.setState({ productCatFieldFocus: true })}
@@ -249,16 +538,22 @@ class AddNewProduct extends Component {
               <TextInputComponent
                 user={this.props.user}
                 label={"Sub Category"}
+                
                 inputMenthod={input => {
                   this.productSubCateRef = input;
                 }}
-                onPress={() =>
-                  this.setState({
-                    openDropDownSubCat: !this.state.openDropDownSubCat,
-                 
-
-                  })
+                onPress={() =>{
+                  if(this.state.productCategory){
+                    this.setState({
+                      openDropDownSubCat: !this.state.openDropDownSubCat,
+                    })
+                  }else{
+                    setToastMessage(true,colors.danger)
+                    return toastRef.show('Please select first category',colors.danger)
+                  }
                 }
+                }
+                lists={this.state.subcategories}
                 selectItem={(item)=> this.setState({
                   productSubCategory:item,
                   openDropDownSubCat:false
@@ -274,7 +569,7 @@ class AddNewProduct extends Component {
                 blurOnSubmit={false}
                 textInputStyle={[styles.addProductTextInputStyle]}
                 viewTextStyle={styles.addProductTextInputView}
-                value={this.state.productSubCategory}
+                value={this.state.productSubCategory.name}
                 underlineColorAndroid="transparent"
                 isFocused={this.state.productSubCatFieldFocus}
                 onFocus={() => this.setState({ productSubCatFieldFocus: true })}
@@ -352,6 +647,7 @@ class AddNewProduct extends Component {
                   productSize:item,
                   openDropDownProductSize:false
                 })}
+                lists={this.state.sizes}
                 editable={false}
                 // placeholder={'6985 9685 9452 6623'}
                 placeholderTextColor="rgba(62,62,62,0.55)"
@@ -362,7 +658,7 @@ class AddNewProduct extends Component {
                 blurOnSubmit={false}
                 textInputStyle={[styles.addProductTextInputStyle]}
                 viewTextStyle={styles.addProductTextInputView}
-                value={this.state.productSize}
+                value={this.state.productSize.name}
                 underlineColorAndroid="transparent"
                 rightIcon={rightIcon}
                 onPress={() =>
@@ -391,8 +687,9 @@ class AddNewProduct extends Component {
                   noOfTimeUsed:item,
                   openDropDownProductPrice:false
                 })}
+                lists={this.state.noOfTimeUsedList}
                 editable={false}
-                placeholder={"in $$"}
+                placeholder={"in used time"}
                 placeholderTextColor="rgba(62,62,62,0.55)"
                 selectionColor="#96C50F"
                 returnKeyType="next"
@@ -401,7 +698,7 @@ class AddNewProduct extends Component {
                 blurOnSubmit={false}
                 textInputStyle={[styles.addProductTextInputStyle]}
                 viewTextStyle={styles.addProductTextInputView}
-                value={this.state.noOfTimeUsed}
+                value={this.state.noOfTimeUsed.name}
                 onPress={() =>
                   this.setState({
                     openDropDownProductPrice: !this.state
@@ -416,6 +713,33 @@ class AddNewProduct extends Component {
                 onBlur={() => this.setState({ productPriceFieldFocus: false })}
                 //   onChangeText={productTitle => this.setState({ productTitle })}
                 onSubmitEditing={event => {
+                  this.productPriceRef.focus();
+                }}
+                // textInputStyle={styles.textInputStyle}
+              />
+                <View style={{ height: 10 }} />
+              <TextInputComponent
+                user={this.props.user}
+                label={"Price"}
+                inputMenthod={input => {
+                  this.productPriceRef = input;
+                }}
+                placeholder={'in $$'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="done"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                textInputStyle={[styles.addProductTextInputStyle]}
+                viewTextStyle={styles.addProductTextInputView}
+                value={this.state.productPrice}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.productPriceFieldFocus}
+                onFocus={() => this.setState({ productPriceFieldFocus: true })}
+                onBlur={() => this.setState({ productPriceFieldFocus: false })}
+                onChangeText={productPrice => this.setState({ productPrice})}
+                onSubmitEditing={event => {
                   Keyboard.dismiss();
                 }}
                 // textInputStyle={styles.textInputStyle}
@@ -427,9 +751,11 @@ class AddNewProduct extends Component {
               <View style={{ height: 10 }} />
               {this.renderProductImgaes()}
             </View>
-            <View style={{ height: 20 }} />
+            <View style={{ height: 35 }} />
           </ScrollView>
           {this.renderButton("Add a Product")}
+          {this.state.isModalVisible ? this.renderBottomModal() : null}
+
         </View>
       </TouchableWithoutFeedback>
     );

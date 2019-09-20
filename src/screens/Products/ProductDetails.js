@@ -20,6 +20,8 @@ import { FeatureLabel } from "./Templates/Feature";
 import Button from "../../components/Button";
 import colors from "../../utilities/config/colors";
 import Listitems from "../Home/Templates/ListItem";
+import {postRequest,getRequest} from '../../redux/request/Service'
+
 import Features from "./Templates/Feature";
 import styles from "../../styles";
 import Text from "../../components/Text";
@@ -28,17 +30,41 @@ import { screenDimensions } from "../../utilities/contsants";
 export default class ProductDetail extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       scrollY: new Animated.Value(
         // iOS has negative initial scroll value because content inset...
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
       isbarShow:false,
+      product:'',
 
       refreshing: false
     };
   }
+  componentDidMount(){
+    let {params} = this.props.navigation.state
+    debugger
+    if(params && params.productId){
+      this.getProductDetail(params.productId)
+    }
+  
+  }
+ /*************APi Call  *********/
+ getProductDetail = (product_id)=>{
+  let {setIndicator} = this.props.screenProps.actions
+  getRequest(`user/productDetails?product_id=${product_id}`).then((res) => { 
+    debugger
+    if(res && res.success.length>0){
+      this.setState({
+        product : res.success[0]
+      })
+    }   
+    setIndicator(false)
+  }).catch((err) => {
+  })
+}
+ /*************APi Call  End *********/
+
   renderLabel = title => {
     return (
       <View>
@@ -69,10 +95,11 @@ export default class ProductDetail extends Component {
 
   }
   renderDescription = () => {
+    let {product} = this.state
     return (
       <View>
         <Text p style={[styles.labelHeading, { fontSize: normalize(16) }]}>
-          {`This beautiful Top I get it for promotion, I wore it only once for shoot. Its brand new Even tags are attahed as it is. Inspired by Gatorade flavours and featuring premium stuff.`}
+          {`${product.description}`}
         </Text>
       </View>
     );
@@ -122,18 +149,21 @@ export default class ProductDetail extends Component {
       </View>
     );
   };
+
   _renderScrollViewContent() {
     const data = Array.from({ length: 30 });
     return (
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingHorizontal: 24, paddingVertical: 16 }}>
-          <ProductItemDetail />
+          <ProductItemDetail product={this.state.product}/>
           <View style={{ height: 16 }} />
           {this.renderLabel("Product Details")}
           <View style={{ height: 16 }} />
           {this.renderDescription()}
           <View style={{ height: 24 }} />
-          <Features />
+          <Features 
+          product={this.state.product}
+          />
           <View style={{ height: 24 }} />
           <FeatureLabel title={"Posted by"} />
           <View style={{ height: 16 }} />
@@ -150,8 +180,7 @@ export default class ProductDetail extends Component {
             ]}
           />
           <View style={{ height: 8 }} />
-
-          {this.renderProductsList([1, 1], "Similer Products", 168)}
+          {/* {this.renderProductsList([1, 1], "Similer Products", 168)} */}
           <View style={{ height: 24 }} />
         </View>
       </View>
@@ -196,6 +225,7 @@ export default class ProductDetail extends Component {
   render() {
     // Because of content inset the scroll value will be negative on iOS so bring
     // it back to 0.
+    let {product} = this.state
     const scrollY = Animated.add(
       this.state.scrollY,
       Platform.OS === "ios" ? HEADER_MAX_HEIGHT : 0
@@ -281,7 +311,7 @@ export default class ProductDetail extends Component {
             ]}
             source={{
               uri:
-                "https://cdn.andamen.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/0/1/01_3_19.jpg"
+              product ?  product.pic[0] : null
             }}
           />
           <TouchableOpacity style={{flex:0.2,zIndex:10,
@@ -291,7 +321,9 @@ export default class ProductDetail extends Component {
               <Image source={require("../../assets/images/ic_back.png")} />
             </TouchableOpacity>
             <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Cart')}
+             onPress={() => null}
+
+            // onPress={() => this.props.navigation.navigate('Cart')}
             style={{ alignSelf: "center" }}>
               <Image source={require("../../assets/images/ic_cart.png")} />
             </TouchableOpacity>
@@ -316,10 +348,12 @@ export default class ProductDetail extends Component {
               <Image source={require("../../assets/images/ic_back.png")} />
             </TouchableOpacity>
             <View>
-            <Text style={detailStyles.title}>T-Shirt</Text>
+            <Text style={detailStyles.title}>{product.product_title}</Text>
             </View>
             <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Cart')}
+               onPress={() => null}
+
+            // onPress={() => this.props.navigation.navigate('Cart')}
             style={{ alignSelf: "center" }}>
               <Image source={require("../../assets/images/ic_cart.png")} />
             </TouchableOpacity>

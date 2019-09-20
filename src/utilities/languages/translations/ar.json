@@ -1,3 +1,5 @@
 {
-  "NetAlert" :"No internet connection"
+  "NetAlert" :"No internet connection",
+  "nodatafound": "No data found"
+
 }

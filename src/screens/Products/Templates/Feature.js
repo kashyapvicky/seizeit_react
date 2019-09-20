@@ -29,7 +29,8 @@ const FeatureText = ({title}) => {
       </View>
     );
 };
-const Features = props => {
+const Features = ({product}) => {
+  debugger
   return <View style={{flex:1,}}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}} >
               <FeatureLabel title={'Size'}/>
@@ -38,8 +39,8 @@ const Features = props => {
             <View style={{height:8}}/>
 
             <View style={{flexDirection:'row',justifyContent:'space-between'}} >
-              <FeatureText title={'XL'}/>
-              <FeatureText title={'Once'}/>
+              <FeatureText title={product.size}/>
+              <FeatureText title={product.times == 1 ? product.times == 2 ?'Two' :'Once' :'Once'}/>
             </View>
        </View>
 

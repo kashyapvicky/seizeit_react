@@ -15,6 +15,7 @@ import Text from "../../components/Text";
 import LineChartComponet from "./Templates/Chart";
 import Header from "../../components/Header";
 import { normalize } from "../../utilities/helpers/normalizeText";
+import {ListEmptyComponent} from '../../components/ListEmptyComponent'
 
 import styles from "../../styles";
 import { string } from "../../utilities/languages/i18n";
@@ -28,6 +29,7 @@ class Home extends Component {
     super(props);
     this.state = {
       visible2: false,
+      orders:[],
       tabs: [
         {
           title: "Order Recieved"
@@ -78,11 +80,15 @@ class Home extends Component {
   renderListForProducts = (item, index) => {
     return (
       <View key={index} tabLabel={item.title} style={{ paddingVertical: 16 ,paddingHorizontal:8}}>
-        <View style={{ paddingHorizontal: 16,paddingVertical:8 }}>
+        {
+          this.state.orders.length > 0 ?
+          <View style={{ paddingHorizontal: 16,paddingVertical:8 }}>
           <Text p={{ color: "#6B7580", fontSize: normalize(14) }}>
-            2 Orders in total
+            {`${ this.state.orders.length} Orders in total`}
           </Text>
-        </View>
+        </View> : null
+        }
+       
         <ScrollView showsVerticalScrollIndicator={false}>
         {this.renderAllItem()}
         <View style={styles.borderSalesReport} />
@@ -172,9 +178,13 @@ class Home extends Component {
           // extraData={this.state}
           // pagingEnabled={true}
           showsVerticalScrollIndicator={false}
-          data={[1, 2]}
+          data={this.state.orders}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
+          ListEmptyComponent={() => !this.props.screenProps.loader ? <ListEmptyComponent 
+          message={'No Orders found'}
+          /> : null}
+
           // refreshing={this.state.isRefreshing}
           // onRefresh={this.handleRefresh}
           // onEndReached={this.handleLoadMore}

@@ -8,7 +8,7 @@ import Text from "../../../components/Text";
 import { Images } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
- const ProductItemDetail = props => {
+ const ProductItemDetail = ({product}) => {
   return  <View style={{ flex: 1, paddingTop: 8, }}>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -22,7 +22,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
                 // fontWeight: "600"
               }}
             >
-              T-SHIRT
+             {product.product_title}
             </Text>
           </View>
           <View  style={{
@@ -48,7 +48,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
             }}
           >
             <Text h5 style={{ color: "#000000", fontSize: normalize(24) }}>
-              $90
+            {product.price}
             </Text>
           </View>
           <View  style={{

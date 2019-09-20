@@ -22,6 +22,7 @@ import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import OrderListItem from "./Templates/OrderListItem";
+import {OrderPlaceholder} from './Templates/OrderPlaceHolder'
 
 class CustomerOrders extends Component {
   constructor(props) {
@@ -54,7 +55,14 @@ class CustomerOrders extends Component {
             status: "Delivered"
           },
       ]
+      
     };
+    this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+ 
   }
   renderButton = (title, transparent) => {
     return (
@@ -93,9 +101,14 @@ class CustomerOrders extends Component {
           // extraData={this.state}
           // pagingEnabled={true}
           showsVerticalScrollIndicator={false}
-          data={this.state.orders}
+          data={[]}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
+          renderItem={this.renderItems}
+          ListEmptyComponent={<OrderPlaceholder  
+            array={[1, 2, 3, 4,5,6]}
+            loader={this.loaderComponent}
+          />}
           // refreshing={this.state.isRefreshing}
           // onRefresh={this.handleRefresh}
           // onEndReached={this.handleLoadMore}

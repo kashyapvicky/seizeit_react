@@ -14,7 +14,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		18C9D0B12319251C00E41709 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18C9D0B02319251C00E41709 /* GoogleService-Info.plist */; };
+		186F95DE2330EBDE00BA18A0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */; };
 		1B794D262F1541A6B565692F /* SourceSansPro-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E61AE19F07334A4BADFFD452 /* SourceSansPro-Semibold.ttf */; };
 		2134D425231B467DBB285A84 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 673F393107F1438093DBB018 /* Fontisto.ttf */; };
 		2221AEFB3A5F4FCBAEA79EDA /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6363475C4F1F4523A5890D7C /* MaterialIcons.ttf */; };
@@ -87,7 +87,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = seize_it/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = seize_it/main.m; sourceTree = "<group>"; };
 		14699DD39C254F32AC9B832A /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		18C9D0B02319251C00E41709 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C3C9440217C4BA1B69BF9CA /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2673E6BC5CB1485999EC8CA4 /* SourceSansPro-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-BlackItalic.ttf"; path = "../src/assets/fonts/SourceSansPro-BlackItalic.ttf"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* seize_it-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "seize_it-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -267,7 +267,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				18C9D0B02319251C00E41709 /* GoogleService-Info.plist */,
+				186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* seize_it */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* seize_itTests */,
@@ -446,7 +446,7 @@
 				3C147F40579D452FBC9C7D5E /* Ionicons.ttf in Resources */,
 				9CAF4AD5E5844845BF83A628 /* MaterialCommunityIcons.ttf in Resources */,
 				2221AEFB3A5F4FCBAEA79EDA /* MaterialIcons.ttf in Resources */,
-				18C9D0B12319251C00E41709 /* GoogleService-Info.plist in Resources */,
+				186F95DE2330EBDE00BA18A0 /* GoogleService-Info.plist in Resources */,
 				C131D9BA045C44A385310019 /* Octicons.ttf in Resources */,
 				AB336C7247CE433693375B65 /* SimpleLineIcons.ttf in Resources */,
 				DD5205C775064083A2DCAD2B /* Zocial.ttf in Resources */,
@@ -519,6 +519,8 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-seize_it/Pods-seize_it-resources.sh",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
+				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
@@ -542,6 +544,8 @@
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
@@ -791,7 +795,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.seizeIt;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seizeit;
 				PRODUCT_NAME = seize_it;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -810,7 +814,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.seizeIt;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seizeit;
 				PRODUCT_NAME = seize_it;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

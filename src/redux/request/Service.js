@@ -28,6 +28,9 @@ const postRequest = (apiName, data = {}) => {
          return res.data
         }else if(res.status == 400){
          return NavigationService.showToastMessage(res.data.error)
+        }else if(res.status == 500){
+          return NavigationService.showToastMessage(res.data.error)
+         
         }else if(res.status == 401){
           return NavigationService.showToastMessage(res.data.error)
          }else{
@@ -52,13 +55,15 @@ const getRequest = apiName => {
       .then(res => {
         NavigationService.setIndicator(false)
         if(res.status == 200){
-          debugger
          return res.data
         }else if(res.status == 400){
          return NavigationService.showToastMessage(res.data.error)
         }else if(res.status == 401){
           return NavigationService.showToastMessage(res.data.error)
-         }else{
+         }else if(res.status == 500){
+          return NavigationService.showToastMessage(res.data.error)
+         }
+         else{
           return NavigationService.showToastMessage(res.data.message)
         }
       })

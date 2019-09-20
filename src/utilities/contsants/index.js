@@ -73,6 +73,8 @@ removeCart:require("../../assets/images/ic_remove_cart.png"),
  radioBoxFalse : require("../../assets/images/ic_radio_0.png"),
  inputClose : require("../../assets/images/ic_close_s.png"),
  phoneCall : require("../../assets/images/ic_phone.png"),
- dropGreen : require("../../assets/images/ic_dd_g.png")
+ dropGreen : require("../../assets/images/ic_dd_g.png"),
+ propfileimage : require("../../assets/images/Profile01.jpg"),
+ propfileimageNotification : require("../../assets/images/Notification.jpg")
 
 };

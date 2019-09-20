@@ -31,7 +31,8 @@ return (
       tabBarTextStyle={[styles.text, { fontSize: 16, fontWeight: "normal" }]}
       showsHorizontalScrollIndicator={false}
       refreshControlStyle={{ backgroundColor: "red" }}
-      onChangeTab={event => null}
+      onChangeTab={(event) => {props.onChangeTab ?  props.onChangeTab(event) :null}}
+
       // onChangeTab={(event) => this.changeTabState(event.ref)}
     >
       {props.tabs

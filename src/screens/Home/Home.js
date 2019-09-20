@@ -13,6 +13,13 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
+import RNGooglePlaces from "react-native-google-places";
+import {
+  PlaceholderContainer,
+  Placeholder
+} from 'react-native-loading-placeholder';
+
+import {postRequest,getRequest} from '../../redux/request/Service'
 
 //local imports
 import Button from "../../components/Button";
@@ -27,24 +34,103 @@ import colors from "../../utilities/config/colors";
 import { Images, screenDimensions } from "../../utilities/contsants";
 import Listitems from "./Templates/ListItem";
 import BannerCarousel from "./Templates/Carousel";
+import {requestLocationPermission} from './Templates/RequestLocationPermission'
+import {ProductPlaceholder} from './Templates/PlaceHolderProduct'
+import {CategoryPlaceholder} from './Templates/CategoryPlaceHolder'
 
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 10 : 10;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 class Home extends Component {
+  // loadingComponent: Promise<React.Element<*>>;
   constructor(props) {
     super(props);
     this.state = {
+      name:'Location',
       visible2: false,
+      categories:[],
+      featureProducts:[],
+      banners:[],
+      popularProducts:[],
       isbarShow: false,
       scrollY: new Animated.Value(
-        // iOS has negative initial scroll value because content inset...
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
       refreshing: false
     };
+    
     this.isbarShow = false;
+    this.onGetCurrentPlacePress()
+    if(Platform.OS == 'android'){
+      requestLocationPermission().then((res)=>{
+        if(res){
+          this.onGetCurrentPlacePress()
+        }
+      })
+      }
+      // Placeholder Product 
+      this.loaderComponent = new Promise(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, 1000);
+      });
+   
   }
+  componentDidMount(){
+    this.getCategories()
+    this.getHomeData()
+  }
+/*********** Get current Location  *****/
+ onGetCurrentPlacePress = () => {
+    RNGooglePlaces.getCurrentPlace()
+      .then(results => {
+        if (results && results.length > 0) {
+          debugger
+          this.setState({
+            currentAddress: results[0].address,
+            currentLocation: results[0].location,
+            name:results[0].name,
+          });
+        }
+      })
+      .catch(error => console.log(error.message));
+  };
+  updateLocation = (location) =>{
+    this.setState({
+      ...location
+    })
+  }
+  /*************APi Call  *********/
+  getCategories = ()=>{
+    let {setIndicator} = this.props.screenProps.actions
+    getRequest('user/fetchcategory').then((res) => { 
+      debugger
+      if(res && res.success && res.success.length > 0){
+        this.setState({
+          categories : res.success
+        })
+      }   
+      setIndicator(false)
+    }).catch((err) => {
+    })
+  }
+  getHomeData = ()=>{
+    let {setIndicator} = this.props.screenProps.actions
+    getRequest('user/home-page').then((res) => { 
+      debugger
+      if(res && res.success){
+        this.setState({
+          featureProducts : res.success.featured &&  res.success.featured.length>0 ?res.success.featured:[],
+          popularProducts : res.success.popular &&  res.success.popular.length>0 ?res.success.popular:[],
+          banners:res.success.banner && res.success.banner.length >0 ? res.success.banner :[]
+        })
+      }   
+      setIndicator(false)
+    }).catch((err) => {
+    })
+  }
+  /*********** APi Call End  *****/
+
   renderButton = title => {
     return (
       <Button
@@ -81,7 +167,9 @@ class Home extends Component {
       <View index={index} style={styles.showAllPetProductsView}>
         <TouchableOpacity
           activeOpacity={9}
-          onPress={() => this.props.navigation.navigate("SubCategory")}
+          onPress={() => this.props.navigation.navigate("SubCategory",{
+            category:item
+          })}
         >
           <View
             style={{
@@ -96,7 +184,7 @@ class Home extends Component {
             />
             <View style={{ paddingTop: 8 }}>
               <Text p style={styles.itemName}>
-                {"Men"}
+                {item.name}
               </Text>
             </View>
           </View>
@@ -112,8 +200,11 @@ class Home extends Component {
           autoplay={true}
           horizontal={true}
           snapToInterval={300}
-          data={["1", "2", "3", "3", "1", "2", "3", "3", "1", "2", "3", "3"]}
+          data={this.state.categories}
           pagingEnabled={true}
+          ListEmptyComponent={<CategoryPlaceholder  
+            loader={this.loaderComponent}
+          />}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index + "flatlist"}
           renderItem={this.showAllCateItems}
@@ -131,9 +222,12 @@ class Home extends Component {
     );
   };
   renderItems = (item, index, imageHeight) => {
+    console.log(item,"item")
     return (
       <Listitems
-        onPress={() => this.props.navigation.navigate("ProductDetails")}
+        onPress={() => this.props.navigation.navigate("ProductDetails",{
+          productId:item.product_id
+        })}
         item={item}
         index={index}
         imageHeight={imageHeight}
@@ -152,6 +246,9 @@ class Home extends Component {
           showsVerticalScrollIndicator={false}
           data={array}
           keyExtractor={(item, index) => index + "product"}
+          ListEmptyComponent={<ProductPlaceholder  
+            loader={this.loaderComponent}
+          />}
           renderItem={({ item, index }) =>
             this.renderItems(item, index, imageHeight)
           }
@@ -167,15 +264,17 @@ class Home extends Component {
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 16 }}>
           <View style={{ flex: 1, marginVertical: 16, borderRadius: 16 }}>
-            <BannerCarousel />
+            <BannerCarousel 
+             banners={this.state.banners}
+            />
           </View>
           <View style={{ height: 28 }} />
-          {this.renderProductsList([1, 1], "Trending Products", 96)}
+          {this.renderProductsList(this.state.popularProducts, "Trending Products", 96)}
           <View style={{ height: 16 }} />
           {this.renderButton("Explore more in Trending")}
           <View style={{ height: 32 }} />
           {this.renderProductsList(
-            [1, 1, 2, 2, 2, 2],
+            this.state.featureProducts,
             "Featured Products",
             168
           )}
@@ -222,6 +321,7 @@ class Home extends Component {
     }
    
   };
+  
   render() {
     /************ Animation Type */
     const scrollY = Animated.add(
@@ -286,11 +386,15 @@ class Home extends Component {
               isRightIcon={Images.cart}
               hideLeftIcon={true}
               headerStyle={{ flex: 1, zIndex: 1000 }}
-              title={"Chandigarh"}
+              title={this.state.name}
               isLocation
-              onRightPress={() => this.props.navigation.navigate("Cart")}
+              onRightPress={() => null}
+
+              // onRightPress={() => this.props.navigation.navigate("Cart")}
               onPressLocation={() =>
-                this.props.navigation.navigate("ChangeLocation")
+                this.props.navigation.navigate("ChangeLocation",{
+                  updateLocation : (location) => this.updateLocation(location)
+                })
               }
               backPress={() => this.props.navigation.goBack()}
             />

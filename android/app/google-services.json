@@ -1,35 +1,42 @@
 {
   "project_info": {
-    "project_number": "103949650198",
-    "firebase_url": "https://seizet-react-it.firebaseio.com",
-    "project_id": "seizet-react-it",
-    "storage_bucket": "seizet-react-it.appspot.com"
+    "project_number": "975435672956",
+    "firebase_url": "https://seizeit-1568700170733.firebaseio.com",
+    "project_id": "seizeit-1568700170733",
+    "storage_bucket": "seizeit-1568700170733.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:103949650198:android:4c5684cb6819a9ad",
+        "mobilesdk_app_id": "1:975435672956:android:450bc41df49787564908f9",
         "android_client_info": {
           "package_name": "com.seizeit"
         }
       },
       "oauth_client": [
         {
-          "client_id": "103949650198-s8295o45989jjuhi466ptl30jpqlm9b6.apps.googleusercontent.com",
+          "client_id": "975435672956-9aoe6jv15glbjhu19jlhcf2g95o34rk8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA6EVde_Loun2QO0fMGRsw2SSGP6BxuW4Q"
+          "current_key": "AIzaSyACzNPUcNFFHmxVHqd9PywDLxMzkJxkrH0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "103949650198-s8295o45989jjuhi466ptl30jpqlm9b6.apps.googleusercontent.com",
+              "client_id": "975435672956-9aoe6jv15glbjhu19jlhcf2g95o34rk8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "975435672956-gul08quri25s0kga4m8ch4df8olb0nb6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.seizeIt"
+              }
             }
           ]
         }

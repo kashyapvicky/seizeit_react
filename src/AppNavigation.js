@@ -101,13 +101,15 @@ class AppNavigation extends React.Component {
         {Platform.OS == "ios" && (
           <StatusBar barStyle="dark-content" translucent />
         )}
-        {this.props.loader && <Indicator />}
         <SafeAreaView
           style={{ flex: 0, backgroundColor: this.state.topBarColor }}
         />
+              
+
         <SafeAreaView
           style={{ flex: 1, backgroundColor: this.state.bottomBarColor }}
         >
+            {this.props.loader && <Indicator />}
           {this.props.user.netStatus ? null : <OfflineNotice {...this.props} />}
 
           <AppStack

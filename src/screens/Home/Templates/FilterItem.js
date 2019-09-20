@@ -9,7 +9,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
 import { Images } from "../../../utilities/contsants";
 
 export const FilterItemsCheckBox = ({item,index,onSelect}) => {
-  return  <TouchableOpacity key={index} activeOpacity={9} onPress={() => onSelect(item)}>
+  return  <TouchableOpacity key={index} activeOpacity={9} onPress={() =>onSelect ?  onSelect(item):null}>
   <View key={index} style={{ flexDirection: 'row', paddingBottom: 7,
    alignItems: 'center' }}>
       {item.check ?
@@ -22,7 +22,7 @@ export const FilterItemsCheckBox = ({item,index,onSelect}) => {
 };
 
 export const FilterItemsRadio = ({item,index,onSelect}) => {
-    return  <TouchableOpacity key={index} activeOpacity={9} onPress={() => onSelect(item)}>
+    return  <TouchableOpacity key={index} activeOpacity={9} onPress={() => onSelect ? onSelect(item):null}>
     <View key={index} style={{ flexDirection: 'row', paddingBottom: 7,
      alignItems: 'center' }}>
         {item.check ?

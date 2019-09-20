@@ -17,8 +17,10 @@ import propfileimage2 from "../../assets/images/Notification.jpg";
 import propfileimage from "../../assets/images/Profile01.jpg";
 import moment from "moment";
 import { string } from "../../utilities/languages/i18n";
-import { screenDimensions } from "../../utilities/contsants";
+import { screenDimensions, Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
+import {NotificationPlaceholder} from './Templates/NotoficationPlaceholder'
+import {GuestLoginView} from "../../components/GuestLoginView";
 
 //Global libs
 import Button from "../../components/Button";
@@ -75,6 +77,12 @@ class Notifications extends Component {
   constructor(props) {
     super(props);
     this.state = initialState;
+    this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+ 
   }
   componentWillMount = () => {
     // willFocusSubscription = this.props.navigation.addListener('willFocus', (playload) => {
@@ -147,45 +155,54 @@ class Notifications extends Component {
       </View>
     );
   };
+  renderMainView = () =>{
+    let {user} = this.props.screenProps.user
+    if(user){
+return  <SafeAreaView
+forceInset={{ top: "never", bottom: "always" }}
+style={[{ flex: 1 }]}
+>
+<View style={styles.mainViewNotifications}>
+  <View style={styles.notificationHeaderView}>
+    <View>
+      <Text style={styles.notificationTitle}>
+        {string("notifications")}
+      </Text>
+    </View>
+    <View>
+      <Text style={[styles.clearAll, { fontSize: normalize(12) }]}>
+        {string("clearAll")}
+      </Text>
+    </View>
+  </View>
+  <ScrollView showsVerticalScrollIndicator={false}>
+    <View style={{ marginTop: 20 }}>
+      <FlatList
+        bounces={true}
+        extraData={this.state}
+        pagingEnabled={true}
+        data={[]}
+        keyExtractor={this._keyExtractor2}
+        renderItem={this.notificationsList}
+        ListEmptyComponent={<NotificationPlaceholder  
+          array={[1, 2, 3, 4,5,6]}
+          loader={this.loaderComponent}
+        />}
+      />
+    </View>
+  </ScrollView>
+</View>
+</SafeAreaView>
+    }else{
+      return <GuestLoginView image={Images.propfileimageNotification}
+       {...this.props}
+      />
+    }
+  }
 
-  notifications = () => {
-    return (
-      <SafeAreaView
-        forceInset={{ top: "never", bottom: "always" }}
-        style={[{ flex: 1 }]}
-      >
-        <View style={styles.mainViewNotifications}>
-          <View style={styles.notificationHeaderView}>
-            <View>
-              <Text style={styles.notificationTitle}>
-                {string("notifications")}
-              </Text>
-            </View>
-            <View>
-              <Text style={[styles.clearAll, { fontSize: normalize(12) }]}>
-                {string("clearAll")}
-              </Text>
-            </View>
-          </View>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ marginTop: 20 }}>
-              <FlatList
-                bounces={true}
-                extraData={this.state}
-                pagingEnabled={true}
-                data={this.state.notificationsArray}
-                keyExtractor={this._keyExtractor2}
-                renderItem={this.notificationsList}
-              />
-            </View>
-          </ScrollView>
-        </View>
-      </SafeAreaView>
-    );
-  };
 
   render() {
-    return this.notifications();
+    return this.renderMainView();
   }
 }
 //Connecting component with redux structure to get or dispatch data

@@ -6,6 +6,7 @@ import styles from "../../../styles";
 import { Images } from "../../../utilities/contsants";
 import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
+import {BannerPlaceholderComp} from "./BannerPlaceHolder";
 
 const sliderWidth = Dimensions.get("window").width - 20;
 const sliderHeight = Dimensions.get("window").height ;
@@ -17,17 +18,19 @@ export default class  BannerCarousel extends React.Component {
         super(props);
         this.state = {
             location: 'Chandigarh',
-            bannerImages: [
-                { id: 1, image: 'http://subexyabhadel.com/wp-content/uploads/2019/01/main-qimg-7b543be853affc8d4993e2f9bb60cba1.png' },
-                { id: 3, image: 'https://www.irreverentgent.com/wp-content/uploads/2018/11/Types-of-Sweaters-For-Guys-crew.jpg' },
-                { id: 4, image: 'https://www.irreverentgent.com/wp-content/uploads/2018/11/Types-of-Sweaters-For-Guys-banner3-1068x712.jpg' }
-            ],
+            bannerImages: this.props.banners,
             imagewidth: '100%',
             imageheight: '100%',
             slider1ActiveSlide: 0,
            
         }
+        this.loaderComponent = new Promise(resolve => {
+            setTimeout(() => {
+              resolve();
+            }, 1000);
+          });
     }
+    
     bannerImagesData = ({ item, index }) => {
         return (
             <View index={index} style={[styles.shadow,{
@@ -41,7 +44,7 @@ export default class  BannerCarousel extends React.Component {
 
             }]}>
                 <Image
-                    source={{uri:item.image}}
+                    source={{uri:item.pic[0]}}
                     resizeMode={'stretch'}
                     // style={[styles.bannerImages,{resizeMode:'cover'}]}
                     style={{
@@ -60,6 +63,7 @@ export default class  BannerCarousel extends React.Component {
         )
     }
     render(){
+        console.log( this.props.banners," this.props.banners")
         return <View style={styles.cardMainView}>
          <View
             style={[styles.cardViewStyle,styles.shadow,,{
@@ -71,17 +75,23 @@ export default class  BannerCarousel extends React.Component {
                 },
                 elevation:2,
             }]}>
-            <Carousel
-                ref={(c) => { this._carousel = c; }}
-                data={this.state.bannerImages}
-                renderItem={this.bannerImagesData}
-                autoplay={true}
-                loop={true}
-                autoplayInterval={3000}
-                sliderWidth={sliderWidth}
-                itemWidth={itemWidth}
-                onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index })}
-            />
+                {
+                    this.props.banners.length > 0 ? 
+                    <Carousel
+                    ref={(c) => { this._carousel = c; }}
+                    data={this.props.banners}
+                    renderItem={this.bannerImagesData}
+                    autoplay={true}
+                    loop={true}
+                    autoplayInterval={3000}
+                    sliderWidth={sliderWidth}
+                    itemWidth={itemWidth}
+                    onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index })}
+                /> : <BannerPlaceholderComp
+                    loader={this.loaderComponent}
+                 />
+                }
+         
         </View>
         <Pagination
             dotsLength={this.state.bannerImages.length}

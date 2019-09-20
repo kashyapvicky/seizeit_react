@@ -25,9 +25,8 @@ export const MainNavigator = createSwitchNavigator(
     VendorTabNavigator:{screen:VendorTabNavigator},
     CustomerTabNavigator:{screen:CustomerTabNavigator}
   },
-  //customercare@vodafoneidea.com
   {
-    initialRouteName: "AuthNavigatorStack",
+    initialRouteName: "VendorTabNavigator",
     initialRouteParams: { transition: 'horizontal' },
     transitionConfig: TransitionConfig,
     mode: Platform.OS === "ios" ? "card" : "card",
