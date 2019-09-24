@@ -13,6 +13,7 @@ import SearchProduct from "./SearchProduct";
 import ProductDetails from "../Products/ProductDetails";
 import ChangeLocation from "./ChangeLocation";
 import {TransitionConfig} from "../../AppNavigationConfiguration";
+import VendorProduct from "./VendorProduct";
 
 import Cart from "./Cart";
 import Checkout from "./Checkout";
@@ -54,6 +55,7 @@ const CardStack =  createStackNavigator({
     Home:Home,
     SubCategory:SubCategory,
     ProductDetails:ProductDetails,
+    VendorProduct:VendorProduct
 
 },
 {

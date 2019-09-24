@@ -8,7 +8,7 @@ import { screenDimensions } from "../../../utilities/contsants";
 import {Gradient} from '../../../components/GradientPlaceholder'
 import styles from "../../../styles";
 
-export const ProductPlaceholder =({loader=Promise,array=[1,2]}) => {
+export const ProductPlaceholder =({loader=Promise,array=[1,2],message}) => {
     return (
        <PlaceholderContainer
         style={styles.placeholderContainer}
@@ -74,9 +74,12 @@ export const ProductPlaceholder =({loader=Promise,array=[1,2]}) => {
             </View>
           }}
         />
-        {/* <View style={{alignSelf:'center',position:'absolute',top:'35%'}}>
-             <Text p>No Data found</Text>
-         </View> */}
+       {
+         message ? 
+           <View style={{alignSelf:'center',position:'absolute',top:'35%'}}>
+             <Text p>{message}</Text>
+         </View>:null
+       } 
       </PlaceholderContainer>
     );
   };

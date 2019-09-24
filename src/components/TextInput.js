@@ -67,6 +67,7 @@ export default class TextInputLabel extends Component {
             }}
           >
             <TextInput
+              
               style={{
                 height: 48,
                 fontSize: normalize(20),

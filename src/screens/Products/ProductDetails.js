@@ -20,51 +20,129 @@ import { FeatureLabel } from "./Templates/Feature";
 import Button from "../../components/Button";
 import colors from "../../utilities/config/colors";
 import Listitems from "../Home/Templates/ListItem";
-import {postRequest,getRequest} from '../../redux/request/Service'
+import { postRequest, getRequest } from "../../redux/request/Service";
+import { ProductPlaceholder } from "../Home/Templates/PlaceHolderProduct";
 
 import Features from "./Templates/Feature";
 import styles from "../../styles";
 import Text from "../../components/Text";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import { screenDimensions } from "../../utilities/contsants";
+import {
+  updateProductCartValue,
+  updateCartSuccess,
+  updateWishListSuccess
+} from "../../utilities/method";
 export default class ProductDetail extends Component {
   constructor(props) {
     super(props);
+    this.veiwRef = {};
     this.state = {
       scrollY: new Animated.Value(
         // iOS has negative initial scroll value because content inset...
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
-      isbarShow:false,
-      product:'',
-
+      isbarShow: false,
+      product: "",
+      similarProducts: [],
       refreshing: false
     };
+    this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
   }
-  componentDidMount(){
-    let {params} = this.props.navigation.state
-    debugger
-    if(params && params.productId){
-      this.getProductDetail(params.productId)
+  componentDidMount() {
+    let { params } = this.props.navigation.state;
+    debugger;
+    if (params && params.productId) {
+      debugger;
+      this.getProductDetail(params.productId);
+      this.getSimilarProduct(params.productId);
     }
-  
   }
- /*************APi Call  *********/
- getProductDetail = (product_id)=>{
-  let {setIndicator} = this.props.screenProps.actions
-  getRequest(`user/productDetails?product_id=${product_id}`).then((res) => { 
-    debugger
-    if(res && res.success.length>0){
-      this.setState({
-        product : res.success[0]
+  /*************APi Call  *********/
+  getProductDetail = product_id => {
+    let { setIndicator } = this.props.screenProps.actions;
+    getRequest(`user/productDetails?product_id=${product_id}`)
+      .then(res => {
+        debugger;
+        if (res && res.success.length > 0) {
+          this.setState({
+            product: res.success[0]
+          });
+        }
+        setIndicator(false);
       })
-    }   
-    setIndicator(false)
-  }).catch((err) => {
-  })
-}
- /*************APi Call  End *********/
+      .catch(err => {});
+  };
+  getSimilarProduct = product_id => {
+    let { setIndicator } = this.props.screenProps.actions;
+    getRequest(`user/similarproducts?product_id=${product_id}`)
+      .then(res => {
+        debugger;
+        if (res && res.success.length > 0) {
+          this.setState(
+            {
+              similarProducts: res.success
+            },
+            () => {
+              let { carts, wishlists } = this.props.screenProps.product;
+              if (
+                (carts && carts.length > 0) ||
+                (wishlists && wishlists.length > 0)
+              ) {
+                let similarProducts = updateProductCartValue(
+                  this.state.similarProducts,
+                  this.props.screenProps.product
+                );
+                this.setState({
+                  similarProducts
+                });
+              }
+            }
+          );
+        } else {
+          this.setState({
+            similarProducts: res.success
+          });
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
 
+  /*************APi Call  End *********/
+  /************** Cart Method  **************/
+  bounce = index =>
+    this.veiwRef[index]
+      .rubberBand(500)
+      .then(endState =>
+        console.log(endState.finished ? "bounce finished" : "bounce cancelled")
+      );
+  onPressWishlist = (item, index) => {
+    this.bounce(index);
+    let { addToWishlistSuccess } = this.props.screenProps.productActions;
+    let updateArray = updateWishListSuccess(this.state.similarProducts, item);
+    this.setState({
+      similarProducts: updateArray
+    });
+    addToWishlistSuccess({
+      ...item,
+      isFevorite: item.isFevorite ? false : true
+    });
+  };
+  addRemoveCart = item => {
+    let { addCartRequestApi } = this.props.screenProps.productActions;
+    let updateArray = updateCartSuccess(this.state.similarProducts, item);
+    this.setState({
+      similarProducts: updateArray
+    });
+    addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
+  };
+
+  /************** Cart Method  **************/
   renderLabel = title => {
     return (
       <View>
@@ -91,11 +169,15 @@ export default class ProductDetail extends Component {
       />
     );
   };
-  pressButton = ()=>{
-
-  }
+  pressButton = title => {
+    if (title == "ADD TO CART") {
+      alert("ADD");
+    } else if (title == "View Cart") {
+      this.props.navigation.navigate("Cart");
+    }
+  };
   renderDescription = () => {
-    let {product} = this.state
+    let { product } = this.state;
     return (
       <View>
         <Text p style={[styles.labelHeading, { fontSize: normalize(16) }]}>
@@ -111,23 +193,38 @@ export default class ProductDetail extends Component {
         item={item}
         index={index}
         imageHeight={imageHeight}
+        onPressWishlist={() => this.onPressWishlist(item, index)}
+        onPressCart={() => this.addRemoveCart(item)}
+        onGetRefWishlist={ref => (this.veiwRef[index] = ref)}
       />
     );
   };
+
   renderVendorProfile = () => {
+    let { product } = this.state;
     return (
-      <View style={{ flexDirection: "row" }}>
-        <Image
-          source={require("../../assets/images/profile.jpeg")}
-          style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
-        />
+      <TouchableOpacity
+        style={{ flexDirection: "row" }}
+        onPress={() =>
+          this.props.navigation.navigate("VendorProduct", {
+            vendor: product
+          })
+        }
+      >
+        {product.vendor_pic && product.vendor_pic[0] ? (
+          <Image
+            source={{ uri: product.vendor_pic[0] }}
+            style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
+          />
+        ) : null}
+
         <View style={{ justifyContent: "center", paddingLeft: 16 }}>
           <Text p style={{ fontSize: normalize(18), color: "#000000" }}>
             {" "}
-            {"Wesley Pearson"}
+            {`${product.vendor_name}`}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
   renderProductsList = (array, label, imageHeight) => {
@@ -145,6 +242,15 @@ export default class ProductDetail extends Component {
           renderItem={({ item, index }) =>
             this.renderItems(item, index, imageHeight)
           }
+          ListEmptyComponent={
+            <ProductPlaceholder
+              array={[1, 2]}
+              message={
+                this.props.screenProps.loader ? "" : "No similar products found"
+              }
+              loader={this.loaderComponent}
+            />
+          }
         />
       </View>
     );
@@ -155,15 +261,13 @@ export default class ProductDetail extends Component {
     return (
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingHorizontal: 24, paddingVertical: 16 }}>
-          <ProductItemDetail product={this.state.product}/>
+          <ProductItemDetail product={this.state.product} />
           <View style={{ height: 16 }} />
           {this.renderLabel("Product Details")}
           <View style={{ height: 16 }} />
           {this.renderDescription()}
           <View style={{ height: 24 }} />
-          <Features 
-          product={this.state.product}
-          />
+          <Features product={this.state.product} />
           <View style={{ height: 24 }} />
           <FeatureLabel title={"Posted by"} />
           <View style={{ height: 16 }} />
@@ -180,14 +284,18 @@ export default class ProductDetail extends Component {
             ]}
           />
           <View style={{ height: 8 }} />
-          {/* {this.renderProductsList([1, 1], "Similer Products", 168)} */}
+          {this.renderProductsList(
+            this.state.similarProducts,
+            "Similer Products",
+            168
+          )}
           <View style={{ height: 24 }} />
         </View>
       </View>
     );
   }
   handleScroll = event => {
-    if(Platform.OS == 'ios'){
+    if (Platform.OS == "ios") {
       if (
         event.nativeEvent.contentOffset.y < 0 &&
         event.nativeEvent.contentOffset.y > -159
@@ -203,7 +311,7 @@ export default class ProductDetail extends Component {
           isbarShow: false
         });
       }
-    }else if(Platform.OS == 'android'){
+    } else if (Platform.OS == "android") {
       if (
         event.nativeEvent.contentOffset.y > 55 &&
         event.nativeEvent.contentOffset.y > 70
@@ -220,12 +328,22 @@ export default class ProductDetail extends Component {
         });
       }
     }
-   
   };
   render() {
+    let { carts } = this.props.screenProps.product;
+    let { params } = this.props.navigation.state;
+    debugger;
+    let title = "Add to Cart";
+    if (
+      carts &&
+      carts.length > 0 &&
+      carts.findIndex(x => x.product_id == params.productId) > -1
+    ) {
+      title = "View Cart";
+    }
     // Because of content inset the scroll value will be negative on iOS so bring
     // it back to 0.
-    let {product} = this.state
+    let { product } = this.state;
     const scrollY = Animated.add(
       this.state.scrollY,
       Platform.OS === "ios" ? HEADER_MAX_HEIGHT : 0
@@ -268,11 +386,13 @@ export default class ProductDetail extends Component {
           style={detailStyles.fill}
           scrollEventThrottle={1}
           onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }  ],
-            {listener:event => {
-              this.handleScroll(event);
-             }},
-            { useNativeDriver: true },
+            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+            {
+              listener: event => {
+                this.handleScroll(event);
+              }
+            },
+            { useNativeDriver: true }
           )}
           refreshControl={
             <RefreshControl
@@ -310,55 +430,64 @@ export default class ProductDetail extends Component {
               }
             ]}
             source={{
-              uri:
-              product ?  product.pic[0] : null
+              uri: product.pic
+                ? product.pic[0]
+                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
             }}
           />
-          <TouchableOpacity style={{flex:0.2,zIndex:10,
-            flexDirection:'row',justifyContent:'space-between',paddingHorizontal:16}}>
-           <TouchableOpacity 
-            style={{ alignSelf: "center",zIndex:1000 }} onPress={() => this.props.navigation.goBack()}>
+          <TouchableOpacity
+            style={{
+              flex: 0.2,
+              zIndex: 10,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              paddingHorizontal: 16
+            }}
+          >
+            <TouchableOpacity
+              style={{ alignSelf: "center", zIndex: 1000 }}
+              onPress={() => this.props.navigation.goBack()}
+            >
               <Image source={require("../../assets/images/ic_back.png")} />
             </TouchableOpacity>
             <TouchableOpacity
-             onPress={() => null}
-
-            // onPress={() => this.props.navigation.navigate('Cart')}
-            style={{ alignSelf: "center" }}>
+              onPress={() => this.props.navigation.navigate("Cart")}
+              style={{ alignSelf: "center" }}
+            >
               <Image source={require("../../assets/images/ic_cart.png")} />
             </TouchableOpacity>
-           </TouchableOpacity>
+          </TouchableOpacity>
         </Animated.View>
-        {
-          this.state.isbarShow ?
-
-        <Animated.View
-          style={[
-            detailStyles.bar,
-            {
-              zIndex:0,
-              opacity: titleOpacity,
-              paddingHorizontal:24
-              // transform: [{ scale: titleScale }, { translateY: titleTranslate }]
-            }
-          ]}
-         >
-           <TouchableOpacity 
-            style={{ alignSelf: "center",zIndex:1000 }} onPress={() => this.props.navigation.goBack()}>
+        {this.state.isbarShow ? (
+          <Animated.View
+            style={[
+              detailStyles.bar,
+              {
+                zIndex: 0,
+                opacity: titleOpacity,
+                paddingHorizontal: 24
+                // transform: [{ scale: titleScale }, { translateY: titleTranslate }]
+              }
+            ]}
+          >
+            <TouchableOpacity
+              style={{ alignSelf: "center", zIndex: 1000 }}
+              onPress={() => this.props.navigation.goBack()}
+            >
               <Image source={require("../../assets/images/ic_back.png")} />
             </TouchableOpacity>
             <View>
-            <Text style={detailStyles.title}>{product.product_title}</Text>
+              <Text style={detailStyles.title}>{product.product_title}</Text>
             </View>
             <TouchableOpacity
-               onPress={() => null}
-
-            // onPress={() => this.props.navigation.navigate('Cart')}
-            style={{ alignSelf: "center" }}>
+              onPress={() => this.props.navigation.navigate("Cart")}
+              style={{ alignSelf: "center" }}
+            >
               <Image source={require("../../assets/images/ic_cart.png")} />
             </TouchableOpacity>
-        </Animated.View>:null}
-        {this.renderButton('ADD TO CART')}
+          </Animated.View>
+        ) : null}
+        {this.renderButton(title)}
       </View>
     );
   }
@@ -397,13 +526,13 @@ const detailStyles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    flexDirection:'row',
-    justifyContent:'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     right: 0
   },
   title: {
     color: "#000000",
-    fontWeight:'bold',
+    fontWeight: "bold",
     fontSize: normalize(22)
   },
   scrollViewContent: {

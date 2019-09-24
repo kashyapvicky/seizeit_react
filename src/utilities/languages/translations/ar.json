@@ -1,5 +1,6 @@
 {
   "NetAlert" :"No internet connection",
-  "nodatafound": "No data found"
+  "nodatafound": "No data found",
+  "logincancelled": "Login cancelled"
 
 }

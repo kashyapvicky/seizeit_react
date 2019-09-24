@@ -17,9 +17,9 @@ import RNGooglePlaces from "react-native-google-places";
 import {
   PlaceholderContainer,
   Placeholder
-} from 'react-native-loading-placeholder';
+} from "react-native-loading-placeholder";
 
-import {postRequest,getRequest} from '../../redux/request/Service'
+import { postRequest, getRequest } from "../../redux/request/Service";
 
 //local imports
 import Button from "../../components/Button";
@@ -34,101 +34,150 @@ import colors from "../../utilities/config/colors";
 import { Images, screenDimensions } from "../../utilities/contsants";
 import Listitems from "./Templates/ListItem";
 import BannerCarousel from "./Templates/Carousel";
-import {requestLocationPermission} from './Templates/RequestLocationPermission'
-import {ProductPlaceholder} from './Templates/PlaceHolderProduct'
-import {CategoryPlaceholder} from './Templates/CategoryPlaceHolder'
-
+import { requestLocationPermission } from "./Templates/RequestLocationPermission";
+import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
+import { CategoryPlaceholder } from "./Templates/CategoryPlaceHolder";
+import {updateProductCartValue,updateCartSuccess,updateWishListSuccess} from '../../utilities/method'
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 10 : 10;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
 class Home extends Component {
   // loadingComponent: Promise<React.Element<*>>;
   constructor(props) {
     super(props);
+    this.veiwRef={}
     this.state = {
-      name:'Location',
+      name: "Location",
       visible2: false,
-      categories:[],
-      featureProducts:[],
-      banners:[],
-      popularProducts:[],
+      categories: [],
+      featureProducts: [],
+      banners: [],
+      popularProducts: [],
       isbarShow: false,
       scrollY: new Animated.Value(
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
       ),
       refreshing: false
     };
-    
     this.isbarShow = false;
-    this.onGetCurrentPlacePress()
-    if(Platform.OS == 'android'){
-      requestLocationPermission().then((res)=>{
-        if(res){
-          this.onGetCurrentPlacePress()
+    if (Platform.OS == "android") {
+      requestLocationPermission().then(res => {
+        if (res) {
+          this.onGetCurrentPlacePress();
         }
-      })
-      }
-      // Placeholder Product 
-      this.loaderComponent = new Promise(resolve => {
-        setTimeout(() => {
-          resolve();
-        }, 1000);
       });
-   
+    } else {
+      this.onGetCurrentPlacePress();
+    }
+    // Placeholder Product
+    this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
   }
-  componentDidMount(){
-    this.getCategories()
-    this.getHomeData()
+  componentDidMount() {
+    this.getCategories();
+    this.getCartData()
   }
-/*********** Get current Location  *****/
- onGetCurrentPlacePress = () => {
-    RNGooglePlaces.getCurrentPlace()
-      .then(results => {
-        if (results && results.length > 0) {
-          debugger
-          this.setState({
-            currentAddress: results[0].address,
-            currentLocation: results[0].location,
-            name:results[0].name,
-          });
-        }
-      })
-      .catch(error => console.log(error.message));
+  /*********** Get current Location  *****/
+  getCartData = ()=>{
+   let {getCartRequestApi} = this.props.screenProps.productActions
+   getCartRequestApi().then((res) =>{
+     if(res){
+       this.getHomeData();
+     }
+   })
+  }
+  onGetCurrentPlacePress = () => {
+    let { netStatus } = this.props.screenProps.user;
+    let { setToastMessage, setIndicator } = this.props.screenProps.actions;
+    let { toastRef } = this.props.screenProps;
+    if (!netStatus) {
+      setToastMessage(true, colors.danger);
+      return toastRef.show(string("NetAlert"));
+    } else {
+      RNGooglePlaces.getCurrentPlace()
+        .then(results => {
+          if (results && results.length > 0) {
+            debugger;
+            this.setState({
+              currentAddress: results[0].address,
+              currentLocation: results[0].location,
+              name: results[0].name
+            });
+          }
+        })
+        .catch(error => console.log(error.message));
+    }
   };
-  updateLocation = (location) =>{
+  updateLocation = location => {
     this.setState({
       ...location
-    })
-  }
+    });
+  };
   /*************APi Call  *********/
-  getCategories = ()=>{
-    let {setIndicator} = this.props.screenProps.actions
-    getRequest('user/fetchcategory').then((res) => { 
-      debugger
-      if(res && res.success && res.success.length > 0){
-        this.setState({
-          categories : res.success
-        })
-      }   
-      setIndicator(false)
-    }).catch((err) => {
-    })
-  }
-  getHomeData = ()=>{
-    let {setIndicator} = this.props.screenProps.actions
-    getRequest('user/home-page').then((res) => { 
-      debugger
-      if(res && res.success){
-        this.setState({
-          featureProducts : res.success.featured &&  res.success.featured.length>0 ?res.success.featured:[],
-          popularProducts : res.success.popular &&  res.success.popular.length>0 ?res.success.popular:[],
-          banners:res.success.banner && res.success.banner.length >0 ? res.success.banner :[]
-        })
-      }   
-      setIndicator(false)
-    }).catch((err) => {
-    })
-  }
+  getCategories = () => {
+    let { setIndicator } = this.props.screenProps.actions;
+    getRequest("user/fetchcategory")
+      .then(res => {
+        debugger;
+        if (res && res.success && res.success.length > 0) {
+          this.setState({
+            categories: res.success
+          });
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
+
+  getHomeData = () => {
+    let { setIndicator } = this.props.screenProps.actions;
+    let { carts,wishlists } = this.props.screenProps.product;
+    getRequest("user/home-page")
+      .then(res => {
+        debugger;
+        if (res && res.success) {
+          this.setState(
+            {
+              featureProducts:
+                res.success.featured && res.success.featured.length > 0
+                  ? res.success.featured
+                  : [],
+              popularProducts:
+                res.success.popular && res.success.popular.length > 0
+                  ? res.success.popular
+                  : [],
+              banners:
+                res.success.banner && res.success.banner.length > 0
+                  ? res.success.banner
+                  : []
+            },
+            () => {
+              if (carts && carts.length > 0 || wishlists && wishlists.length>0) {
+                let featureProducts = updateProductCartValue(
+                  this.state.featureProducts,
+                  this.props.screenProps.product
+                   );
+                let popularProducts = updateProductCartValue(
+                  this.state.popularProducts,
+                  this.props.screenProps.product
+                );
+                this.setState({
+                  featureProducts,
+                  popularProducts
+                });
+              }
+            }
+          );
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
+
   /*********** APi Call End  *****/
 
   renderButton = title => {
@@ -167,9 +216,11 @@ class Home extends Component {
       <View index={index} style={styles.showAllPetProductsView}>
         <TouchableOpacity
           activeOpacity={9}
-          onPress={() => this.props.navigation.navigate("SubCategory",{
-            category:item
-          })}
+          onPress={() =>
+            this.props.navigation.navigate("SubCategory", {
+              category: item
+            })
+          }
         >
           <View
             style={{
@@ -179,7 +230,7 @@ class Home extends Component {
             }}
           >
             <Image
-              source={require("../../assets/images/profile.jpeg")}
+              source={{ uri: `${item.pic}` }}
               style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
             />
             <View style={{ paddingTop: 8 }}>
@@ -202,9 +253,9 @@ class Home extends Component {
           snapToInterval={300}
           data={this.state.categories}
           pagingEnabled={true}
-          ListEmptyComponent={<CategoryPlaceholder  
-            loader={this.loaderComponent}
-          />}
+          ListEmptyComponent={
+            <CategoryPlaceholder loader={this.loaderComponent} />
+          }
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index + "flatlist"}
           renderItem={this.showAllCateItems}
@@ -221,16 +272,21 @@ class Home extends Component {
       </View>
     );
   };
-  renderItems = (item, index, imageHeight) => {
-    console.log(item,"item")
+
+  renderItems = (item, index, imageHeight, array, label) => {
     return (
       <Listitems
-        onPress={() => this.props.navigation.navigate("ProductDetails",{
-          productId:item.product_id
-        })}
+        onPress={() =>
+          this.props.navigation.navigate("ProductDetails", {
+            productId: item.product_id
+          })
+        }
         item={item}
         index={index}
         imageHeight={imageHeight}
+        onPressWishlist={() => this.onPressWishlist(item,index,label)}
+        onPressCart={() => this.addRemoveCart(item, label)}
+        onGetRefWishlist={(ref)=> this.veiwRef[index+label.trim()] = ref}
       />
     );
   };
@@ -241,35 +297,36 @@ class Home extends Component {
         <View style={{ height: 10 }} />
         <FlatList
           bounces={true}
+          extraData={this.state}
           // numColumns={2}
           horizontal={true}
           showsVerticalScrollIndicator={false}
           data={array}
           keyExtractor={(item, index) => index + "product"}
-          ListEmptyComponent={<ProductPlaceholder  
-            loader={this.loaderComponent}
-          />}
+          ListEmptyComponent={
+            <ProductPlaceholder loader={this.loaderComponent} />
+          }
           renderItem={({ item, index }) =>
-            this.renderItems(item, index, imageHeight)
+            this.renderItems(item, index, imageHeight, array, label)
           }
         />
-
       </View>
     );
   };
   /**************** Render Scrollview Content  ************/
-
   _renderScrollViewContent() {
     return (
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 16 }}>
-          <View style={{ flex: 1, marginVertical: 16, borderRadius: 16 }}>
-            <BannerCarousel 
-             banners={this.state.banners}
-            />
+          <View style={{ flex: 1, marginVertical: 12, borderRadius: 16 }}>
+            <BannerCarousel banners={this.state.banners} />
           </View>
           <View style={{ height: 28 }} />
-          {this.renderProductsList(this.state.popularProducts, "Trending Products", 96)}
+          {this.renderProductsList(
+            this.state.popularProducts,
+            "Trending Products",
+            96
+          )}
           <View style={{ height: 16 }} />
           {this.renderButton("Explore more in Trending")}
           <View style={{ height: 32 }} />
@@ -286,7 +343,7 @@ class Home extends Component {
     );
   }
   handleScroll = event => {
-    if(Platform.OS == 'ios'){
+    if (Platform.OS == "ios") {
       if (
         event.nativeEvent.contentOffset.y < 0 &&
         event.nativeEvent.contentOffset.y > -159
@@ -302,7 +359,7 @@ class Home extends Component {
           isbarShow: false
         });
       }
-    }else if(Platform.OS == 'android'){
+    } else if (Platform.OS == "android") {
       if (
         event.nativeEvent.contentOffset.y > 55 &&
         event.nativeEvent.contentOffset.y > 70
@@ -319,10 +376,48 @@ class Home extends Component {
         });
       }
     }
-   
   };
-  
+  /************** Wishlist  Method  **************/
+  bounce = (index,label) => this.veiwRef[index+label.trim()].rubberBand(500).then(endState => console.log(endState.finished ? 'bounce finished' : 'bounce cancelled'));
+  onPressWishlist = (item,index,label) =>{
+    let { addToWishlistSuccess } = this.props.screenProps.productActions;
+    this.bounce(index,label)
+    if (label == "Trending Products") {
+      let updateProducts = updateWishListSuccess(this.state.popularProducts,item)
+      this.setState({
+        popularProducts: updateProducts
+      });
+   
+    } else if (label == "Featured Products") {
+      let updateProducts = updateWishListSuccess(this.state.featureProducts,item)
+      this.setState({
+        featureProducts: updateProducts
+      });
+  }
+   addToWishlistSuccess({ ...item, isFevorite: item.isFevorite ? false : true });
+}
+/************** Cart Method  **************/
+ 
+  addRemoveCart = (item, label) => {
+    let { addCartRequestApi } = this.props.screenProps.productActions;
+    if (label == "Trending Products") {
+      let updateProducts = updateCartSuccess(this.state.popularProducts,item)
+      this.setState({
+        popularProducts: updateProducts
+      });
+    } else if (label == "Featured Products") {
+      let updateProducts = updateCartSuccess(this.state.featureProducts,item)
+      this.setState({
+        featureProducts: updateProducts
+      });
+     }
+     addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
+
+  };
+
+/************** Cart Method  **************/
   render() {
+    let {carts} = this.props.screenProps.product
     /************ Animation Type */
     const scrollY = Animated.add(
       this.state.scrollY,
@@ -385,15 +480,14 @@ class Home extends Component {
             <Header
               isRightIcon={Images.cart}
               hideLeftIcon={true}
+              carts={carts}
               headerStyle={{ flex: 1, zIndex: 1000 }}
               title={this.state.name}
               isLocation
-              onRightPress={() => null}
-
-              // onRightPress={() => this.props.navigation.navigate("Cart")}
+              onRightPress={() => this.props.navigation.navigate("Cart")}
               onPressLocation={() =>
-                this.props.navigation.navigate("ChangeLocation",{
-                  updateLocation : (location) => this.updateLocation(location)
+                this.props.navigation.navigate("ChangeLocation", {
+                  updateLocation: location => this.updateLocation(location)
                 })
               }
               backPress={() => this.props.navigation.goBack()}
@@ -407,11 +501,7 @@ class Home extends Component {
             {this.renderCategory()}
           </Animated.View>
         </Animated.View>
-        {this.state.isbarShow
-        
-        
-        
-         ? (
+        {this.state.isbarShow ? (
           <Animated.View
             style={[
               detailStyles.bar,
@@ -419,7 +509,7 @@ class Home extends Component {
               {
                 flex: 1,
                 paddingVertical: 16,
-                opacity: titleOpacity,
+                opacity: titleOpacity
                 // transform: [
                 //   { scale: titleScale },
                 //   { translateY: titleTranslate }
@@ -438,7 +528,10 @@ class Home extends Component {
                 }
               ]}
             >
-              {this.renderSearchInput({ backgroundColor: "white",borderRadius:40/2 })}
+              {this.renderSearchInput({
+                backgroundColor: "white",
+                borderRadius: 40 / 2
+              })}
             </View>
           </Animated.View>
         ) : null}
@@ -484,7 +577,7 @@ const detailStyles = StyleSheet.create({
     backgroundColor: "transparent",
     // top: 0,
     width: screenDimensions.width,
-    borderRadius:52/2,
+    borderRadius: 52 / 2,
     // left: 0,
     flexDirection: "row",
     // justifyContent:'space-between',

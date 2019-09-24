@@ -26,7 +26,7 @@ export const MainNavigator = createSwitchNavigator(
     CustomerTabNavigator:{screen:CustomerTabNavigator}
   },
   {
-    initialRouteName: "VendorTabNavigator",
+    initialRouteName: "AuthNavigatorStack",
     initialRouteParams: { transition: 'horizontal' },
     transitionConfig: TransitionConfig,
     mode: Platform.OS === "ios" ? "card" : "card",

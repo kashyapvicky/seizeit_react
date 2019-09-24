@@ -1,9 +1,9 @@
-import React, { Component,Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import {
   View,
   SafeAreaView,
   Image,
-  StatusBar,
+  Alert,
   TouchableOpacity,
   ScrollView,
   FlatList,
@@ -24,30 +24,31 @@ import { normalize } from "../../utilities/helpers/normalizeText";
 import ScrollableTabView from "../../components/ScrollableTab";
 import Listitems from "./Templates/ListItem";
 import { FilterButton } from "./Templates/FilterButton";
-
+import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
+import {
+  updateProductCartValue,
+  updateCartSuccess,
+  updateWishListSuccess
+} from "../../utilities/method";
 class Cart extends Component {
   constructor(props) {
     super(props);
+    this.veiwRef={}
     this.state = {
       visible2: false,
-      cartItems: [
-        {
-          id: 1,
-          cat_name: "CLOTHING",
-          product_name: "Dotted Red payjama bottom wear",
-          price: 90,
-          isCart: true
-        },
-        {
-          id: 1,
-          cat_name: "CLOTHING",
-          product_name: "Dotted Red payjama bottom wear",
-          price: 100,
-          isCart: true
-        }
-      ]
+      cartItems: []
     };
-    console.log(this.props.navigation.state,"state")
+    this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
+  componentDidMount() {
+    let { carts } = this.props.screenProps.product;
+    this.setState({
+      cartItems: carts
+    });
   }
   pressButton = () => {
     this.props.navigation.navigate("Checkout");
@@ -76,6 +77,9 @@ class Cart extends Component {
         index={index}
         imageHeight={168}
         onPress={() => this.props.navigation.navigate("ProductDetails")}
+        onPressWishlist={() => this.onPressWishlist(item, index)}
+        onPressCart={() => this.addRemoveCart(item)}
+        onGetRefWishlist={ref => (this.veiwRef[index] = ref)}
       />
     );
   };
@@ -94,14 +98,84 @@ class Cart extends Component {
           data={this.state.cartItems}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
+          ListEmptyComponent={
+            <ProductPlaceholder
+              array={[1, 2]}
+              message={
+                this.props.screenProps.loader ? "" : "Your cart is Empty "
+              }
+              loader={this.loaderComponent}
+            />
+          }
         />
       </View>
     );
   };
+  /************* Cart Methdod ***********/
+  bounce = index =>
+  this.veiwRef[index]
+    .rubberBand(500)
+    .then(endState =>
+      console.log(endState.finished ? "bounce finished" : "bounce cancelled")
+    );
+onPressWishlist = (item,index) => {
+  // let {addToCartSuccess} = this.props.screenProps.productActions
+  this.bounce(index)
+  let { addToWishlistSuccess } = this.props.screenProps.productActions;
+  let updateArray = updateWishListSuccess(this.state.cartItems, item);
+  this.setState({
+    cartItems: updateArray
+  });
+  addToWishlistSuccess({
+    ...item,
+    isFevorite: item.isFevorite ? false : true
+  });
+};
+  checkCartItem = item => {
+    let { carts } = this.props.screenProps.product;
+    if (carts && carts.length == 1) {
+      this.warningMessage(item);
+    } else {
+      this.addRemoveCart(item);
+    }
+  };
+  warningMessage = () => {
+    Alert.alert(
+      "",
+      string("areyousureremove"),
+      [
+        { text: string("cancel"), onPress: () => null },
+        {
+          text: string("OK"),
+          onPress: () => {
+            this.removeItems();
+          }
+          // style:'cancel'
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+  addRemoveCart = item => {
+    let { addCartRequestApi } = this.props.screenProps.productActions;
+    this.setState({
+       cartItems: this.state.cartItems.filter(
+        x => x.product_id != item.product_id
+      )
+    });
+    addCartRequestApi({ ...item, isCart: false });
+  };
+  removeItems = item => {
+    let { removeCartSuccess } = this.props.screenProps.productActions;
+    this.setState({
+      carts: []
+    });
+    removeCartSuccess();
+  };
+  /************* Cart Methdod  End***********/
 
   render() {
     return (
-
       <View style={{ flex: 1 }}>
         <Header
           isRightIcon={Images.close_g}
@@ -117,17 +191,18 @@ class Cart extends Component {
           onRightPress={() => this.props.navigation.dismiss()}
         />
         {this.renderProductsList()}
-        <View
-          style={{
-            flex: 0.12,
-            justifyContent: "flex-end",
-            paddingHorizontal:8,
-            justifyContent: "center",
-            flexDirection: "row",
-            backgroundColor: colors.primary
-          }}
-        >
-          {/* <View
+        {this.state.cartItems.length > 0 ? (
+          <View
+            style={{
+              flex: 0.12,
+              justifyContent: "flex-end",
+              paddingHorizontal: 8,
+              justifyContent: "center",
+              flexDirection: "row",
+              backgroundColor: colors.primary
+            }}
+          >
+            {/* <View
             style={{
               flex: 0.4,
               justifyContent: "center",
@@ -145,12 +220,13 @@ class Cart extends Component {
               $120
             </Text>
           </View> */}
-          <View style={{ flex: 1, justifyContent: "center" }}>
-            {this.renderButton("Proceed to Checkout")}
-          </View>
-        </View>
-        </View>
 
+            <View style={{ flex: 1, justifyContent: "center" }}>
+              {this.renderButton("Proceed to Checkout")}
+            </View>
+          </View>
+        ) : null}
+      </View>
     );
   }
 }

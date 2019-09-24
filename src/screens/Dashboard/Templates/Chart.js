@@ -31,7 +31,7 @@ export default LineChartComponet = props => {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            ${4500}
+            $00
           </Text>
           <Text style={[styles.totalProfitOverSale, { color: 'rgba(0,0,0,0.56)',fontSize:14 }]}>
             {'Total Sales'}
@@ -50,7 +50,7 @@ export default LineChartComponet = props => {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            ${4500}
+            $00
           </Text>
         </View>
       </View>
@@ -62,10 +62,10 @@ export default LineChartComponet = props => {
             datasets: [
               {
                 data: [
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
-                  Math.random() * 100,
+                 Math.random() * 100,
+                  // Math.random() * 100,
+                  // Math.random() * 100,
+                  // Math.random() * 100,
                 ]
               }
             ]

@@ -7,7 +7,14 @@ import colors from "..//utilities/config/colors";
 import { normalize } from "../utilities/helpers/normalizeText";
 import { Images } from "../utilities/contsants";
 const Header = props => {
-  const { title, backPress, headerStyle,onPressLocation,onRightPress } = props;
+  const {
+    title,
+    backPress,
+    headerStyle,
+    onPressLocation,
+    onRightPress,
+    carts
+  } = props;
   return (
     <View style={[styles.container, headerStyle && headerStyle]}>
       {!props.hideLeftIcon ? (
@@ -27,7 +34,7 @@ const Header = props => {
       {title ? (
         <TouchableOpacity
           disabled={!props.isLocation}
-          onPress={()=> onPressLocation ? onPressLocation() : null}
+          onPress={() => (onPressLocation ? onPressLocation() : null)}
           style={{
             flex: 1,
             paddingRight: 4,
@@ -88,12 +95,42 @@ const Header = props => {
                 fontSize: normalize(14)
               }}
             >
-              {props.isRightText}
+            {props.isRightText}
             </Text>
           ) : (
             <Image source={props.isRightIcon} style={{ alignSelf: "center" }} />
           )}
-
+          {carts && carts.length > 0 ? (
+            <TouchableOpacity
+            onPress={() => onRightPress && onRightPress()}
+            style={{
+                zIndex: 1,
+                position: "absolute",
+                backgroundColor: "red",
+                borderRadius: 17 / 2,
+                width: 17,
+                height: 17,
+                top: -5,
+                right: 0,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <Text
+                p
+                style={{
+                  color: "white",
+                  fontSize: normalize(12),
+                  fontWeight: "600",
+                  lineHeight:18
+                }}
+              >
+                {carts.length}
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <View />
+          )}
           {/* <Ionicons
             name={props.isRightIcon}
             size={28}

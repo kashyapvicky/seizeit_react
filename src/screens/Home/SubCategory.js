@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
-import {postRequest,getRequest} from '../../redux/request/Service'
+import { postRequest, getRequest } from "../../redux/request/Service";
 
 //local imports
 import Button from "../../components/Button";
@@ -24,19 +24,27 @@ import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import ScrollableTabView from "../../components/ScrollableTab";
 import Listitems from "./Templates/ListItem";
-import {FilterButton} from "./Templates/FilterButton";
-import {ProductPlaceholder} from './Templates/PlaceHolderProduct'
+import { FilterButton } from "./Templates/FilterButton";
+import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
+import {
+  updateProductCartValue,
+  updateCartSuccess,
+  updateWishListSuccess
+} from "../../utilities/method";
 
 class SubCategory extends Component {
   constructor(props) {
     super(props);
+    this.veiwRef = {};
+
     this.state = {
       visible2: false,
       cartItems: [],
-      name:'',
-      catId:'',
+      name: "",
+      catId: "",
+      tabPage: 0,
       tabs: [],
-      products:[],
+      products: [],
       orders: ["1", "2"]
     };
     this.loaderComponent = new Promise(resolve => {
@@ -45,63 +53,101 @@ class SubCategory extends Component {
       }, 1000);
     });
   }
-  componentDidMount(){
-    let {params} = this.props.navigation.state
-    if(params && params.category){
-      let {category} = params
-      this.setState({
-        name : category.name,
-        catId:category.id
-      },()=>{
-      })
-      this.getSubCategories(category.id)
-
+  componentDidMount() {
+    let { params } = this.props.navigation.state;
+    if (params && params.category) {
+      let { category } = params;
+      debugger;
+      this.setState(
+        {
+          name: category.name,
+          catId: category.category_id
+        },
+        () => {}
+      );
+      this.getSubCategories(category.category_id);
     }
   }
-    /*************APi Call  *********/
-     getSubCategories = (category_id)=>{
-    let {setIndicator} = this.props.screenProps.actions
-    let data ={}
-    data['category_id'] = category_id
-     postRequest('user/getsubcategory',data).then((res) => {  
-      if(res && res.success && res.success.length > 0){
-        this.setState({
-          tabs : res.success
-        },()=>{
-          let prependedValue = [{ created_at: 1557140964, description: null, icon: false, id: -1, slug: "allproduct", status: 1, name: "All", updated_at: 1557140964 }]
-          this.setState({ tabs: [...prependedValue, ...this.state.tabs] })
-          this.onSelectCategoryGetProduct(-1)
-
-        })
-      }   
-      setIndicator(false)
-    }).catch((err) => {
-    })
-  }
-  onSelectCategoryGetProduct = (catId) =>{
-    let {setIndicator} = this.props.screenProps.actions
-    let data ={}
-     let apiName
-     if(catId == -1){
-       data['category_id'] = this.state.catId
-       apiName = `user/productList_category`
-     }else{
-      data['category_id'] = this.state.catId
-      data['subcategory_id'] = catId
-      apiName = `user/productList_subcategory`
-     }
-     postRequest(apiName,data).then((res) => { 
-       debugger
-      if(res && res.success && res.success.length > 0){
-        this.setState({
-          products : res.success
-        },()=>{
-        })
-      }   
-      setIndicator(false)
-    }).catch((err) => {
-    })
-  } 
+  /*************APi Call  *********/
+  getSubCategories = category_id => {
+    let { setIndicator } = this.props.screenProps.actions;
+    let data = {};
+    data["category_id"] = category_id;
+    postRequest("user/getsubcategory", data)
+      .then(res => {
+        debugger;
+        if (res && res.success && res.success.length > 0) {
+          this.setState(
+            {
+              tabs: res.success
+            },
+            () => {
+              let prependedValue = [
+                {
+                  created_at: 1557140964,
+                  description: null,
+                  icon: false,
+                  id: -1,
+                  slug: "allproduct",
+                  status: 1,
+                  name: "All",
+                  updated_at: 1557140964
+                }
+              ];
+              this.setState({ tabs: [...prependedValue, ...this.state.tabs] });
+              this.onSelectCategoryGetProduct(-1);
+            }
+          );
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
+  onSelectCategoryGetProduct = catId => {
+    let { setIndicator } = this.props.screenProps.actions;
+    let data = {};
+    let apiName;
+    if (catId == -1) {
+      data["category_id"] = this.state.catId;
+      apiName = `user/productList_category`;
+    } else {
+      data["category_id"] = this.state.catId;
+      data["subcategory_id"] = catId;
+      apiName = `user/productList_subcategory`;
+    }
+    postRequest(apiName, data)
+      .then(res => {
+        debugger;
+        if (res && res.success && res.success.length > 0) {
+          this.setState(
+            {
+              products: res.success
+            },
+            () => {
+              let { carts, wishlists } = this.props.screenProps.product;
+              if (
+                (carts && carts.length > 0) ||
+                (wishlists && wishlists.length > 0)
+              ) {
+                let products = updateProductCartValue(
+                  this.state.products,
+                  this.props.screenProps.product
+                );
+                this.setState({
+                  products
+                });
+              }
+            }
+          );
+        } else {
+          this.setState({
+            products: []
+          });
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
   /*********** APi Call End  *****/
   pressButton = () => {};
   renderButton = (title, transparent) => {
@@ -123,17 +169,26 @@ class SubCategory extends Component {
     );
   };
   renderItems = ({ item, index }) => {
-    return <Listitems item={item} index={index} imageHeight={168} 
-    onPress={()=> this.props.navigation.navigate('ProductDetails',{
-      productId:item.product_id
-    })}
-
-    />;
+    return (
+      <Listitems
+        item={item}
+        index={index}
+        imageHeight={168}
+        onPress={() =>
+          this.props.navigation.navigate("ProductDetails", {
+            productId: item.product_id
+          })
+        }
+        onPressWishlist={() => this.onPressWishlist(item, index)}
+        onPressCart={() => this.addRemoveCart(item)}
+        onGetRefWishlist={ref => (this.veiwRef[index] = ref)}
+      />
+    );
   };
   renderProductsList = (item, index) => {
     return (
       <View
-        skey={index}
+        key={index}
         tabLabel={item.name}
         style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}
       >
@@ -147,10 +202,13 @@ class SubCategory extends Component {
           data={this.state.products}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
-          ListEmptyComponent={<ProductPlaceholder  
-            array={[1, 2, 3, 4,5,6]}
-            loader={this.loaderComponent}
-          />}
+          ListEmptyComponent={
+            <ProductPlaceholder
+              array={[1, 2, 3, 4, 5, 6]}
+              message={this.props.screenProps.loader ? "" : "No products found"}
+              loader={this.loaderComponent}
+            />
+          }
           // refreshing={this.state.isRefreshing}
           // onRefresh={this.handleRefresh}
           // onEndReached={this.handleLoadMore}
@@ -167,44 +225,78 @@ class SubCategory extends Component {
       </View>
     );
   };
-  setStateForTabChange = (event)=>{
-    debugger
-    if(event){
-      let catId= this.state.tabs[event.i].id
-      debugger
-      this.onSelectCategoryGetProduct(catId)
+  setStateForTabChange = event => {
+    if (event) {
+      let catId = this.state.tabs[event.i].id;
+      this.onSelectCategoryGetProduct(catId);
+      this.setState({
+        tabPage: event.i
+      });
+      debugger;
     }
-    console.log(event,"event")
-  }
+    console.log(event, "event");
+  };
   renderScrollableTab = () => {
     return (
       <ScrollableTabView
         tabs={this.state.tabs}
-        onChangeTab={(event) => { this.setStateForTabChange(event) }}
+        //tabPage={this.state.tabPage}
+        onChangeTab={event => {
+          this.setStateForTabChange(event);
+        }}
         renderListTabs={(item, index) => this.renderProductsList(item, index)}
       />
     );
   };
+  /************** Cart Method  **************/
+  bounce = index =>
+    this.veiwRef[index]
+      .rubberBand(500)
+      .then(endState =>
+        console.log(endState.finished ? "bounce finished" : "bounce cancelled")
+      );
+  onPressWishlist = (item, index) => {
+    this.bounce(index);
+    let { addToWishlistSuccess } = this.props.screenProps.productActions;
+    let updateArray = updateWishListSuccess(this.state.products, item);
+    this.setState({
+      products: updateArray
+    });
+    addToWishlistSuccess({
+      ...item,
+      isFevorite: item.isFevorite ? false : true
+    });
+  };
+  addRemoveCart = item => {
+    let { addCartRequestApi } = this.props.screenProps.productActions;
+    let updateArray = updateCartSuccess(this.state.products, item);
+    this.setState({
+      products: updateArray
+    });
+    addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
+  };
+
+  /************** Cart Method  **************/
   render() {
     return (
       <View style={{ flex: 1 }}>
         <Header
           isRightIcon={false}
-            // headerStyle={[
-            //   styles.shadow,
-            //   {
-            //     backgroundColor: "#FFFFFF",
-            //     shadowRadius: 0.1
-            //   }
-            // ]}
+          // headerStyle={[
+          //   styles.shadow,
+          //   {
+          //     backgroundColor: "#FFFFFF",
+          //     shadowRadius: 0.1
+          //   }
+          // ]}
           //   hideLeftIcon={true}
           title={this.state.name}
           backPress={() => this.props.navigation.goBack()}
         />
         {this.renderScrollableTab()}
-            <FilterButton 
-            onPress={()=>this.props.navigation.navigate('Filter')}
-            />
+        <FilterButton
+          onPress={() => this.props.navigation.navigate("Filter")}
+        />
       </View>
     );
   }

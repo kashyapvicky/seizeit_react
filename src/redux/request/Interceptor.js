@@ -3,13 +3,10 @@ import SERVER_URL from '../../utilities/config'
 import {path} from 'ramda'
 
 import {getAccessTokenFromCookies} from './Service' // ... Just a service to refresh auth tokens
-
 const AxiosInstance = axios.create({
     baseURL: SERVER_URL.apiUrl,
     timeout: 20000,
-    headers: {
-        'Content-Type': 'application/json'
-    }
+    headers:{'Content-Type': 'application/json',}
 })
 AxiosInstance.interceptors.response.use((response) =>{
     return response;
@@ -32,8 +29,12 @@ AxiosInstance.interceptors.response.use((response) =>{
                     return error.response
                 }
             }).catch(err => {
-                debugger
-                return error.response
+                if(err == true){
+                    return error.response
+                }else{
+                    return err.response
+                }
+              
             })
     } else {
         debugger

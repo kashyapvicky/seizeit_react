@@ -93,7 +93,6 @@ class Settings extends Component {
         }
       ]
     };
-    this.getUserInfo()
   }
   // Check User Type
   checkUserTypeAndShowMenu = () => {
@@ -131,7 +130,11 @@ class Settings extends Component {
     }
   };
   componentDidMount() {
-    this.checkUserTypeAndShowMenu();
+    let { user } = this.props.screenProps.user;
+    if(user){
+      this.getUserInfo()
+      this.checkUserTypeAndShowMenu();
+    }
   }
   renderButton = (title, transparent) => {
     return (
@@ -221,7 +224,8 @@ closeModal() {
             return (
               <TouchableOpacity
                 key={index + "order"}
-                onPress={() => this.props.navigation.navigate(res.routeName)}
+                onPress={() => null}
+                // onPress={() => this.props.navigation.navigate(res.routeName)}
               >
                 <View style={styles.contactUsView}>
                   <Text style={styles.titleOneText}>{res.name}</Text>
@@ -501,7 +505,7 @@ logout = async () => {
        logOutUserSuccess(res.success)
        setTimeout(() =>{
         this.props.navigation.navigate('AuthNavigatorStack')
-       },100)
+       },200)
     }
     setIndicator(false)
   }).catch((err) => {

@@ -50,7 +50,6 @@ class AddNewProduct extends Component {
       productCategory: "",
       productSubCategory: "",
       sizes:[
-
         {
         id:1,
         name:'X',
@@ -93,10 +92,95 @@ class AddNewProduct extends Component {
       openDropDown: false
     };
   }
+  sizeStatus = (status) =>{
+    switch(status){
+      case 1 :
+      return  {
+        id:1,
+        name:'X',
+      }
+      case 2 :
+      return {
+        id:2,
+        name:'M',
+      }
+      case 3 :
+       return  {
+        id:3,
+        name:'XL',
+      }
+      case 4 :
+       return  {
+        id:4,
+        name:'XXL',
+      }
+       default:
+       return {
+        id:1,
+        name:'X',
+      }
+    }
+  }
+  noOfTimeUsedStatus = (status) =>{
+    switch(status){
+      case 1 :
+      return {
+        id:1,
+        name:'Once'
+      }
+      case 2 :
+      return  {
+        id:1,
+        name:'Two'
+      }
+      case 3 :
+       return   {
+        id:1,
+        name:'Three'
+      }
+       default:
+       return {
+        id:1,
+        name:'Once'
+      }
+    }
+  }
   componentDidMount(){
+    let {params} = this.props.navigation.state
+    if(params && params.selectedProduct){
+      let {selectedProduct} = params
+      this.setProductData(selectedProduct)
+    }
     this.getCategories()
   }
 
+  setProductData=(selectedProduct)=>{
+    debugger  
+    this.setState({
+      productCategory:{name:selectedProduct.category,category_id:selectedProduct.category_id},
+      productSubCategory:{name:selectedProduct.subcategory,
+      id:selectedProduct.subcategory_id},
+      productDes:selectedProduct.description,
+      productPrice:`${selectedProduct.price}`,
+      isOnAvailSale:selectedProduct.available,
+      isSoldOut:selectedProduct.sold_out,
+      noOfTimeUsed:this.noOfTimeUsedStatus(selectedProduct.times),
+      productSize:this.sizeStatus(selectedProduct.size_id),
+      productTitle:selectedProduct.product_title,
+      product_id:selectedProduct.product_id
+    })
+    if(selectedProduct.pic && selectedProduct.pic.length > 0){
+      let newImages = selectedProduct.pic.map((x) =>{
+          return {
+            uri:x,
+            remoteUrl:true
+          }
+        })
+        this.setState({
+          productImages : [...newImages,...this.state.productImages]
+        })
+    }
+  }
 /*****************  Api Function  *************/
   getSubCategories = (category_id)=>{
     let {setIndicator} = this.props.screenProps.actions
@@ -129,7 +213,7 @@ class AddNewProduct extends Component {
       productCategory:item,
       openDropDownCat:false
     },() =>{
-      this.getSubCategories(item.id)
+      this.getSubCategories(item.category_id)
     })
   }
   addProduct = ()=>{
@@ -144,7 +228,8 @@ class AddNewProduct extends Component {
         return toastRef.show(validation[0].message)
     }else{
       let formData = new FormData();
-      formData.append("product_category", productCategory.id);
+      debugger
+      formData.append("product_category", productCategory.category_id);
       formData.append("product_subcategory",productSubCategory.id);
       formData.append("title", productTitle);
       formData.append("description", productDes);
@@ -154,18 +239,72 @@ class AddNewProduct extends Component {
       formData.append("for_sale",isOnAvailSale ? 1 : 0);
       formData.append("sold_out",isSoldOut ? 1 : 0);
       if (productImages && productImages.length > 0) {
-        let myArr = productImages;
+        let newImages = productImages.filter(x=> x.type && x.type != 'add')
+        debugger
+        let myArr = newImages;
         for (var i = 0; i < myArr.length; i++) {
           formData.append(`pics[${i}]`, myArr[i]);
         }
       }
       postRequest('vendor/AddProduct',formData).then((res) => {
         if (res && res.success) {
+      
           setToastMessage(true,colors.green1)
           toastRef.show(res.success) 
           this.props.navigation.goBack()
         }
        })
+    }
+  }
+  updateProduct = ()=>{
+    debugger
+    let {setToastMessage} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    let { productCategory, productSubCategory,productTitle,productSize,
+      productImages,
+      productDes, noOfTimeUsed,productPrice,isOnAvailSale,isSoldOut} = this.state;
+    let validation = Validation.validate(this.ValidationRules());
+    if (validation.length != 0) {
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validation[0].message)
+    }else{
+      let formData = new FormData();
+      debugger
+      formData.append("product_id", this.state.product_id);
+      formData.append("product_category", productCategory.category_id);
+      formData.append("product_subcategory",productSubCategory.id);
+      formData.append("title", productTitle);
+      formData.append("description", productDes);
+      formData.append("size",productSize.id);
+      formData.append("times",noOfTimeUsed.id);
+      formData.append("price",productPrice);
+      formData.append("for_sale",isOnAvailSale ? 1 : 0);
+      formData.append("sold_out",isSoldOut ? 1 : 0);
+      if (productImages && productImages.length > 0) {
+        let newImages = productImages.filter(x=> x.type && x.type != 'add' && !x.remoteUrl)
+        debugger
+        let myArr = newImages;
+        for (var i = 0; i < myArr.length; i++) {
+          formData.append(`pics[${i}]`, myArr[i]);
+        }
+      }
+      postRequest('vendor/updateProducts',formData).then((res) => {
+        if (res && res.success) {
+          setToastMessage(true,colors.green1)
+          toastRef.show(res.success) 
+          let {params} = this.props.navigation.state
+          params.getProducts()
+          this.props.navigation.goBack()
+        }
+       })
+    }
+  }
+  pressButton = (title)=>{
+    debugger
+    if(title =='Add a Product'){
+        this.addProduct()
+    }else if(title =='Update a Product'){
+        this.updateProduct()
     }
   }
 /*****************  Validation  *************/
@@ -231,7 +370,7 @@ ValidationRules = () => {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.addProduct(title)}
+        onPress={() => this.pressButton(title)}
         title={title.toUpperCase()}
       />
     );
@@ -468,6 +607,11 @@ renderProductImgaes = () => {
   render() {
     let {toastRef} = this.props.screenProps
     let {setToastMessage} = this.props.screenProps.actions
+    let {params} =this.props.navigation.state
+   let  buttonTitle='Add a Product'
+    if(params && params.selectedProduct){
+      buttonTitle='Update a Product'
+    }
     return (
       <TouchableWithoutFeedback
         onPress={() =>
@@ -500,6 +644,8 @@ renderProductImgaes = () => {
             >
               {this.renderLabel("Product Details")}
               <TextInputComponent
+                 pointerEvents="none"
+
                 user={this.props.user}
                 onPress={() =>
                   this.setState({
@@ -537,6 +683,8 @@ renderProductImgaes = () => {
               <View style={{ height: 10 }} />
               <TextInputComponent
                 user={this.props.user}
+                pointerEvents="none"
+
                 label={"Sub Category"}
                 
                 inputMenthod={input => {
@@ -652,6 +800,8 @@ renderProductImgaes = () => {
                 // placeholder={'6985 9685 9452 6623'}
                 placeholderTextColor="rgba(62,62,62,0.55)"
                 selectionColor="#96C50F"
+                pointerEvents="none"
+
                 returnKeyType="next"
                 autoCorrect={false}
                 autoCapitalize="none"
@@ -687,6 +837,8 @@ renderProductImgaes = () => {
                   noOfTimeUsed:item,
                   openDropDownProductPrice:false
                 })}
+                pointerEvents="none"
+
                 lists={this.state.noOfTimeUsedList}
                 editable={false}
                 placeholder={"in used time"}
@@ -753,7 +905,7 @@ renderProductImgaes = () => {
             </View>
             <View style={{ height: 35 }} />
           </ScrollView>
-          {this.renderButton("Add a Product")}
+          {this.renderButton(buttonTitle)}
           {this.state.isModalVisible ? this.renderBottomModal() : null}
 
         </View>

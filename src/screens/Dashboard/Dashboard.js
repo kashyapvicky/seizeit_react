@@ -156,7 +156,7 @@ class Home extends Component {
             </View>
             <View style={{paddingTop:6}}>
               <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-                $1,256
+                $00
               </Text>
             </View>
           </View>

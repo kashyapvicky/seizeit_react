@@ -25,12 +25,23 @@ class StartScreen extends Component {
       cartItems: []
     }
      this.props.screenProps.actions.setIndicator(false)
+    // this.checkUserLogin()
   }
 
   shopasguest = () => {
     this.props.navigation.navigate('App')
   }
-
+  checkUserLogin = () =>{
+    let {user} = this.props.screenProps.user
+    if(user){
+      let {user_type} = user
+      if(user_type == 'vendor'){
+        this.props.navigation.navigate('VendorTabNavigator')
+      }else if(user_type == 'customer'){
+        this.props.navigation.navigate('CustomerTabNavigator')
+      }
+    }
+  }
   pressButton = (title) => {
     if(title == 'Login'){
       this.props.navigation.navigate('Login')

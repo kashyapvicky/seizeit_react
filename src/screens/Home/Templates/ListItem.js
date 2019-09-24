@@ -1,6 +1,7 @@
 import React from "react";
-import { TouchableOpacity, View, Image } from "react-native";
+import { TouchableOpacity,TouchableWithoutFeedback, View, Image } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import * as Animatable from 'react-native-animatable';
 
 import colors from "../../../utilities/config/colors";
 import styles from "../../../styles";
@@ -9,26 +10,37 @@ import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import { screenDimensions } from "../../../utilities/contsants";
 
-const Listitems = ({ item, index, imageHeight,onPress }) => {
+const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWishlist,onPressWishlist}) => {
+
   return (
     <TouchableOpacity
       activeOpacity={9}
       index={index}
-      onPress={() => onPress ? onPress() : null}
+      onPress={() => (onPress ? onPress() : null)}
       style={[
         {
           backgroundColor: "transparent",
           paddingVertical: 16,
           flex: 0.5,
-          width:screenDimensions.width/2-24,
+          width: screenDimensions.width / 2 - 24,
           marginRight: (index + 1) % 2 != 0 ? 16 : 0
         }
       ]}
     >
-    <View style={{position:'absolute',right:8,top:20,zIndex:100}}>
-          <Image source={require('../../../assets/images/ic_favourite_0.png')} />
-    </View>
-    <View style={{ paddingBottom: 6 }}>
+     <TouchableWithoutFeedback onPress={() => onPressWishlist && onPressWishlist()}
+       >
+          <Animatable.View ref={ref => onGetRefWishlist(ref)}   
+          // animation={'rubberBand'}
+          style={{ position: "absolute", right: 8, top: 20, zIndex: 100 }}>
+            {
+              item.isFevorite ? 
+              <Image source={require("../../../assets/images/ic_favourite_1.png")} />
+              :<Image source={require("../../../assets/images/ic_favourite_0.png")} />
+            }
+        </Animatable.View>
+      </TouchableWithoutFeedback>
+
+      <View style={{ paddingBottom: 6 }}>
         <View
           style={[
             {
@@ -43,8 +55,9 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
           <Image
             style={{ borderRadius: 8, width: "100%", height: imageHeight }}
             source={{
-              uri:
-                item.pic[0]
+              uri: item.pic
+                ? item.pic[0]
+                : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
             }}
           />
         </View>
@@ -73,8 +86,7 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
                 fontWeight: "normal"
               }}
             >
-            
-             {item.product_title}
+              {item.product_title}
             </Text>
           </View>
           <View
@@ -87,15 +99,19 @@ const Listitems = ({ item, index, imageHeight,onPress }) => {
             <Text h5 style={{ color: "#000000", fontSize: normalize(13) }}>
               {`$${item.price}`}
             </Text>
-            {
-              item.isCart ?  <Image source={Images.removeCart} />
-               :  <Image source={Images.addCart} />
-            }
-           
+            <TouchableOpacity
+              onPress={() => onPressCart && onPressCart()}
+              activeOpacity={0.9}
+            >
+              {item.isCart ? (
+                <Image source={Images.removeCart} />
+              ) : (
+                <Image source={Images.addCart} />
+              )}
+            </TouchableOpacity>
           </View>
         </View>
       </View>
-
     </TouchableOpacity>
   );
 };

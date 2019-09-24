@@ -10,10 +10,11 @@ import { AppStack } from "./AppNavigationConfiguration";
 //Redux
 import { connect } from "react-redux"; // Redux
 import { bindActionCreators } from "redux";
-// import SplashScreen from 'react-native-splash-screen'
 
 //Actions
 import * as userActions from "./redux/actions/userActions";
+import * as productActions from "./redux/actions/productActions";
+
 import Indicator from "./components/Indicator";
 //Components
 import Toast from "./components/Toast";
@@ -55,13 +56,15 @@ class AppNavigation extends React.Component {
 
   //_getNetInfo isConnected Or IsReachable
   _getNetInfo = () => {
+    NetInfo.isConnected.fetch().then().done(() => {
+
     this.unsubscribe = NetInfo.addEventListener(state => {
       let value = state.isInternetReachable && state.isConnected ? true : false;
       this.props.actions.checkInternet(value);
     });
+  });
   };
   _bootStrapApp = () => {
-    //  (Platform.OS == 'android') ? SplashScreen.hide() : null;
   };
 
   /*********** Toast Method  *******************/
@@ -144,13 +147,16 @@ class AppNavigation extends React.Component {
 const mapStateToProps = state => {
   return {
     user: state.user,
+    product: state.product,
+
     errorColor: state.user.errorColor,
     loader: state.user.loader
   };
 };
 const mapDispatchToProps = dispatch => {
   return {
-    actions: bindActionCreators(userActions, dispatch)
+    actions: bindActionCreators(userActions, dispatch),
+    productActions: bindActionCreators(productActions, dispatch)
   };
 };
 export default connect(

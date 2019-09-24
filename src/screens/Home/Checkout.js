@@ -39,21 +39,10 @@ class Checkout extends Component {
       },{
         title:'Bank transfer'
       }],
-      cartItems: [{
-          id:1,
-          cat_name:'CLOTHING',
-          product_name:'Dotted Red payjama bottom wear',
-          price:90,
-          isCart:true
-      },{
-        id:1,
-        cat_name:'CLOTHING',
-        product_name:'Dotted Red payjama bottom wear',
-        price:100,
-        isCart:true
-    }],
+      cartItems: [],
     };
   }
+  
   pressButton = () => {};
   renderButton = (title, transparent) => {
     return (

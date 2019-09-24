@@ -43,13 +43,14 @@ export default class  BannerCarousel extends React.Component {
                 borderRadius:8,
 
             }]}>
-                <Image
+                <ImageBackground
                     source={{uri:item.pic[0]}}
                     resizeMode={'stretch'}
+                    imageStyle={{borderRadius:4}}
                     // style={[styles.bannerImages,{resizeMode:'cover'}]}
                     style={{
                         height: 176,
-                        borderRadius:8,
+                        // borderRadius:4,
                         width:'100%',
                         position: 'absolute',
                         top: 0,
@@ -58,12 +59,11 @@ export default class  BannerCarousel extends React.Component {
                         right: 0,
                     }}
                 >
-                </Image>
+                </ImageBackground>
             </View>
         )
     }
     render(){
-        console.log( this.props.banners," this.props.banners")
         return <View style={styles.cardMainView}>
          <View
             style={[styles.cardViewStyle,styles.shadow,,{

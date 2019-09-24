@@ -16,7 +16,7 @@ export const ProductsNavigator = createStackNavigator(
         Products:Products,
         AddNewProduct:AddNewProduct,
         ProductDetails:ProductDetails,
-
+        // Cart:Cart
       },
   {
     initialRouteName: "Products",

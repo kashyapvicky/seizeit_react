@@ -15,10 +15,12 @@ export async function requestLocationPermission()
             console.log("You can use the location")
             //alert("You can use the location");
     } else {
+      return false
       console.log("location permission denied")
      // alert("Location permission denied");
     }
   } catch (err) {
+    return false
     console.warn(err)
   }
 }

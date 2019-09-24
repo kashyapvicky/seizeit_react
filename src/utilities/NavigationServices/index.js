@@ -38,6 +38,9 @@ function getScreenPropsOfNavigation(){
 function showToastMessage(message,color){
   return _navigator.props.screenProps.toastRef.show(message,color)
 }
+function setToastMessage(status,color){
+  return _navigator.props.screenProps.actions.setToastMessage(status,color)
+}
 function setIndicator(status){
   return _navigator.props.screenProps.actions.setIndicator(status)
 }
@@ -59,5 +62,6 @@ export default {
   showToastMessage,
   setIndicator,
   checkNetStatus,
-  getUser
+  getUser,
+  setToastMessage
 };

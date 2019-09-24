@@ -5,7 +5,6 @@ import { useNetInfo } from "@react-native-community/netinfo";
 const { width } = Dimensions.get("window");
 const OfflineNotice = props => {
   const netInfo = useNetInfo();
-  console.log(netInfo,"netInfo")
   if (netInfo && !netInfo.isConnected && !netInfo.isInternetReachable) {
     return (
       <View style={styles.offlineContainer}>

@@ -25,10 +25,16 @@ import { normalize } from "../../utilities/helpers/normalizeText";
 import ScrollableTabView from "../../components/ScrollableTab";
 import Listitems from "../Home/Templates/ListItem";
 import {ProductPlaceholder} from '../Home/Templates/PlaceHolderProduct'
-
+import {
+  updateProductCartValue,
+  updateCartSuccess,
+  updateWishListSuccess
+} from "../../utilities/method";
 class Explore extends Component {
   constructor(props) {
     super(props);
+    this.veiwRef={}
+
     this.state = {
       visible2: false,
       cartItems: [],
@@ -47,21 +53,28 @@ class Explore extends Component {
     
   }
     /*************APi Call  *********/
-     getProducts = ()=>{
+  getProducts = ()=>{
     let {setIndicator} = this.props.screenProps.actions
     getRequest('user/product-listing').then((res) => {  
       if(res && res.success && res.success.length > 0){
         console.log(res.success,"res.success")
         this.setState({
           prouducts : res.success
+        },()=>{
+          let { carts,wishlists } = this.props.screenProps.product;
+          if (carts && carts.length > 0 || wishlists && wishlists.length>0) {
+            let prouducts = updateProductCartValue(this.state.prouducts,this.props.screenProps.product);
+            this.setState({
+              prouducts
+            });
+          }
         })
       }   
       setIndicator(false)
     }).catch((err) => {
     })
   }
-  
-  /*********** APi Call End  *****/
+/*********** APi Call End  *****/
   pressButton = () => {};
   renderButton = (title, transparent) => {
     return (
@@ -86,9 +99,35 @@ class Explore extends Component {
     onPress={()=> this.props.navigation.navigate('ProductDetails',{
       productId:item.product_id
     })}
+    onPressWishlist={() => this.onPressWishlist(item,index)}
+    onPressCart={() => this.addRemoveCart(item)}
+    onGetRefWishlist={(ref)=> this.veiwRef[index] = ref}
     />;
   };
-
+  /************** Cart Method  **************/
+  bounce = (index) => this.veiwRef[index].rubberBand(500).then(endState => console.log(endState.finished ? 'bounce finished' : 'bounce cancelled'));
+ 
+  onPressWishlist = (item,index) => {
+    this.bounce(index)
+    let { addToWishlistSuccess } = this.props.screenProps.productActions;
+    let updateArray = updateWishListSuccess(this.state.prouducts, item);
+    this.setState({
+      prouducts: updateArray
+    });
+    addToWishlistSuccess({
+      ...item,
+      isFevorite: item.isFevorite ? false : true
+    });
+  };
+  addRemoveCart = item => {
+    let { addCartRequestApi } = this.props.screenProps.productActions;
+    let updateArray = updateCartSuccess(this.state.prouducts, item);
+    this.setState({
+      prouducts: updateArray
+    });
+    addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
+  };
+/************** Cart Method  **************/
   renderProductsList = () => {
     return (
       <View
@@ -106,6 +145,7 @@ class Explore extends Component {
           renderItem={this.renderItems}
           ListEmptyComponent={<ProductPlaceholder  
             array={[1, 2, 3, 4,5,6]}
+            message={this.props.screenProps.loader ? '' :'No products found'}
             loader={this.loaderComponent}
           />}
         />

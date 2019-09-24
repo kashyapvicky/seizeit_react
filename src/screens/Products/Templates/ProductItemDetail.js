@@ -37,7 +37,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
                 lineHeight:30
               }}
             >
-            Set of 4 beautiful T shirts Stripes all of different brands
+            {`Set of 4 beautiful ${product.product_title} Stripes all of different brands`}
             </Text>
           </View>
           <View
@@ -48,7 +48,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
             }}
           >
             <Text h5 style={{ color: "#000000", fontSize: normalize(24) }}>
-            {product.price}
+            ${product.price}
             </Text>
           </View>
           <View  style={{

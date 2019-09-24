@@ -115,6 +115,7 @@ class Signup extends Component {
         data['lastname'] = lastName.trim()
         data['type'] = params.role == 'Customer' ? 1 :2  
         data['password'] = password.trim()
+        user['device_id'] = DeviceInfo.getUniqueID()
         data['device_token'] = '1234'+Math.random(10)
         postRequest('user/register',data).then((res) => {
           if(res){
@@ -137,6 +138,8 @@ class Signup extends Component {
   googleSignin = async () => {
     debugger
     let {toastRef} = this.props.screenProps
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
+
     let { netStatus } = this.props.screenProps.user;
     if(!netStatus){
       return toastRef.show(string('NetAlert'))
@@ -152,7 +155,7 @@ class Signup extends Component {
         user.provider_user_id = json.id
         user.email = json.email
         user.profile_pic = json.photo
-        user.device_id = 'tetttee'
+        user['device_id'] = DeviceInfo.getUniqueID()
         user.provider = 'google'
         user['type'] = params.role == 'Customer' ? 1 :2  
         user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
@@ -165,16 +168,29 @@ class Signup extends Component {
     } catch (error) {
       debugger
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        toastRef.show('You user cancels the sign in flow')
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('You user cancels the sign in flow')
+        },500)
+     
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        toastRef.show('Trying to invoke another sign in flow (or any of the other operations) when previous one has not yet finished',colors.danger)
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('Trying to invoke another sign in flow (or any of the other operations) when previous one has not yet finished',colors.danger)
+        },500)
         // operation (f.e. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-         toastRef.show('Play services are not available or outdated,')
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('Play services are not available or outdated,')
+        },500)
         // play services not available or outdated
       } else {
-        toastRef.show('Error from api')
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('Error from api')
+        },500)
 
         debugger
         // some other error happened
@@ -192,9 +208,14 @@ class Signup extends Component {
     }else{
       setIndicator(true)
       LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
+       // alert(result.isCancelled)
         if (result.isCancelled) {
-           setIndicator(false)
-           toastRef.show(string('logincancelled'))
+            setIndicator(false)
+            setToastMessage(true,colors.danger)
+            setTimeout(()=>{
+              toastRef.show(string('logincancelled'))
+            },1000)
+          // 
         } else {
             AccessToken.getCurrentAccessToken().then((data) => {
                 const { accessToken } = data
@@ -203,7 +224,11 @@ class Signup extends Component {
         }
     }).catch((error) => {
         debugger
-        toastRef.show(error)
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show(error)
+        },1000)
+        
         // ToastMessage(error)
         console.log("Login fail with error: " + error);
     })
@@ -225,9 +250,13 @@ class Signup extends Component {
       }
       setIndicator(false)
     }).catch((err) => {
+      setIndicator(false)
+
     })
    }
   getUserInfofacebook = token => {
+    debugger
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
     let {toastRef} = this.props.screenProps
         fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
             .then((response) => response.json())
@@ -238,75 +267,24 @@ class Signup extends Component {
                 user.provider_user_id = json.id
                 user.email = json.email
                 user.profile_pic = json.picture.data.url
-                user.device_id = 'tetttee'
                 user.provider = 'facebook'
-                data['type'] = params.role == 'Customer' ? 1 :2  
+                user['device_id'] = DeviceInfo.getUniqueID()
+                user['type'] = params.role == 'Customer' ? 1 :2  
                 user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
                 user.device_token ='1234'+Math.random(10)
-                this.postSocialRequest()
+                this.postSocialRequest(user)
                })
             .catch((err) => {
-              toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
+              setIndicator(false)
+              setToastMessage(true,colors.danger)
+              setTimeout(()=>{
+                toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
+              },1000)
+           
                 console.log('ERROR GETTING DATA FROM FACEBOOK')
             })
     }
-  getUserInfofacebook = token => {
-    // debugger
-    // fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
-    //     .then((response) => response.json())
-    //     .then((json) => {
-    //         // this.setState({ visible: false })
-    //         console.log(json, "user data")
-    //         let user = {}
-    //         user.name = json.name
-    //         user.social_id = json.id
-    //         user.email = json.email
-    //         user.image = json.picture.data.url
-    //         user.device_id = DeviceInfo.getUniqueID()
-    //         user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
-    //         debugger
-    //         this.props.totatCartItem(0)
-    //         this.props.socialMediaLogin(user).then((res) => {
-    //             debugger
-    //             if (res && res.status == 200) {
-    //                 if (res && res.data.status == 200) {
-    //                     this.setState({ visible: false })
-    //                     // ToastMessage(res.data.message)
-    //                     ToastMessage(string('signupsuccess'))
-    //                     this.props.logInUserActionype(res.data)
-    //                     this.props.totatCartItem(JSON.parse(res.data.cart))
-    //                     setTimeout(() => {
-    //                         this.props.navigation.navigate('App')
-    //                     }, 2000);
-    //                 }
-    //                 else if (res && res.data.status == 600) {
-    //                     this.setState({
-    //                         resendVerificationcode: true,
-    //                         visible: false
-    //                     })
-    //                     ToastMessage(res.data.message)
-    //                 }
-    //                 else {
-    //                     this.setState({ visible: false })
-    //                     ToastMessage(res.data.message)
-    //                 }
-    //             }
-    //             else {
-    //                 this.setState({ visible: false })
-    //                 //ToastMessage("Something went wrong from server")
-    //             }
-    //         }).catch((err) => {
-    //             this.setState({ visible: false })
-    //             // ToastMessage("Something went wrong from server")
-    //             console.log(err)
-    //         })
-    //     })
-    //     .catch((err) => {
-    //         debugger
-    //         this.setState({ visible: false })
-    //         console.log('ERROR GETTING DATA FROM FACEBOOK')
-    //     })
-  };
+  
   pressButton = (title) =>{
      if(title == 'CONTINUE'){
        this.signUpRequest()

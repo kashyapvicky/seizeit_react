@@ -9,6 +9,8 @@ import {
   ScrollView,
   Platform
 } from "react-native";
+import DeviceInfo from 'react-native-device-info';
+
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
 import {postRequest} from '../../redux/request/Service'
@@ -21,6 +23,7 @@ import CustomeButton from "../../components/Button";
 import styles from "../../styles";
 import Text from '../../components/Text'
 import { string } from "../../utilities/languages/i18n";
+
 //Utilities
 import Validation from "../../utilities/validations";
 import colors from '../../utilities/config/colors';
@@ -86,6 +89,8 @@ class Login extends Component {
         data['email'] = email.trim()
         data['password'] = password.trim()
         data['device_token'] = '1234'+Math.random(10)
+        data['device_id'] = DeviceInfo.getUniqueID()
+        
         data['device_type'] = Platform.OS == 'ios' ? 'ios' : 'android'
         postRequest('user/login',data).then((res) => {
           if(res.success){
@@ -108,6 +113,7 @@ class Login extends Component {
 // Facebook Signin
   googleSignin = async () => {
     debugger
+    let {setToastMessage,setIndicator} = this.props.screenProps.actions
     let {toastRef} = this.props.screenProps
     let { netStatus } = this.props.screenProps.user;
     if(!netStatus){
@@ -125,8 +131,8 @@ class Login extends Component {
         user.provider_user_id = json.id
         user.email = json.email
         user.profile_pic = json.photo
-        user.device_id = 'tetttee'
         user.provider = 'google'
+        user['device_id'] = DeviceInfo.getUniqueID()
         user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
         user.device_token ='1234'+Math.random(10)
         this.postSocialRequest(user)
@@ -136,17 +142,31 @@ class Login extends Component {
       // this.setState({ userInfo });
     } catch (error) {
       debugger
+      debugger
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        toastRef.show('You user cancels the sign in flow')
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('You user cancels the sign in flow')
+        },500)
+     
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
-        toastRef.show('Trying to invoke another sign in flow (or any of the other operations) when previous one has not yet finished',colors.danger)
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('Trying to invoke another sign in flow (or any of the other operations) when previous one has not yet finished',colors.danger)
+        },500)
         // operation (f.e. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-         toastRef.show('Play services are not available or outdated,')
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('Play services are not available or outdated,')
+        },500)
         // play services not available or outdated
       } else {
-        toastRef.show('Error from api')
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show('Error from api')
+        },500)
 
         debugger
         // some other error happened
@@ -164,9 +184,12 @@ class Login extends Component {
     }else{
       setIndicator(true)
       LoginManager.logInWithPermissions(['public_profile', 'email']).then((result) => {
-        if (result.isCancelled) {
+        if(result.isCancelled) {
            setIndicator(false)
-           toastRef.show(string('logincancelled'))
+           setToastMessage(true,colors.danger)
+           setTimeout(()=>{
+            toastRef.show(string('logincancelled'))
+          },1000)
         } else {
             AccessToken.getCurrentAccessToken().then((data) => {
                 const { accessToken } = data
@@ -175,7 +198,11 @@ class Login extends Component {
         }
     }).catch((error) => {
         debugger
-        toastRef.show(error)
+        setIndicator(false)
+        setToastMessage(true,colors.danger)
+        setTimeout(()=>{
+          toastRef.show(error)
+        },500)
         // ToastMessage(error)
         console.log("Login fail with error: " + error);
     })
@@ -200,6 +227,7 @@ class Login extends Component {
     })
    }
   getUserInfofacebook = token => {
+    let {setToastMessage} = this.props.screenProps.actions
     let {toastRef} = this.props.screenProps
         fetch('https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=' + token)
             .then((response) => response.json())
@@ -209,14 +237,17 @@ class Login extends Component {
                 user.provider_user_id = json.id
                 user.email = json.email
                 user.profile_pic = json.picture.data.url
-                user.device_id = 'tetttee'
                 user.provider = 'facebook'
+                user['device_id'] = DeviceInfo.getUniqueID()
                 user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
                 user.device_token ='1234'+Math.random(10)
                 this.postSocialRequest(user)
                })
             .catch((err) => {
-              toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
+              setToastMessage(true,colors.danger)
+              setTimeout(()=>{
+                toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
+              },500)
                 console.log('ERROR GETTING DATA FROM FACEBOOK')
             })
     }

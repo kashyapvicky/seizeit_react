@@ -26,6 +26,8 @@ return (
       ref={tabView => {
         this.tabView = tabView;
       }}
+      //page={props.tabPage}
+      scrollWithoutAnimation
       tabBarActiveTextColor={colors.primary}
       tabBarInactiveTextColor={"#000000"}
       tabBarTextStyle={[styles.text, { fontSize: 16, fontWeight: "normal" }]}
