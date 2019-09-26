@@ -14,7 +14,7 @@ import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
 export default (InvoiceInfo = props => {
-  let {fromCheckout} = props
+  let {fromCheckout,subTotal,totalAmount,delivery} = props
   return (
     <View style={{ marginTop: 10, paddingHorizontal: 24 }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -36,7 +36,7 @@ export default (InvoiceInfo = props => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${122}
+          ${subTotal}
         </Text>
       </View>
       <View
@@ -65,7 +65,7 @@ export default (InvoiceInfo = props => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${10}
+          ${delivery}
         </Text>
       </View>
       <View
@@ -89,7 +89,7 @@ export default (InvoiceInfo = props => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${133}
+          ${totalAmount}
         </Text>
       </View>
       {!fromCheckout && <View style={{ justifyContent: "space-between", marginVertical: 16 }}>

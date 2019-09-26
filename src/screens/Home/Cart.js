@@ -30,19 +30,17 @@ import {
   updateCartSuccess,
   updateWishListSuccess
 } from "../../utilities/method";
+
+import CartItem from "./Templates/CartItem";
+
 class Cart extends Component {
   constructor(props) {
     super(props);
-    this.veiwRef={}
+    this.veiwRef = {};
     this.state = {
       visible2: false,
       cartItems: []
     };
-    this.loaderComponent = new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
   }
   componentDidMount() {
     let { carts } = this.props.screenProps.product;
@@ -51,7 +49,29 @@ class Cart extends Component {
     });
   }
   pressButton = () => {
-    this.props.navigation.navigate("Checkout");
+    let {user} = this.props.screenProps.user
+    if(user){
+      this.props.navigation.navigate("Checkout");
+    }else{
+      this.warningMessage()
+    }
+  };
+  warningMessage = () => {
+    Alert.alert(
+      "",
+      string("loginRequired"),
+      [
+        { text: string("cancel"), onPress: () => null },
+        {
+          text: string("OK"),
+          onPress: () => {
+            this.props.navigation.navigate('AuthNavigatorStack');
+          }
+          // style:'cancel'
+        }
+      ],
+      { cancelable: false }
+    );
   };
   renderButton = (title, transparent) => {
     return (
@@ -70,109 +90,6 @@ class Cart extends Component {
       />
     );
   };
-  renderItems = ({ item, index }) => {
-    return (
-      <Listitems
-        item={item}
-        index={index}
-        imageHeight={168}
-        onPress={() => this.props.navigation.navigate("ProductDetails")}
-        onPressWishlist={() => this.onPressWishlist(item, index)}
-        onPressCart={() => this.addRemoveCart(item)}
-        onGetRefWishlist={ref => (this.veiwRef[index] = ref)}
-      />
-    );
-  };
-  renderProductsList = (item, index) => {
-    return (
-      <View
-        skey={index}
-        style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}
-      >
-        <FlatList
-          bounces={true}
-          // extraData={this.state}
-          // pagingEnabled={true}
-          numColumns={2}
-          showsVerticalScrollIndicator={false}
-          data={this.state.cartItems}
-          keyExtractor={(item, index) => index + "product"}
-          renderItem={this.renderItems}
-          ListEmptyComponent={
-            <ProductPlaceholder
-              array={[1, 2]}
-              message={
-                this.props.screenProps.loader ? "" : "Your cart is Empty "
-              }
-              loader={this.loaderComponent}
-            />
-          }
-        />
-      </View>
-    );
-  };
-  /************* Cart Methdod ***********/
-  bounce = index =>
-  this.veiwRef[index]
-    .rubberBand(500)
-    .then(endState =>
-      console.log(endState.finished ? "bounce finished" : "bounce cancelled")
-    );
-onPressWishlist = (item,index) => {
-  // let {addToCartSuccess} = this.props.screenProps.productActions
-  this.bounce(index)
-  let { addToWishlistSuccess } = this.props.screenProps.productActions;
-  let updateArray = updateWishListSuccess(this.state.cartItems, item);
-  this.setState({
-    cartItems: updateArray
-  });
-  addToWishlistSuccess({
-    ...item,
-    isFevorite: item.isFevorite ? false : true
-  });
-};
-  checkCartItem = item => {
-    let { carts } = this.props.screenProps.product;
-    if (carts && carts.length == 1) {
-      this.warningMessage(item);
-    } else {
-      this.addRemoveCart(item);
-    }
-  };
-  warningMessage = () => {
-    Alert.alert(
-      "",
-      string("areyousureremove"),
-      [
-        { text: string("cancel"), onPress: () => null },
-        {
-          text: string("OK"),
-          onPress: () => {
-            this.removeItems();
-          }
-          // style:'cancel'
-        }
-      ],
-      { cancelable: false }
-    );
-  };
-  addRemoveCart = item => {
-    let { addCartRequestApi } = this.props.screenProps.productActions;
-    this.setState({
-       cartItems: this.state.cartItems.filter(
-        x => x.product_id != item.product_id
-      )
-    });
-    addCartRequestApi({ ...item, isCart: false });
-  };
-  removeItems = item => {
-    let { removeCartSuccess } = this.props.screenProps.productActions;
-    this.setState({
-      carts: []
-    });
-    removeCartSuccess();
-  };
-  /************* Cart Methdod  End***********/
 
   render() {
     return (
@@ -190,11 +107,14 @@ onPressWishlist = (item,index) => {
           title={"Cart"}
           onRightPress={() => this.props.navigation.dismiss()}
         />
-        {this.renderProductsList()}
+        <CartItem 
+        {...this.props}
+        
+        />
         {this.state.cartItems.length > 0 ? (
           <View
             style={{
-              flex: 0.12,
+              flex: 0.1,
               justifyContent: "flex-end",
               paddingHorizontal: 8,
               justifyContent: "center",

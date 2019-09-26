@@ -7,7 +7,7 @@ import Text from "../../../components/Text";
 import { string } from "../../../utilities/languages/i18n";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
-export default (RenderLabel = ({label,rightLabel}) => {
+export default (RenderLabel = ({label,rightLabel,onPressChange}) => {
       return <View
           style={{
             flexDirection: "row",
@@ -26,7 +26,9 @@ export default (RenderLabel = ({label,rightLabel}) => {
           </Text>
           {
             rightLabel ? 
-            <TouchableOpacity >
+            <TouchableOpacity onPress={() =>{
+              onPressChange ? onPressChange() : null
+            }}>
             <Text
               h5
               style={{
@@ -40,4 +42,4 @@ export default (RenderLabel = ({label,rightLabel}) => {
             </TouchableOpacity>:null
            }
           </View>
-        })
+})

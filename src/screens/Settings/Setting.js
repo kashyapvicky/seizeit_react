@@ -113,7 +113,7 @@ class Settings extends Component {
         ordersArray
       });
     } else if (user && user.user_type == "vendor") {
-      let toRemoveAccountM = ["Wishlist", "Addess", "Cards"];
+      let toRemoveAccountM = ["Wishlist", "Address", "Cards"];
       let toRemoveOrderM = ["Order Placed"];
       let accountArray = this.state.accountSettingArr;
       let orderArray = this.state.ordersArray;
@@ -203,8 +203,13 @@ closeModal() {
                       this.state.accountSettingArr.length - 1 != i ? 20 : 0
                   }
                 ]}
-                onPress={() =>null
-                  // this.props.navigation.navigate(account.routeName)
+                onPress={() =>{
+                  if(account.name != 'Cards'){
+                    this.props.navigation.navigate(account.routeName)
+                  }else{
+                    alert('In Progress')
+                  }
+                }
                 }
               >
                 <View style={[styles.contactUsView, { borderBottomWidth: 0 }]}>

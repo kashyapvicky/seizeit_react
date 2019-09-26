@@ -20,7 +20,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
       style={[
         {
           backgroundColor: "transparent",
-          paddingVertical: 16,
+          paddingVertical: 8,
           flex: 0.5,
           width: screenDimensions.width / 2 - 24,
           marginRight: (index + 1) % 2 != 0 ? 16 : 0

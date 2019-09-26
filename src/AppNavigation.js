@@ -4,6 +4,7 @@ import React, { Fragment } from "react";
 import { SafeAreaView, StatusBar, Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import NavigationService from "./utilities/NavigationServices";
+import colors from "./utilities/config/colors";
 
 // Navigation
 import { AppStack } from "./AppNavigationConfiguration";
@@ -103,6 +104,9 @@ class AppNavigation extends React.Component {
       <Fragment>
         {Platform.OS == "ios" && (
           <StatusBar barStyle="dark-content" translucent />
+        )}
+         {Platform.OS == "android" && (
+          <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         )}
         <SafeAreaView
           style={{ flex: 0, backgroundColor: this.state.topBarColor }}

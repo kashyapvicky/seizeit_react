@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 // import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { postRequest, getRequest } from "../../redux/request/Service";
 
 //local imports
 import Button from '../../components/Button'
@@ -23,6 +24,9 @@ import { string } from '../../utilities/languages/i18n'
 import colors from '../../utilities/config/colors';
 import {Images} from '../../utilities/contsants'
 import { normalize } from "../../utilities/helpers/normalizeText";
+const rightIcon=require('../../assets/images/ic_dd.png')
+import Validation from "../../utilities/validations";
+
 import TextInputComponent from "../../components/TextInput";
 
 class AddNewAddress extends Component {
@@ -30,16 +34,144 @@ class AddNewAddress extends Component {
     super(props);
     this.state = {
         accountNumber: "",
-        confirmAccountNumber: "",
-        ifscNumber: '',
-        name: '',
+        country: "",
+        state: '',
+        phoneNumber: '',
         loader: false,
         securePassword: true,
         visible: false,
+        countries:[],
         refreshToken: null
       };
   }
+  componentDidMount(){
+    this.getCountries()
+  }
 
+  /**************************** Api call  ********************************/
+  getCountries = () =>{
+      let { setIndicator } = this.props.screenProps.actions;
+      postRequest("user/showcountries",{})
+        .then(res => {
+          if (res && res.success && res.success.length > 0) {
+            this.setState({
+              countries: res.success.map((x) => {
+                return {
+                  name:x.country_name,
+                  id:x.country_id
+                }
+              })
+            })
+          }
+          setIndicator(false);
+        })
+        .catch(err => {});
+    }
+    selectCountry =(item)=>{
+      this.setState({
+        country:item,
+        openDropDownContry:false
+      },() =>{
+      })
+    }
+    addAddress = ()=>{
+      let {setToastMessage} = this.props.screenProps.actions
+      let {toastRef} = this.props.screenProps
+      let { country,fullName,phoneNumber,
+        state, houseNo,streetNo,landmark,city,pinCode} = this.state;
+      let validation = Validation.validate(this.ValidationRules());
+      if (validation.length != 0) {
+          setToastMessage(true,colors.danger)
+          return toastRef.show(validation[0].message)
+      }else{
+        let data ={}
+        data['country_id'] =country.id
+        data['state'] =state
+        data['phone_number'] =phoneNumber
+        data['pincode'] =pinCode
+        data['city'] =city
+        data['flat'] =houseNo
+        data['street'] =streetNo
+        data['landmark'] =landmark
+        data['phone_number'] =phoneNumber
+        data['full_address'] =fullName        
+        postRequest('customer/addaddress',data).then((res) => {
+          if (res && res.success) {
+            let {params} = this.props.navigation.state
+            if(params && params.getAddress){
+                params.getAddress()
+            }
+            setToastMessage(true,colors.green1)
+            toastRef.show(res.success) 
+            this.props.navigation.goBack()
+          }
+         })
+      }
+    }
+  /**************************** Api call End ********************************/
+/*****************  Validation  *************/
+ValidationRules = () => {
+  let { country, state,fullName,phoneNumber,
+ houseNo,streetNo,landmark,city,pinCode} = this.state;
+ let {name} = country
+  let { lang } = this.props.screenProps.user;
+  return [
+    {
+      field: name,
+      name: 'Country namme',
+      rules: "required",
+      lang: lang
+    },
+    {
+      field: state,
+      name: 'State name',
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: fullName,
+      name: 'Full Name',
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: phoneNumber,
+      name: 'Mobile Number',
+      rules: 'required|numeric|no_space|min:10|max:10',
+      lang: lang
+    },
+    {
+      field: pinCode,
+      name: 'Pincode',
+      rules: "required|no_space|numeric",
+      lang: lang
+    },
+    {
+      field: city,
+      name: 'City name',
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: houseNo,
+      name: 'House number',
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: streetNo,
+      name: 'Street number',
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: landmark,
+      name: 'Landmark',
+      rules: "required|no_space",
+      lang: lang
+    }
+  ];
+};
   renderButton = (title,transparent) => {
     return (
       <Button
@@ -57,6 +189,13 @@ class AddNewAddress extends Component {
       />
     );
   };
+
+  pressButton =(title) =>{
+    if(title == 'Save new address'){
+      this.addAddress()
+    }
+  }
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -75,115 +214,255 @@ class AddNewAddress extends Component {
       />
        <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
           <View  style={{ marginTop: 25,paddingHorizontal:16 }}>
-              <TextInputComponent
-                user={this.props.user}
-                label={'Enter Account Number'}
+          <TextInputComponent
+                 pointerEvents="none"
+                onPress={() =>
+                  this.setState({
+                    openDropDownContry: !this.state.openDropDownContry
+                  })
+                }
+                selectItem={(item)=> this.selectCountry(item)}
+                openDropDown={this.state.openDropDownContry}
+                label={'Select your country'}
+                editable={false}
                 inputMenthod={input => {
-                  this.accountNumberRef = input;
+                  this.productCountryRef= input;
                 }}
-                bankAccount
-                placeholder={'6985 9685 9452 6623'}
-                placeholderTextColor="rgba(62,62,62,0.55)"
+                placeholder={'Country name'}
+                placeholderTextColor="#000000"
                 selectionColor="#96C50F"
                 returnKeyType="next"
+                lists={this.state.countries}
                 autoCorrect={false}
                 autoCapitalize="none"
                 blurOnSubmit={false}
-                viewTextStyle={styles.viewcardTextStyle}
-                value={this.state.accountNumber}
-                underlineColorAndroid="transparent"
-                isFocused={this.state.accountFieldFocus}
-                onFocus={() => this.setState({ accountFieldFocus: true })}
-                onBlur={() => this.setState({ accountFieldFocus: false })}
-                onChangeText={accountNumber => this.setState({ accountNumber })}
-                onSubmitEditing={event => {
-                  this.confirmAccountNumberRef.focus();
-                }}
+                bankAccount
                 textInputStyle={styles.textInputStyle}
+                viewTextStyle={styles.viewcardTextStyle}
+                 value={this.state.country.name}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.productCatFieldFocus}
+                onFocus={() => this.setState({ productCatFieldFocus: true })}
+                onBlur={() => this.setState({ productCatFieldFocus: false })}
+                //   onChangeText={productTitle => this.setState({ productTitle })}
+                rightIcon={rightIcon}
+                onSubmitEditing={event => {
+                  this.stateRef.focus();
+                }}
               />
             <View style={{ height: 10 }} />
             <TextInputComponent
-                label={'Re - Enter Account Number'}
+                label={'State'}
                 inputMenthod={input => {
-                  this.confirmAccountNumberRef = input;
+                  this.stateRef = input;
                 }}
                 bankAccount
-                placeholder={'6985 9685 9452 6623'}
-                placeholderTextColor="rgba(62,62,62,0.55)"
+                placeholder={'Enter State name'}
+                placeholderTextColor="#000000"
                 selectionColor="#96C50F"
                 returnKeyType="next"
                 autoCorrect={false}
                 autoCapitalize="none"
                 blurOnSubmit={false}
                 viewTextStyle={styles.viewcardTextStyle}
-                value={this.state.confirmAccountNumber}
+                value={this.state.state}
                 underlineColorAndroid="transparent"
-                isFocused={this.state.confirmAccountFieldFocus}
-                onFocus={() => this.setState({ confirmAccountFieldFocus: true })}
-                onBlur={() => this.setState({ confirmAccountFieldFocus: false })}
-                onChangeText={confirmAccountNumber => this.setState({ confirmAccountNumber })}
+                isFocused={this.state.stateFieldFocus}
+                onFocus={() => this.setState({ stateFieldFocus: true })}
+                onBlur={() => this.setState({ stateFieldFocus: false })}
+                onChangeText={state => this.setState({ state })}
                 onSubmitEditing={event => {
-                  this.ifscRef.focus();
+                  this.fullRef.focus();
                 }}
                 textInputStyle={styles.textInputStyle}
-
               />
-               <View style={{ height: 10 }} />
-            <TextInputComponent
-                label={'IFSC Code'}
+             <View style={{ height: 25 }} />
+             <View style={{ marginTop: 5 }}>
+             <Text p style={{
+                fontSize: normalize(15),
+                color: "#000000",
+                ...styles.text
+             } }>
+                Full Address Details
+             </Text> 
+             </View>
+             <TextInputComponent
+                label={''}
                 inputMenthod={input => {
-                  this.ifscRef = input;
+                  this.fullRef = input;
                 }}
                 bankAccount
-                placeholder={'ICICI00056845'}
-                placeholderTextColor="rgba(62,62,62,0.55)"
+                placeholder={'Full name'}
+                placeholderTextColor="#000000"
                 selectionColor="#96C50F"
                 returnKeyType="next"
                 autoCorrect={false}
                 autoCapitalize="none"
                 blurOnSubmit={false}
                 viewTextStyle={styles.viewcardTextStyle}
-                value={this.state.ifscNumber}
+                value={this.state.fullName}
                 underlineColorAndroid="transparent"
-                isFocused={this.state.ifscFieldFocus}
-                onFocus={() => this.setState({ ifscFieldFocus: true })}
-                onBlur={() => this.setState({ ifscFieldFocus: false })}
-                onChangeText={ifscNumber => this.setState({ ifscNumber })}
+                isFocused={this.state.fullNameFieldFocus}
+                onFocus={() => this.setState({ fullNameFieldFocus: true })}
+                onBlur={() => this.setState({ fullNameFieldFocus: false })}
+                onChangeText={fullName => this.setState({ fullName })}
                 onSubmitEditing={event => {
-                  this.nameRef.focus();
+                  this.mobileRef.focus();
                 }}
                 textInputStyle={styles.textInputStyle}
-
               />
-               <View style={{ height: 10 }} />
-            <TextInputComponent
-                
-                label={'Name of the Account holder'}
+              <TextInputComponent
+                label={''}
                 inputMenthod={input => {
-                  this.nameRef = input;
+                  this.mobileRef = input;
                 }}
-                placeholder={'Vikram Bawa'}
-                placeholderTextColor="rgba(62,62,62,0.55)"
-                selectionColor="#96C50F"
                 bankAccount
+                placeholder={'10 digit mobile'}
+                placeholderTextColor="#000000"
+                selectionColor="#96C50F"
                 returnKeyType="next"
                 autoCorrect={false}
                 autoCapitalize="none"
-                textInputStyle={styles.textInputStyle}
                 blurOnSubmit={false}
                 viewTextStyle={styles.viewcardTextStyle}
-                value={this.state.name}
+                value={this.state.phoneNumber}
                 underlineColorAndroid="transparent"
-                isFocused={this.state.nameFieldFocus}
-                onFocus={() => this.setState({ nameFieldFocus: true })}
-                onBlur={() => this.setState({ nameFieldFocus: false })}
-                onChangeText={name => this.setState({ name })}
+                isFocused={this.state.mobileFieldFocus}
+                onFocus={() => this.setState({ mobileFieldFocus: true })}
+                onBlur={() => this.setState({ mobileFieldFocus: false })}
+                onChangeText={phoneNumber => this.setState({ phoneNumber })}
                 onSubmitEditing={event => {
-                    Keyboard.dismiss()
+                  this.pinCodeRef.focus();
                 }}
+                textInputStyle={styles.textInputStyle}
               />
+               <TextInputComponent
+                label={''}
+                inputMenthod={input => {
+                  this.pinCodeRef = input;
+                }}
+                bankAccount
+                placeholder={'Pincode'}
+                placeholderTextColor="#000000"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                viewTextStyle={styles.viewcardTextStyle}
+                value={this.state.pinCode}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.pinCodeFieldFocus}
+                onFocus={() => this.setState({ pinCodeFieldFocus: true })}
+                onBlur={() => this.setState({ pinCodeFieldFocus: false })}
+                onChangeText={pinCode => this.setState({ pinCode })}
+                onSubmitEditing={event => {
+                  this.cityRef.focus();
+                }}
+                textInputStyle={styles.textInputStyle}
+              />
+               <TextInputComponent
+                label={''}
+                inputMenthod={input => {
+                  this.cityRef = input;
+                }}
+                bankAccount
+                placeholder={'City'}
+                placeholderTextColor="#000000"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                viewTextStyle={styles.viewcardTextStyle}
+                value={this.state.city}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.cityFieldFocus}
+                onFocus={() => this.setState({ cityFieldFocus: true })}
+                onBlur={() => this.setState({ cityFieldFocus: false })}
+                onChangeText={city => this.setState({ city })}
+                onSubmitEditing={event => {
+                  this.houseNoRef.focus();
+                }}
+                textInputStyle={styles.textInputStyle}
+              />
+                <TextInputComponent
+                label={''}
+                inputMenthod={input => {
+                  this.houseNoRef = input;
+                }}
+                bankAccount
+                placeholder={'H.No./Flat/Building'}
+                placeholderTextColor="#000000"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                viewTextStyle={styles.viewcardTextStyle}
+                value={this.state.houseNo}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.houseNoFieldFocus}
+                onFocus={() => this.setState({ houseNoFieldFocus: true })}
+                onBlur={() => this.setState({ houseNoFieldFocus: false })}
+                onChangeText={houseNo => this.setState({ houseNo })}
+                onSubmitEditing={event => {
+                  this.streetRef.focus();
+                }}
+                textInputStyle={styles.textInputStyle}
+              />
+                 <TextInputComponent
+                label={''}
+                inputMenthod={input => {
+                  this.streetRef = input;
+                }}
+                bankAccount
+                placeholder={'Street No./Colony'}
+                placeholderTextColor="#000000"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                viewTextStyle={styles.viewcardTextStyle}
+                value={this.state.streetNo}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.streetNoFieldFocus}
+                onFocus={() => this.setState({ streetNoFieldFocus: true })}
+                onBlur={() => this.setState({ streetNoFieldFocus: false })}
+                onChangeText={streetNo => this.setState({ streetNo })}
+                onSubmitEditing={event => {
+                  this.landmarkRef.focus();
+                }}
+                textInputStyle={styles.textInputStyle}
+              />
+               <TextInputComponent
+                label={''}
+                inputMenthod={input => {
+                  this.landmarkRef = input;
+                }}
+                bankAccount
+                placeholder={'Landmark'}
+                placeholderTextColor="#000000"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                viewTextStyle={styles.viewcardTextStyle}
+                value={this.state.landmark}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.landmarkFieldFocus}
+                onFocus={() => this.setState({ landmarkFieldFocus: true })}
+                onBlur={() => this.setState({ landmarkFieldFocus: false })}
+                onChangeText={landmark => this.setState({ landmark })}
+                onSubmitEditing={event => {
+                  Keyboard.dismiss()
+                }}
+                textInputStyle={styles.textInputStyle}
+              />
+             <View style={{ height: 25 }} />
           </View>
-         
         </ScrollView>
         <View style={{flex:0.15,paddingHorizontal: 16}}>
         {this.renderButton('Save new address')}

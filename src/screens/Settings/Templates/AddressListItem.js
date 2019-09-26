@@ -9,7 +9,7 @@ import { string } from "../../../utilities/languages/i18n";
 import {Images} from '../../../utilities/contsants'
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
-export default (AddressListItem = ({item,index,onPress,descriptionSize}) => {
+export default (AddressListItem = ({item,index,onPress,descriptionSize,deleteAddress,updateDefaultAddress}) => {
 return <TouchableOpacity
 onPress={()=>onPress ? onPress() : null}
 activeOpacity={9}
@@ -25,13 +25,14 @@ style={[
 ]}
 >
 <View style={{ flexDirection: "row", paddingBottom: 8 }}>
-  <TouchableOpacity style={{ flex: 0.1, paddingLeft: 0,paddingTop:6,paddingRight:8 }}>
-    {/* <Ionicons
-      name={"md-checkmark-circle"}
-      size={24}
-      color={"#96C50F"}
-    /> */}
-  <Image source={Images.round} style={{alignSelf:'center'}}/>
+  <TouchableOpacity 
+  onPress={()=> updateDefaultAddress ? updateDefaultAddress() : null}
+  style={{ flex: 0.1, paddingLeft: 0,paddingTop:6,paddingRight:8 }}>
+    {
+      item.is_active ?
+      <Image source={Images.check} style={{alignSelf:'center'}}/>
+      :  <Image source={Images.round} style={{alignSelf:'center'}}/>
+    }
   </TouchableOpacity>
   <View style={{ flex: 0.9 }}>
     <View style={{ flexDirection: "row" }}>
@@ -60,10 +61,11 @@ style={[
       >
        {  item.subTitle }
       </Text>
-      <View style={{ flex: 0.2, alignItems: "center" }}>
+      <TouchableOpacity 
+      style={{ flex: 0.2, alignItems: "center" }}>
         <Image source={Images.delete} />
         {/* <Ionicons name={"ios-trash"} size={28} color={"#D8D8D8"} /> */}
-      </View>
+      </TouchableOpacity>
     </View> :null}
     <View
       style={{ flexDirection: "row", justifyContent: "space-between" }}
@@ -81,10 +83,12 @@ style={[
       </Text>
       </View>
      
-      {descriptionSize ? <View style={{ flex: 0.2, alignItems: "center" }}>
+      {descriptionSize ? <TouchableOpacity 
+       onPress={() => deleteAddress ? deleteAddress() : null}
+      style={{ flex: 0.2, alignItems: "center" }}>
         <Image source={Images.delete} />
         {/* <Ionicons name={"ios-trash"} size={28} color={"#D8D8D8"} /> */}
-      </View> : null}
+      </TouchableOpacity> : null}
     </View>
   </View>
 </View>

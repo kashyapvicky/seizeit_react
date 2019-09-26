@@ -18,6 +18,10 @@ import VendorProduct from "./VendorProduct";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 import OrderSuccessFull from "./OrderSuccessfull";
+import Address from "../Settings/Address";
+import AddNewAddress from "../Settings/AddNewAddress";
+import EditProfile from "../Settings/EditProfile";
+
 
 // Stack 
 const ModalStack = createStackNavigator({
@@ -45,6 +49,9 @@ const ModalStack = createStackNavigator({
       screen: OrderSuccessFull,
       params:{isModal : true},
     },
+    AddNewAddress:AddNewAddress,
+    Address:Address,
+    EditProfile:EditProfile
   },
   
   {
@@ -55,7 +62,7 @@ const CardStack =  createStackNavigator({
     Home:Home,
     SubCategory:SubCategory,
     ProductDetails:ProductDetails,
-    VendorProduct:VendorProduct
+    VendorProduct:VendorProduct,
 
 },
 {

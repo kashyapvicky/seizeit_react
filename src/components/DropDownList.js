@@ -29,7 +29,6 @@ export default DropDownList = props => {
       {props.lists.map((item, index) => {
         return (
           <TouchableOpacity onPress={() =>  props.selectItem && props.selectItem(item)}>
-
           <Animatable.View
             animation="slideInDown"
             //   duration={'500'} direction={'normal'}

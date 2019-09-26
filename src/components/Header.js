@@ -106,12 +106,12 @@ const Header = props => {
             style={{
                 zIndex: 1,
                 position: "absolute",
-                backgroundColor: "red",
+                backgroundColor: colors.primary,
                 borderRadius: 17 / 2,
                 width: 17,
                 height: 17,
                 top: -5,
-                right: 0,
+                right: 2,
                 justifyContent: "center",
                 alignItems: "center"
               }}

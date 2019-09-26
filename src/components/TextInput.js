@@ -42,9 +42,10 @@ export default class TextInputLabel extends Component {
     // let {textAlign,fontFamilyBold,fontFamilyRegular} = this.props.user
     return (
       <View style={{ marginTop: 10 }}>
-        <Text p style={labelStyle}>
+        {
+        this.props.label ? <Text p style={labelStyle}>
           {this.props.label}
-        </Text>
+        </Text> : null}
         <TouchableOpacity
           onPress={() => (this.props.onPress ?this.props.onPress() : null)}
           style={[

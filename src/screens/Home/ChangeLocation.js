@@ -17,6 +17,7 @@ import {
   Image,
   ScrollView,
   FlatList,
+  KeyboardAvoidingView,
   Dimensions
 } from "react-native";
 import RNGooglePlaces from "react-native-google-places";
@@ -197,7 +198,10 @@ export default class ChangeLocation extends Component {
   };
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <KeyboardAvoidingView 
+      enabled={false}
+      behavior={'height'} 
+      style={{ flex: 1 }}>
         <Header
           isRightIcon={false}
           headerStyle={[
@@ -265,7 +269,7 @@ export default class ChangeLocation extends Component {
             </View>
           </View>
         </ScrollView>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

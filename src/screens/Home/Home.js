@@ -37,7 +37,11 @@ import BannerCarousel from "./Templates/Carousel";
 import { requestLocationPermission } from "./Templates/RequestLocationPermission";
 import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
 import { CategoryPlaceholder } from "./Templates/CategoryPlaceHolder";
-import {updateProductCartValue,updateCartSuccess,updateWishListSuccess} from '../../utilities/method'
+import {
+  updateProductCartValue,
+  updateCartSuccess,
+  updateWishListSuccess
+} from "../../utilities/method";
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 10 : 10;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
@@ -46,7 +50,7 @@ class Home extends Component {
   // loadingComponent: Promise<React.Element<*>>;
   constructor(props) {
     super(props);
-    this.veiwRef={}
+    this.veiwRef = {};
     this.state = {
       name: "Location",
       visible2: false,
@@ -79,20 +83,29 @@ class Home extends Component {
   }
   componentDidMount() {
     this.getCategories();
-    this.getCartData()
+    this.getCartData();
   }
   /*********** Get current Location  *****/
-  getCartData = ()=>{
-   let {getCartRequestApi} = this.props.screenProps.productActions
-   getCartRequestApi().then((res) =>{
-     if(res){
-       this.getHomeData();
-     }
-   })
-  }
+  getCartData = () => {
+    let {
+      getCartRequestApi,
+      getWishListApi
+    } = this.props.screenProps.productActions;
+    getCartRequestApi().then(res => {
+      if (res) {
+        getWishListApi().then(res => {
+          this.getHomeData();
+        });
+      }
+    });
+  };
   onGetCurrentPlacePress = () => {
     let { netStatus } = this.props.screenProps.user;
-    let { setToastMessage, setIndicator } = this.props.screenProps.actions;
+    let {
+      setToastMessage,
+      setIndicator,
+      addCurrentLocation
+    } = this.props.screenProps.actions;
     let { toastRef } = this.props.screenProps;
     if (!netStatus) {
       setToastMessage(true, colors.danger);
@@ -101,7 +114,10 @@ class Home extends Component {
       RNGooglePlaces.getCurrentPlace()
         .then(results => {
           if (results && results.length > 0) {
-            debugger;
+            addCurrentLocation({
+              address: results[0].address,
+              location: results[0].location
+            });
             this.setState({
               currentAddress: results[0].address,
               currentLocation: results[0].location,
@@ -113,6 +129,11 @@ class Home extends Component {
     }
   };
   updateLocation = location => {
+    let { addCurrentLocation } = this.props.screenProps.actions;
+    addCurrentLocation({
+      address: location.currentAddress,
+      location: location.currentLocation
+    });
     this.setState({
       ...location
     });
@@ -135,10 +156,9 @@ class Home extends Component {
 
   getHomeData = () => {
     let { setIndicator } = this.props.screenProps.actions;
-    let { carts,wishlists } = this.props.screenProps.product;
+    let { carts, wishlists } = this.props.screenProps.product;
     getRequest("user/home-page")
       .then(res => {
-        debugger;
         if (res && res.success) {
           this.setState(
             {
@@ -153,25 +173,34 @@ class Home extends Component {
               banners:
                 res.success.banner && res.success.banner.length > 0
                   ? res.success.banner
-                  : []
+                  : [],
+              refreshing: false
             },
             () => {
-              if (carts && carts.length > 0 || wishlists && wishlists.length>0) {
+              if (
+                (carts && carts.length > 0) ||
+                (wishlists && wishlists.length > 0)
+              ) {
                 let featureProducts = updateProductCartValue(
                   this.state.featureProducts,
                   this.props.screenProps.product
-                   );
+                );
                 let popularProducts = updateProductCartValue(
                   this.state.popularProducts,
                   this.props.screenProps.product
                 );
                 this.setState({
                   featureProducts,
-                  popularProducts
+                  popularProducts,
+                  refreshing: false
                 });
               }
             }
           );
+        } else {
+          this.setState({
+            refreshing: false
+          });
         }
         setIndicator(false);
       })
@@ -194,7 +223,7 @@ class Home extends Component {
         buttonTextStyle={{ fontWeight: "normal" }}
         fontSize={normalize(16)}
         color={colors.primary}
-        onPress={() => alert()}
+        onPress={() => this.props.navigation.navigate('Explore')}
         title={title}
       />
     );
@@ -284,9 +313,9 @@ class Home extends Component {
         item={item}
         index={index}
         imageHeight={imageHeight}
-        onPressWishlist={() => this.onPressWishlist(item,index,label)}
+        onPressWishlist={() => this.onPressWishlist(item, index, label)}
         onPressCart={() => this.addRemoveCart(item, label)}
-        onGetRefWishlist={(ref)=> this.veiwRef[index+label.trim()] = ref}
+        onGetRefWishlist={ref => (this.veiwRef[index + label.trim()] = ref)}
       />
     );
   };
@@ -378,46 +407,58 @@ class Home extends Component {
     }
   };
   /************** Wishlist  Method  **************/
-  bounce = (index,label) => this.veiwRef[index+label.trim()].rubberBand(500).then(endState => console.log(endState.finished ? 'bounce finished' : 'bounce cancelled'));
-  onPressWishlist = (item,index,label) =>{
-    let { addToWishlistSuccess } = this.props.screenProps.productActions;
-    this.bounce(index,label)
+  bounce = (index, label) =>
+    this.veiwRef[index + label.trim()]
+      .rubberBand(500)
+      .then(endState =>
+        console.log(endState.finished ? "bounce finished" : "bounce cancelled")
+      );
+  onPressWishlist = (item, index, label) => {
+    let { addWishlitsRequestApi } = this.props.screenProps.productActions;
+    this.bounce(index, label);
     if (label == "Trending Products") {
-      let updateProducts = updateWishListSuccess(this.state.popularProducts,item)
+      let updateProducts = updateWishListSuccess(
+        this.state.popularProducts,
+        item
+      );
       this.setState({
         popularProducts: updateProducts
       });
-   
     } else if (label == "Featured Products") {
-      let updateProducts = updateWishListSuccess(this.state.featureProducts,item)
+      let updateProducts = updateWishListSuccess(
+        this.state.featureProducts,
+        item
+      );
       this.setState({
         featureProducts: updateProducts
       });
-  }
-   addToWishlistSuccess({ ...item, isFevorite: item.isFevorite ? false : true });
-}
-/************** Cart Method  **************/
- 
+    }
+    addWishlitsRequestApi({
+      ...item,
+      isFevorite: item.isFevorite ? false : true
+    });
+  };
+  /************** Cart Method  **************/
+
   addRemoveCart = (item, label) => {
     let { addCartRequestApi } = this.props.screenProps.productActions;
     if (label == "Trending Products") {
-      let updateProducts = updateCartSuccess(this.state.popularProducts,item)
+      let updateProducts = updateCartSuccess(this.state.popularProducts, item);
       this.setState({
         popularProducts: updateProducts
       });
     } else if (label == "Featured Products") {
-      let updateProducts = updateCartSuccess(this.state.featureProducts,item)
+      let updateProducts = updateCartSuccess(this.state.featureProducts, item);
       this.setState({
         featureProducts: updateProducts
       });
-     }
-     addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
-
+    }
+    addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
   };
 
-/************** Cart Method  **************/
+  /************** Cart Method  **************/
   render() {
-    let {carts} = this.props.screenProps.product
+    let { carts } = this.props.screenProps.product;
     /************ Animation Type */
     const scrollY = Animated.add(
       this.state.scrollY,
@@ -440,21 +481,23 @@ class Home extends Component {
         <Animated.ScrollView
           style={detailStyles.fill}
           scrollEventThrottle={1}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
-            {
-              listener: event => {
-                this.handleScroll(event);
-              }
-            },
-            { useNativeDriver: true }
-          )}
+          showsVerticalScrollIndicator={false}
+          // onScroll={Animated.event(
+          //   [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+          //   {
+          //     listener: event => {
+          //       this.handleScroll(event);
+          //     }
+          //   },
+          //   { useNativeDriver: true }
+          // )}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
               onRefresh={() => {
-                this.setState({ refreshing: true });
-                setTimeout(() => this.setState({ refreshing: false }), 1000);
+                this.setState({ refreshing: true }, () => {
+                  this.getCartData();
+                });
               }}
               // Android offset for RefreshControl
               progressViewOffset={HEADER_MAX_HEIGHT}
@@ -501,7 +544,7 @@ class Home extends Component {
             {this.renderCategory()}
           </Animated.View>
         </Animated.View>
-        {this.state.isbarShow ? (
+        {/* {this.state.isbarShow ? (
           <Animated.View
             style={[
               detailStyles.bar,
@@ -534,7 +577,7 @@ class Home extends Component {
               })}
             </View>
           </Animated.View>
-        ) : null}
+        ) : null} */}
       </View>
     );
   }

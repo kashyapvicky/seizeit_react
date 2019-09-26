@@ -93,9 +93,9 @@ export const AddressPlaceholder = ({ loader = Promise, array = [1, 2] }) => {
           );
         }}
       />
-      {/* <View style={{alignSelf:'center',position:'absolute',top:'35%'}}>
+      <View style={{alignSelf:'center',position:'absolute',top:'35%'}}>
              <Text p>No Data found</Text>
-         </View> */}
+         </View>
     </PlaceholderContainer>
   );
 };

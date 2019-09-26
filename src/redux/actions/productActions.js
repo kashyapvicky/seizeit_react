@@ -18,11 +18,22 @@ export const addCartFromApi = payload => {
     payload
   };
 };
+export const getWishListFromApi = payload => {
+  return {
+    type: type.GET_WISLIST_API_SUCCESS,
+    payload
+  };
+};
 export const removeCartSuccess = () => {
   return {
     type: type.REMOVE_CART_SUCCESS
   };
 };
+export const removeWishListSuccess = ()=>{
+  return {
+    type: type.REMOVE_WISHLIST_SUCCESS
+  };
+}
 //Add To Wishlisrt
 export const addToWishlistSuccess = payload => {
   return {
@@ -64,6 +75,45 @@ export const  getCartRequestApi = () =>{
           return {...x,isCart:true}
         })
          dispatch(addCartFromApi(carts))
+      }
+      return true
+  })
+ }
+}
+
+// Add to wishlist Api 
+export const  addWishlitsRequestApi = (payload) =>{
+  let data = {}
+  data['product_id']=payload.product_id
+  data['device_id']=DeviceInfo.getUniqueID()
+  return (dispatch, getState) => {
+    let api_name;
+    if(payload.isFevorite){
+      api_name = `user/addtowish`
+    }else if(!payload.isFevorite){
+      api_name = `user/deletewish`
+    }
+    debugger
+    return postRequest(api_name,data).then((res) => {
+    if (res) {
+        dispatch(addToWishlistSuccess(payload))
+        return res
+     }
+  })
+ }
+}
+
+// get to cart Api 
+export const  getWishListApi = () =>{
+  let device_id=DeviceInfo.getUniqueID()
+  return (dispatch, getState) => {
+    return getRequest(`user/showwish?device_id=${device_id}`).then((res) => {
+      debugger
+      if(res && res.length > 0){
+        let wishlists = res.map((x)=> {
+          return {...x,isFevorite:true}
+        })
+         dispatch(getWishListFromApi(wishlists))
       }
       return true
   })

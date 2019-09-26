@@ -89,6 +89,33 @@ class Products extends Component {
       })
       .catch(err => {});
   };
+
+  // Update Product Status
+ updateroductStaus = (statusI, parentItem) => {
+   let statusPro = parentItem.sold_out == 1 ? 'ACTIVE' : 'SOLD OUT'
+   if(statusPro ==statusI ){
+    let { toastRef } = this.props.screenProps;
+    let { setToastMessage } = this.props.screenProps.actions;
+    let data ={}
+    data['product_id'] = parentItem.product_id
+    data['sold_out'] = parentItem.sold_out == 1 ? 0 : 1
+    postRequest(`vendor/updateProductstatus`,data)
+      .then(res => {
+        debugger
+        if(res.success){
+          this.onSelectStatus(statusI, parentItem)
+          setToastMessage(true,colors.green1)
+          toastRef.show(res.success)
+        }
+      })
+      .catch(err => {});
+   }else{
+    this.setState({
+      selectedIndex: -1
+    });
+   }
+   
+  };
   /****************Api Call   **************/
   renderButton = (title, transparent) => {
     return (
@@ -115,10 +142,11 @@ class Products extends Component {
     });
   };
   onSelectStatus = (statusI, parentItem) => {
+    
     this.setState({
       products: this.state.products.map(res => {
-        if (parentItem.id == res.id) {
-          return { ...res, available: statusI == "ACTIVE" ? 1 : 0 };
+        if (parentItem.product_id == res.product_id) {
+          return { ...res, sold_out: statusI == "ACTIVE" ? 0 : 1 };
         } else {
           return { ...res };
         }
@@ -179,12 +207,9 @@ updateProduct = () => {
       >
         {["ACTIVE", "SOLD OUT"].map((item, index) => {
           return (
-            <TouchableOpacity onPress={() => null}>
-              {/* <TouchableOpacity onPress={() =>  this.onSelectStatus(item,parentItem)}> */}
-              <Animatable.View
-                animation="slideInDown"
+           <TouchableOpacity onPress={() =>  this.updateroductStaus(item,parentItem)}> 
+              <View
                 //  duration={'300'}
-                direction={"normal"}
                 style={[
                   {
                     paddingVertical: 8
@@ -194,7 +219,7 @@ updateProduct = () => {
                 <Text p style={{ fontSize: normalize(14), color: "#96C50F" }}>
                   {item}
                 </Text>
-              </Animatable.View>
+              </View>
             </TouchableOpacity>
           );
         })}
@@ -303,7 +328,7 @@ updateProduct = () => {
               </Text>
               <TouchableOpacity
                 onPress={() => this.openStatusDropDown(index)}
-                onPress={() => null}
+                // onPress={() => null}
                 style={{
                   // flex: 0.5,
                   borderWidth: 1,
@@ -314,7 +339,7 @@ updateProduct = () => {
                   paddingVertical: 0,
                   // justifyContent:'center',
                   flexDirection: "row",
-                  borderColor: item.available == 1 ? "#96C50F" : "#E06D7B",
+                  borderColor: item.sold_out == 1 ? "#E06D7B" : "#96C50F",
                   borderRadius: 4
                 }}
               >
@@ -327,7 +352,6 @@ updateProduct = () => {
                   }}
                 >
                   {item.sold_out == 1 ? "SOLD OUT" : "ACTIVE"}
-
                   <Image source={Images.drop} />
                 </Text>
               </TouchableOpacity>

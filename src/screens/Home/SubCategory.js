@@ -31,6 +31,7 @@ import {
   updateCartSuccess,
   updateWishListSuccess
 } from "../../utilities/method";
+import ProductCartItem from "./Templates/ProductCartItem";
 
 class SubCategory extends Component {
   constructor(props) {
@@ -117,7 +118,6 @@ class SubCategory extends Component {
     }
     postRequest(apiName, data)
       .then(res => {
-        debugger;
         if (res && res.success && res.success.length > 0) {
           this.setState(
             {
@@ -186,6 +186,7 @@ class SubCategory extends Component {
     );
   };
   renderProductsList = (item, index) => {
+    console.log(this.state.products,"this.state.products")
     return (
       <View
         key={index}
@@ -193,6 +194,10 @@ class SubCategory extends Component {
         style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}
       >
         <View style={{ height: 6 }} />
+        {/* <ProductCartItem  
+          {...this.props}
+          products={this.state.products}
+        /> */}
         <FlatList
           bounces={true}
           // extraData={this.state}
@@ -257,12 +262,12 @@ class SubCategory extends Component {
       );
   onPressWishlist = (item, index) => {
     this.bounce(index);
-    let { addToWishlistSuccess } = this.props.screenProps.productActions;
+    let { addWishlitsRequestApi } = this.props.screenProps.productActions;
     let updateArray = updateWishListSuccess(this.state.products, item);
     this.setState({
       products: updateArray
     });
-    addToWishlistSuccess({
+    addWishlitsRequestApi({
       ...item,
       isFevorite: item.isFevorite ? false : true
     });
@@ -294,6 +299,7 @@ class SubCategory extends Component {
           backPress={() => this.props.navigation.goBack()}
         />
         {this.renderScrollableTab()}
+       
         <FilterButton
           onPress={() => this.props.navigation.navigate("Filter")}
         />

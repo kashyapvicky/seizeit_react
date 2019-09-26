@@ -45,6 +45,7 @@ export const setIndicator = loader => {
       loader: loader
     };
   };
+
 // Succes Log Out User
 export const logOutUser = () => {
   return {
@@ -61,3 +62,18 @@ export const logOutUserSuccess = lang => {
   };
 };
 
+// Add currentLoaction 
+export const addCurrentLocation = (payload) => {
+  return {
+    type: type.ADD_CURRENT_LOCATION_SUCCESS,
+    payload
+  };
+};
+
+// Update user data
+export const updateUserData = (payload) => {
+  return {
+    type: type.UPDATE_LOGGED_USER_DATA,
+    payload
+  };
+};

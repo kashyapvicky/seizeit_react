@@ -22,7 +22,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
                 // fontWeight: "600"
               }}
             >
-             {product.product_title}
+             {product.subcategory}
             </Text>
           </View>
           <View  style={{
@@ -37,7 +37,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
                 lineHeight:30
               }}
             >
-            {`Set of 4 beautiful ${product.product_title} Stripes all of different brands`}
+            {product.product_title}
             </Text>
           </View>
           <View

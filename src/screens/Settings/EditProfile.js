@@ -3,7 +3,7 @@ import {
   View,
   SafeAreaView,
   Image,
-  StatusBar,
+  KeyboardAvoidingView,
   Keyboard,
   TouchableOpacity,
   ScrollView,
@@ -105,7 +105,7 @@ class EditProfile extends Component {
   //Update process
   pressButton = () => {
     let { netStatus, fcm_id } = this.props.screenProps.user;
-    let { setToastMessage } = this.props.screenProps.actions;
+    let { setToastMessage,updateUserData} = this.props.screenProps.actions;
     let { toastRef } = this.props.screenProps;
     let validation = Validation.validate(this.ValidationRules());
     if (validation.length != 0) {
@@ -138,8 +138,18 @@ class EditProfile extends Component {
             debugger
             if (res) {
               toastRef.show(res.success,colors.textColor)
-              this.props.navigation.goBack()
+              if(params && params.getUserInfo){
                 params.getUserInfo()
+              }else if(params && params.updatePersonalDetail){
+                let data ={}
+                data['name'] = `${firstName} ${lastName}`
+                params.updatePersonalDetail(data)
+              }
+              updateUserData({
+                name:`${firstName} ${lastName}`
+              })
+              this.props.navigation.goBack()
+
             }
           })
           .catch(err => {
@@ -328,7 +338,10 @@ renderProfileView = () => {
   }
   render() {
     return (
-      <View style={{ flex: 1 }}>
+      <KeyboardAvoidingView style={{ flex: 1 }}
+      enabled={true}
+      behavior={'height'} 
+      >
         <Header
           isRightIcon={false}
           headerStyle={[
@@ -349,7 +362,7 @@ renderProfileView = () => {
             paddingHorizontal: 24
           }}
         >
-           <View style={{ height: 35 }} />
+           <View style={{ height: 20 }} />
            <View style={{flex:0.25,alignSelf:'center'}}>
            {this.renderProfileView()}
 
@@ -406,14 +419,18 @@ renderProfileView = () => {
               Keyboard.dismiss()
             }}
           />
+        <View style={{ height: 25 }} />
+
         </ScrollView>
-        <View style={[styles.continueButton, { paddingHorizontal: 24 }]}>
+        <View style={{ height: 35 }} />
+
+        <View style={[styles.continueButton, {flex:0.1, paddingHorizontal: 24 }]}>
           {this.renderButton("UPDATE", false, false, colors.primary, 16)}
-          <View style={{ height: 30 }} />
+          <View style={{ height: 25 }} />
         </View>
         {this.state.isModalVisible ? this.renderBottomModal() : null}
 
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

@@ -12,6 +12,11 @@ const product = (state = initialState, action) => {
           ...state,
           carts: action.payload
       }
+    case type.GET_WISLIST_API_SUCCESS:
+        return {
+          ...state,
+          wishlists: action.payload
+    }
     case type.ADD_REMOVE_CART_SUCCESS:
       let newCart;
       if(state.carts.length > 0){
@@ -35,6 +40,11 @@ const product = (state = initialState, action) => {
           return {
             ...state,
             carts: []
+      };
+      case type.REMOVE_WISHLIST_SUCCESS:
+          return {
+            ...state,
+            wishlists: []
       };
       case type.ADD_REMOVE_WISHLIST_SUCCESS:
           let newWishlist;

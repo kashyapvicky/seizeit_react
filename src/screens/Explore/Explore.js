@@ -36,7 +36,7 @@ class Explore extends Component {
     this.veiwRef={}
 
     this.state = {
-      visible2: false,
+      refreshing: false,
       cartItems: [],
       name:'',
       tabs: [],
@@ -52,14 +52,26 @@ class Explore extends Component {
       this.getProducts()
     
   }
-    /*************APi Call  *********/
+  handleRefresh = () => {
+    this.setState(
+      {
+        refreshing: true
+      },
+      () => {
+        this.getProducts();
+      }
+    );
+  };  
+  /*************APi Call  *********/
   getProducts = ()=>{
     let {setIndicator} = this.props.screenProps.actions
     getRequest('user/product-listing').then((res) => {  
       if(res && res.success && res.success.length > 0){
         console.log(res.success,"res.success")
         this.setState({
-          prouducts : res.success
+          prouducts : res.success,
+          refreshing:false
+
         },()=>{
           let { carts,wishlists } = this.props.screenProps.product;
           if (carts && carts.length > 0 || wishlists && wishlists.length>0) {
@@ -69,7 +81,11 @@ class Explore extends Component {
             });
           }
         })
-      }   
+      }else{
+        this.setState({
+          refreshing:false
+        })
+      }  
       setIndicator(false)
     }).catch((err) => {
     })
@@ -109,12 +125,12 @@ class Explore extends Component {
  
   onPressWishlist = (item,index) => {
     this.bounce(index)
-    let { addToWishlistSuccess } = this.props.screenProps.productActions;
+    let { addWishlitsRequestApi } = this.props.screenProps.productActions;
     let updateArray = updateWishListSuccess(this.state.prouducts, item);
     this.setState({
       prouducts: updateArray
     });
-    addToWishlistSuccess({
+    addWishlitsRequestApi({
       ...item,
       isFevorite: item.isFevorite ? false : true
     });
@@ -141,6 +157,8 @@ class Explore extends Component {
           numColumns={2}
           showsVerticalScrollIndicator={false}
           data={this.state.prouducts}
+          refreshing={this.state.refreshing}
+          onRefresh={this.onRefresh}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
           ListEmptyComponent={<ProductPlaceholder  

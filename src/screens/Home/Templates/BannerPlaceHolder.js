@@ -24,7 +24,8 @@ export const BannerPlaceholderComp =({loader=Promise,array=[1,2]}) => {
       >
      <Placeholder style={[styles.placeholder, { 
         borderRadius:8,
-         width: screenDimensions.width-16, height: 176 }]} />
+        marginTop: 0,
+         width: screenDimensions.width-16, height: 'auto' }]} />
          <View style={{alignSelf:'center',position:'absolute',top:'35%'}}>
              <Text p>loading</Text>
          </View>

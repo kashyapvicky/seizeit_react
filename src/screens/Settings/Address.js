@@ -11,6 +11,7 @@ import {
 } from "react-native";
 // import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { postRequest, getRequest } from "../../redux/request/Service";
 
 //local imports
 import Button from "../../components/Button";
@@ -28,16 +29,8 @@ class Address extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible2: false,
-      addressArray: [{
-        title :'Leo Harmon',
-        description:'3065 Kirlin Prairie Suite 200, Sector 29D,  oppo. Tribune colony Chandigarh 160030',
-
-      },{
-        title :'Cody Ramos',
-        description:'3065 Kirlin Prairie Suite 200, Sector 29D,  oppo. Tribune colony Chandigarh 160030',
-
-      }]
+      isRefreshing: false,
+      addresses: []
     };
      // Placeholder Product 
      this.loaderComponent = new Promise(resolve => {
@@ -46,7 +39,111 @@ class Address extends Component {
       }, 1000);
     });
   }
+  componentDidMount(){
+    this.getAddresses()
+  }
+  /*************APi Call  *********/
+  getAddresses = () => {
+    getRequest("customer/address-listing")
+      .then(res => {
+        debugger;
+        if (res && res.success && res.success.length > 0) {
+          let {params} = this.props.navigation.state
+          this.setState({
+            addresses: res.success.map((x) =>{
+              return {
+                title:x.full_address,
+                id:x.address_id,
+                is_active:x.is_active,
+                description:`${x.flat},${x.city},${x.landmark}.${x.state} ${x.country_name} ${x.pincode}  `
+              }
+            }),
+            isRefreshing:false
+          },()=>{
+            if(params && params.fromCheckout && this.state.addresses.length>0){
+              let is_activeAddress= this.state.addresses.filter(x=>x.is_active)[0]
+              params.updateDefaultAddress(is_activeAddress.description,is_activeAddress.id)
+              // this.props.navigation.goBack()
+             }
+          });
+         
+        }else{
+          this.setState({
+            isRefreshing:false
+          })
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
 
+// Update Address
+updateDefaultAddress = (item) =>{
+  let {setToastMessage} = this.props.screenProps.actions
+  let {toastRef} = this.props.screenProps
+    let data = {}
+    data['address_id'] =item.id
+    data['is_active'] =item.is_active ? 0 :1
+    postRequest("customer/updateAddressStatus",data)
+      .then(res => {
+        if (res && res.success) {
+          let {params} = this.props.navigation.state
+          setToastMessage(true,colors.green1)
+           toastRef.show(res.success)
+           if(params && params.updateDefaultAddress){
+            params.updateDefaultAddress(item.description)
+            this.props.navigation.goBack()
+           }
+            this.setState({
+              addresses:this.state.addresses.map((x) =>{
+                if(x.id ==item.id){
+                  return {
+                    ...x,
+                    is_active : item.is_active ? 0 :1
+                  }
+                }else{
+                  return {
+                    ...x,
+                    is_active:0
+                  }
+                }
+              })
+            })
+         }
+        setIndicator(false);
+      })
+     .catch(err => {});
+  }
+// Update Address
+deleteAddress = (item) =>{
+  let {setToastMessage} = this.props.screenProps.actions
+  let {toastRef} = this.props.screenProps
+  let {params} = this.props.navigation.state
+    getRequest(`customer/deleteAddress?address_id=${item.id}`)
+      .then(res => {
+        if (res && res.status == 200) {
+           setToastMessage(true,colors.green1)
+            toastRef.show(res.response)
+            this.setState({addresses:this.state.addresses.filter(x=>x.id != item.id)})
+            if((params && params.address_id) == item.id ){
+                params.updateDefaultAddress('',false)
+            }
+         }
+        setIndicator(false);
+      })
+     .catch(err => {});
+  }
+/*************APi Call  *********/
+handleRefresh = () => {
+  this.setState(
+    {
+      isRefreshing: true
+    },
+    () => {
+      this.getAddresses();
+    }
+  );
+};
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -65,12 +162,16 @@ class Address extends Component {
     );
   };
   pressButton = () => {
-    this.props.navigation.navigate("AddNewAddress");
+    this.props.navigation.navigate("AddNewAddress",{
+      getAddress :()=>this.getAddresses()
+    });
   };
   renderItems = ({ item, index }) => {
     return <AddressListItem item={item} index={index} 
             onPress={() => null}
             descriptionSize={normalize(14)}
+            updateDefaultAddress={()=>this.updateDefaultAddress(item)}
+            deleteAddress={() => this.deleteAddress(item)}
             />
   };
   renderBankList = () => {
@@ -78,8 +179,10 @@ class Address extends Component {
       <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}>
         <FlatList
           bounces={true}
+          refreshing={this.state.isRefreshing}
+          onRefresh={this.handleRefresh}
           showsVerticalScrollIndicator={false}
-          data={[]}
+          data={this.state.addresses}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
           ListEmptyComponent={<AddressPlaceholder  

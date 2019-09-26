@@ -22,6 +22,7 @@ import colors from "../../utilities/config/colors";
 import Listitems from "../Home/Templates/ListItem";
 import { postRequest, getRequest } from "../../redux/request/Service";
 import { ProductPlaceholder } from "../Home/Templates/PlaceHolderProduct";
+import ProductSlider from "./Templates/ProductSlider";
 
 import Features from "./Templates/Feature";
 import styles from "../../styles";
@@ -123,12 +124,12 @@ export default class ProductDetail extends Component {
       );
   onPressWishlist = (item, index) => {
     this.bounce(index);
-    let { addToWishlistSuccess } = this.props.screenProps.productActions;
+    let { addWishlitsRequestApi } = this.props.screenProps.productActions;
     let updateArray = updateWishListSuccess(this.state.similarProducts, item);
     this.setState({
       similarProducts: updateArray
     });
-    addToWishlistSuccess({
+    addWishlitsRequestApi({
       ...item,
       isFevorite: item.isFevorite ? false : true
     });
@@ -141,7 +142,11 @@ export default class ProductDetail extends Component {
     });
     addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
   };
-
+  addToCart = item => {
+    let { addCartRequestApi } = this.props.screenProps.productActions;
+    addCartRequestApi({ ...item, isCart: item.isCart ? false : true });
+    this.setState({});
+  };
   /************** Cart Method  **************/
   renderLabel = title => {
     return (
@@ -170,8 +175,9 @@ export default class ProductDetail extends Component {
     );
   };
   pressButton = title => {
-    if (title == "ADD TO CART") {
-      alert("ADD");
+    if (title == "Add to Cart") {
+      let { product } = this.state;
+      this.addToCart(product);
     } else if (title == "View Cart") {
       this.props.navigation.navigate("Cart");
     }
@@ -329,6 +335,39 @@ export default class ProductDetail extends Component {
       }
     }
   };
+  renderCartCount = carts => {
+    if (carts && carts.length > 0) {
+      return (
+        <TouchableOpacity
+          style={{
+            zIndex: 1,
+            position: "absolute",
+            backgroundColor: colors.primary,
+            borderRadius: 17 / 2,
+            width: 17,
+            height: 17,
+            top: -5,
+            right: -10,
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <Text
+            p
+            style={{
+              color: "white",
+              fontSize: normalize(12),
+              fontWeight: "600",
+              lineHeight: 18
+            }}
+          >
+            {carts.length}
+          </Text>
+        </TouchableOpacity>
+      );
+    }
+    return <></>;
+  };
   render() {
     let { carts } = this.props.screenProps.product;
     let { params } = this.props.navigation.state;
@@ -337,7 +376,7 @@ export default class ProductDetail extends Component {
     if (
       carts &&
       carts.length > 0 &&
-      carts.findIndex(x => x.product_id == params.productId) > -1
+      carts.findIndex(x => x.product_id == this.state.product.product_id) > -1
     ) {
       title = "View Cart";
     }
@@ -421,7 +460,20 @@ export default class ProductDetail extends Component {
             { transform: [{ translateY: headerTranslate }] }
           ]}
         >
-          <Animated.Image
+          <Animated.View 
+           style={[
+            detailStyles.backgroundImage,
+            {
+              opacity: imageOpacity,
+              transform: [{ translateY: imageTranslate }]
+            }
+          ]}
+          >
+          <ProductSlider banners={[1,2,3,4]} />
+
+          </Animated.View>
+
+          {/* <Animated.Image
             style={[
               detailStyles.backgroundImage,
               {
@@ -434,7 +486,7 @@ export default class ProductDetail extends Component {
                 ? product.pic[0]
                 : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
             }}
-          />
+          /> */}
           <TouchableOpacity
             style={{
               flex: 0.2,
@@ -455,6 +507,7 @@ export default class ProductDetail extends Component {
               style={{ alignSelf: "center" }}
             >
               <Image source={require("../../assets/images/ic_cart.png")} />
+              {this.renderCartCount(carts)}
             </TouchableOpacity>
           </TouchableOpacity>
         </Animated.View>
@@ -484,6 +537,7 @@ export default class ProductDetail extends Component {
               style={{ alignSelf: "center" }}
             >
               <Image source={require("../../assets/images/ic_cart.png")} />
+              {this.renderCartCount(carts)}
             </TouchableOpacity>
           </Animated.View>
         ) : null}

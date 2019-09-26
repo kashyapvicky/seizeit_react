@@ -115,7 +115,7 @@ class Signup extends Component {
         data['lastname'] = lastName.trim()
         data['type'] = params.role == 'Customer' ? 1 :2  
         data['password'] = password.trim()
-        user['device_id'] = DeviceInfo.getUniqueID()
+        data['device_id'] = DeviceInfo.getUniqueID()
         data['device_token'] = '1234'+Math.random(10)
         postRequest('user/register',data).then((res) => {
           if(res){
