@@ -114,6 +114,8 @@ PODS:
     - React
   - react-native-netinfo (4.2.0):
     - React
+  - react-native-webview (7.2.7):
+    - React
   - React-RCTActionSheet (0.60.4):
     - React-Core (= 0.60.4)
   - React-RCTAnimation (0.60.4):
@@ -177,6 +179,7 @@ DEPENDENCIES:
   - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
   - react-native-google-places (from `../node_modules/react-native-google-places`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -242,6 +245,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-google-places"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -307,6 +312,7 @@ SPEC CHECKSUMS:
   react-native-fbsdk: 1309be490bdf18ae29f4cef836f69194b436d9d7
   react-native-google-places: 978bcc6ec4bd1d9b0ab3693e3705d4f1f2459caf
   react-native-netinfo: 16a1f36248b920e43bc0de383381b463002ae434
+  react-native-webview: 4e86924f095da5cb81708104d414e37ae43f2978
   React-RCTActionSheet: 9f71d7ae3e8fb10e08d162cbf14c621349dbfab3
   React-RCTAnimation: 981d8c95b0e30918a9832ccac32af83562a27fae
   React-RCTBlob: 21e73d1020a302a75fed30dbaee9f15287b80baa

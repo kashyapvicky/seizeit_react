@@ -46,7 +46,31 @@ class Checkout extends Component {
           title: "Bank transfer"
         }
       ],
+      options: [
+        {
+            name: 'Debit/Credit',
+            description: '',
+            icon: false,
+            title: 'CARDS'
+
+        },
+        {
+            name: 'Cash on delivery',
+            description: 'Please keep exact change handy to help you serve us better',
+            icon: true,
+            title: 'COD'
+        },
+        {
+            name: 'Bank transfer',
+            description: string('youCreditsAmount'),
+            icon: false,
+            title: 'BANK'
+
+        }
+    ],
       cartItems: [],
+      
+
       user: {},
       delivery:10,
       totalAmount:0,
@@ -199,19 +223,61 @@ class Checkout extends Component {
     return (
       <View key={index} tabLabel={item.title} style={{ paddingTop: 16 }}>
            <RenderLabel label={"Saved cards"} />
+
       </View>
     );
   };
+
+  renderPaymentMethod = () =>{
+    return  <View style={[{ paddingBottom: 8 }]}>
+    { this.state.options.map((option,i) =>{
+   return <View key={i+'payment'} style={{flexDirection:'row',paddingVertical:8}}>
+
+         <TouchableOpacity 
+      onPress={()=> this.setState({
+        selectPaymentMethod :!this.state.selectPaymentMethod
+      })}
+      style={{ flex: 0.1, paddingLeft: 0,paddingTop:6,paddingRight:8 }}>
+        {
+          option.icon ?
+          <Image source={Images.check} style={{alignSelf:'center',height:18,width:18}}/>
+          :  <Image source={Images.round} style={{alignSelf:'center',height:18,width:18}}/>
+        }
+      </TouchableOpacity>
+        <View style={{ flexDirection: "row" }}>
+          <Text
+            p
+            style={{
+              color: "#000000",
+              fontSize: normalize(16),
+              // fontWeight: "bold"
+            }}
+          >
+           {`${option.name}`}
+          </Text>
+        </View>
+        </View>
+        })
+      }
+         
+      </View>
+
+     
+  }
   renderScrollableTab = () => {
     return (
       <View style={{ paddingVertical: 16, paddingHorizontal: 24 }}>
         <RenderLabel label={"Payment"} />
-        <ScrollableTabView
+          <View style={{height:20}}>
+
+          </View>
+        {this.renderPaymentMethod()}
+        {/* <ScrollableTabView
           tabs={this.state.tabs}
           renderListTabs={(item, index) =>
             this.renderPaymentSelectSection(item, index)
           }
-        />
+        /> */}
       </View>
     );
   };

@@ -10,6 +10,8 @@ import {
   Platform
 } from "react-native";
 import DeviceInfo from 'react-native-device-info';
+import InstagramLogin from 'react-native-instagram-login'
+
 import {postRequest} from '../../redux/request/Service'
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
@@ -293,7 +295,38 @@ class Signup extends Component {
       this.facebookLogin()
     }else if(title == 'CONTINUE USING GOOGLE'){
       this.googleSignin()
+    }else if(title == 'CONTINUE USING INSTAGRAM'){
+      this.instagramLogin.show()
     }
+  }
+   // Instagram user info
+   getInstagramUserInfo =(token)=>{    
+    let {setToastMessage} = this.props.screenProps.actions
+    let {toastRef} = this.props.screenProps
+    fetch(`https://api.instagram.com/v1/users/self/?access_token=${token}`)
+       .then((response) => response.json())
+            .then((json) => {
+              debugger
+                let user = {}
+                user.name = json.data.full_name
+                user.provider_user_id = json.data.id
+                // user.email = json.email
+                user.profile_pic = json.data.profile_picture
+                user.provider = 'instagram'
+                user['device_id'] = DeviceInfo.getUniqueID()
+                user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
+                user.device_token ='1234'+Math.random(10)
+                debugger
+                this.postSocialRequest(user)
+               })
+            .catch((err) => {
+              debugger
+              setToastMessage(true,colors.danger)
+              setTimeout(()=>{
+                toastRef.show('ERROR GETTING DATA FROM INSTAGRAM')
+              },500)
+                console.log('ERROR GETTING DATA FROM INSTAGRAM')
+            })
   }
   renderButton = (title, transparent, imageLeft, color, fontSize) => {
     return (
@@ -519,6 +552,9 @@ class Signup extends Component {
             14
           )}
           <View style={{ height: 20 }} />
+          {this.renderButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',14)}
+          <View style={{ height: 20 }} />
+
           <View style={styles.signInAgreeView}>
             <View style={{ alignItems: "center" }}>
               <Text
@@ -553,6 +589,18 @@ class Signup extends Component {
           <View style={{ height: 20 }} />
 
         </ScrollView>
+        <InstagramLogin
+        ref= {ref => this.instagramLogin= ref}
+        clientId='851971e11b9a4a30b86f70a65b32200a'
+        redirectUrl='https://www.seizeit-me.com'
+        scopes={['basic']}
+        onLoginSuccess={(token) => {
+          this.getInstagramUserInfo(token)
+        }}
+        onLoginFailure={(data) => {
+          debugger
+        }}
+       />
       </View>
     );
   }

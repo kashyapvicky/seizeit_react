@@ -10,6 +10,7 @@ import {
   Platform
 } from "react-native";
 import DeviceInfo from 'react-native-device-info';
+import InstagramLogin from 'react-native-instagram-login'
 
 import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
@@ -22,6 +23,8 @@ import TextInputComponent from "../../components/TextInput";
 import CustomeButton from "../../components/Button";
 import styles from "../../styles";
 import Text from '../../components/Text'
+// import InstagramLogin from './Instagram';
+
 import { string } from "../../utilities/languages/i18n";
 
 //Utilities
@@ -90,7 +93,6 @@ class Login extends Component {
         data['password'] = password.trim()
         data['device_token'] = '1234'+Math.random(10)
         data['device_id'] = DeviceInfo.getUniqueID()
-        
         data['device_type'] = Platform.OS == 'ios' ? 'ios' : 'android'
         postRequest('user/login',data).then((res) => {
           if(res.success){
@@ -251,6 +253,35 @@ class Login extends Component {
                 console.log('ERROR GETTING DATA FROM FACEBOOK')
             })
     }
+    // Instagram user info
+    getInstagramUserInfo =(token)=>{    
+      let {setToastMessage} = this.props.screenProps.actions
+      let {toastRef} = this.props.screenProps
+      fetch(`https://api.instagram.com/v1/users/self/?access_token=${token}`)
+         .then((response) => response.json())
+              .then((json) => {
+                debugger
+                  let user = {}
+                  user.name = json.data.full_name
+                  user.provider_user_id = json.data.id
+                  // user.email = json.email
+                  user.profile_pic = json.data.profile_picture
+                  user.provider = 'instagram'
+                  user['device_id'] = DeviceInfo.getUniqueID()
+                  user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
+                  user.device_token ='1234'+Math.random(10)
+                  debugger
+                  // this.postSocialRequest(user)
+                 })
+              .catch((err) => {
+                debugger
+                setToastMessage(true,colors.danger)
+                setTimeout(()=>{
+                  toastRef.show('ERROR GETTING DATA FROM INSTAGRAM')
+                },500)
+                  console.log('ERROR GETTING DATA FROM INSTAGRAM')
+              })
+    }
   pressButton = (title) => {
     //this.googleSignin()
     if(title == 'CONTINUE'){
@@ -260,6 +291,8 @@ class Login extends Component {
     }else if(title == 'CONTINUE USING GOOGLE'){
       debugger
       this.googleSignin()
+    }else if(title == 'CONTINUE USING INSTAGRAM'){
+      this.instagramLogin.show()
     }
   };
   renderButton = (title,transparent,imageLeft,color,fontSize) => {
@@ -275,6 +308,7 @@ class Login extends Component {
         }}
         imageSource={true}
         imageLeft={imageLeft}
+        
         buttonTextStyle={{fontWeight:imageLeft ?'normal' :'bold'}}
         imageLeftLocal={imageLeft}
         fontSize={normalize(fontSize)}
@@ -440,8 +474,24 @@ class Login extends Component {
           <View style={{ height: 20 }} />
           {this.renderButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,14)}
           <View style={{ height: 20 }} />
-
+          {this.renderButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',14)}
+          <View style={{ height: 20 }} />
+          <View>
+    
+       </View>
         </ScrollView>
+        <InstagramLogin
+        ref= {ref => this.instagramLogin= ref}
+        clientId='851971e11b9a4a30b86f70a65b32200a'
+        redirectUrl='https://www.seizeit-me.com'
+        scopes={['basic']}
+        onLoginSuccess={(token) => {
+          this.getInstagramUserInfo(token)
+        }}
+        onLoginFailure={(data) => {
+          debugger
+        }}
+       />
       </View>
     );
   }
