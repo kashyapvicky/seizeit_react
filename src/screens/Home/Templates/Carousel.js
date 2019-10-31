@@ -44,7 +44,7 @@ export default class  BannerCarousel extends React.Component {
 
             }]}>
                 <ImageBackground
-                    source={{uri:item.pic[0]}}
+                    source={{uri:item.image}}
                     resizeMode={'stretch'}
                     imageStyle={{borderRadius:4}}
                     // style={[styles.bannerImages,{resizeMode:'cover'}]}

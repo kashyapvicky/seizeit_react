@@ -185,7 +185,8 @@ class EditProfile extends Component {
       width: 200,
       height: 200, compressImageMaxHeight: 400,
       mediaType: "photo",
-      compressImageMaxWidth: 400, cropping: true, multiple: false
+      compressImageMaxWidth: 400, 
+      cropping: true, multiple: false
     })
       .then(response => {
         let tempArray = []

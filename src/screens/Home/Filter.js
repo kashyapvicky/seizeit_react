@@ -30,11 +30,13 @@ class Filter extends Component {
       prices: [
         {
           title: "Low to High",
-          check: true
+          check: false,
+          value:'ASC'
         },
         {
           title: "High to Low",
-          check: false
+          check: false,
+          value:'DESC'
         }
       ],
       productBrands: [
@@ -61,31 +63,113 @@ class Filter extends Component {
       ],
       frequencyOfUsage: [
         {
-          title: "1 to 5 Days",
-          check: false
+          title: "Once",
+          check: false,
+          value:1
         },
         {
-          title: "5 to 10 Days",
-          check: false
+          title: "Two",
+          check: false,
+          value:2
         },
         {
-          title: "15 to 20 Days",
-          check: true
+          title: "Three",
+          check: false,
+          value:3
         },
         {
-          title: "Fresh",
-          check: true
+          title: "Four",
+          check: false,
+          value:4
+        },
+        {
+          title: "Five",
+          check: false,
+          value:5
         }
       ]
     };
   }
-  pressButton = () => {};
+  componentDidMount(){
+    let {filters} = this.props.screenProps.product
+    let {frequencyOfUsage,prices} = this.state
+      this.setState({
+        frequencyOfUsage:filters.usage_filter ? this.updateState(filters.usage_filter,frequencyOfUsage):frequencyOfUsage,
+        prices:filters.price_filter ? this.updateState(filters.price_filter,prices):prices
+      })
+  }
+  updateState = (value,array) =>{
+    return array.map(x => {
+        if(x.value == value){
+          return {...x,check:true}
+        }else{ return {...x,check:false}}
+    })
+  } 
+  pressButton = () => {
+    let findPrices = this.state.prices.filter(x=>x.check == true)
+    let findfrequencyOfUsage = this.state.frequencyOfUsage.filter(x=>x.check == true)
+    let {params} = this.props.navigation.state
+    let {addFilterSuccess} = this.props.screenProps.productActions
+    debugger
+    if(params && params.updateFilter){
+      let data = {}
+      data['price_filter']=findPrices.length > 0 ? findPrices[0].value : ''
+      data['usage_filter']=findfrequencyOfUsage.length > 0 ? findfrequencyOfUsage[0].value : ''
+      params.updateFilter(data)
+      addFilterSuccess(data)
+      this.props.navigation.pop()
+    }
+
+
+  };
+  seletctSortByPrice = (item)=>{
+    this.setState({
+      prices : this.state.prices.map(x=>{
+        if(x.value == item.value){
+          return {
+            ...x,
+            check:true
+          }
+        }else{
+          return {
+            ...x,
+            check:false
+
+          }
+        }
+      })
+    })
+  }
+  seletctFrequecnyOfUse = (item)=>{
+    this.setState({
+      frequencyOfUsage : this.state.frequencyOfUsage.map(x=>{
+        if(x.value == item.value){
+          return {
+            ...x,
+            check:true
+          }
+        }else{
+          return {
+            ...x,
+            check:false
+
+          }
+        }
+      })
+    })
+  }
+  resetFilter = () =>{
+    this.setState({
+      frequencyOfUsage : this.state.frequencyOfUsage.map(x=>({...x,check:false})),
+      prices : this.state.prices.map(x=>({...x,check:false}))
+    })
+  }
   renderButton = (title, transparent) => {
     return (
       <Button
         buttonStyle={{
-          height: 32,
-          width: 112,
+          height: 40,
+          width:200,
           justifyContent: "center",
           alignItems: "center",
           borderRadius: 5,
@@ -124,7 +208,9 @@ class Filter extends Component {
         </View>
         <View style={{ marginTop: 10 }}>
           {this.state.prices.map((item, index) => {
-            return <FilterItemsRadio item={item} index={index} />;
+            return <FilterItemsRadio item={item} index={index} 
+            onSelect={() => this.seletctSortByPrice(item)}
+            />;
           })}
         </View>
       </View>
@@ -140,7 +226,9 @@ class Filter extends Component {
         </View>
         <View style={{ marginTop: 10 }}>
           {this.state.frequencyOfUsage.map((item, index) => {
-            return <FilterItemsCheckBox item={item} index={index} />;
+            return <FilterItemsCheckBox item={item} index={index} 
+            onSelect={()=> this.seletctFrequecnyOfUse(item)}
+            />;
           })}
         </View>
       </View>
@@ -161,6 +249,7 @@ class Filter extends Component {
           ]}
           hideLeftIcon={false}
           title={"Filter"}
+          onRightPress={() => this.resetFilter()}
           backPress={() => this.props.navigation.dismiss()}
         />
         <ScrollView
@@ -169,12 +258,16 @@ class Filter extends Component {
         >
           <View style={{ height: 16 }} />
           {this.renderPrice()}
-          <View style={{ height: 16 }} />
-          {this.renderBrands()}
+          {/* <View style={{ height: 16 }} />
+          {this.renderBrands()} */}
           <View style={{ height: 16 }} />
           {this.renderFrequencyOfUsage()}
           <View style={{ height: 16 }} />
         </ScrollView>
+        <View style={{flex:0.2,justifyContent:'center',alignItems:'center'}}>
+        {this.renderButton('Apply')}
+
+        </View>
       </View>
     );
   }

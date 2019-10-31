@@ -14,14 +14,17 @@ const getAccessTokenFromCookies = () => {
   })
 };
 // Post Request
-const postRequest = (apiName, data = {}) => {
+const postRequest = (apiName, data = {},hideLoader=false) => {
   if (!NavigationService.checkNetStatus()) {
     return  new Promise((resolve,reject) =>{
       NavigationService.showToastMessage(string('NetAlert'))
           resolve(null)
      })  
     }else{
-    NavigationService.setIndicator(true)
+    if(!hideLoader){
+      NavigationService.setIndicator(true)
+
+    }
     return AxiosInstance.post(apiName, data)
       .then(res => {
         NavigationService.setIndicator(false)
@@ -73,7 +76,7 @@ const getRequest = apiName => {
              return NavigationService.showToastMessage(res.data.error)
             }else if(res.status == 500){
               debugger
-             return NavigationService.showToastMessage(res.data.error)
+             return NavigationService.showToastMessage(res.data.message)
             }
             else{
              return NavigationService.showToastMessage(res.data.message)

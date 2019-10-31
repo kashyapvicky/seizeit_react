@@ -27,6 +27,7 @@ import Blogs from "./Blogs";
 import BlogDetail from "./BlogDetail";
 import {TransitionConfig} from "../../AppNavigationConfiguration";
 import EditProfile from "./EditProfile";
+import Countries from "./Countries";
 
 export const SettingNavigator = createStackNavigator(
       {
@@ -40,6 +41,7 @@ export const SettingNavigator = createStackNavigator(
         Wishlist:Wishlist,
         Address:Address,
         AddNewAddress:AddNewAddress,
+        Countries:Countries,
         OrderPlaced:OrderPlaced,
         CustomerReturOrders:CustomerReturOrders,
         CustomerReturnOrderRequest:CustomerReturnOrderRequest,

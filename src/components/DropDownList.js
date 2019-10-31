@@ -12,25 +12,27 @@ export default DropDownList = props => {
       style={[
         styles.shadow,
         {
-          backgroundColor: "white",
           borderWidth: 1,
-          paddingHorizontal: 16,
+          paddingHorizontal: 24,
           borderTopWidth: 0,
           borderColor: "rgba(0,0,0,0.2)",
           zIndex: 100,
           shadowOpacity: 0.2,
-          backgroundColor: "#F9F8F8",
+          backgroundColor: "#F9F9F9",
           shadowRadius: 5,
-          height: 200,
-          marginBottom: 10
+           minHeight: 100,
+          marginBottom: 10,
+          position:'absolute',
+          overflow:'scroll'
         }
       ]}
     >
+        <View style={{height:25}} />
       {props.lists.map((item, index) => {
         return (
           <TouchableOpacity onPress={() =>  props.selectItem && props.selectItem(item)}>
-          <Animatable.View
-            animation="slideInDown"
+          <View
+            // animation="slideInDown"
             //   duration={'500'} direction={'normal'}
             style={[
               {
@@ -44,11 +46,12 @@ export default DropDownList = props => {
             >
               {item.name}
             </Text>
-          </Animatable.View>
+          </View>
           </TouchableOpacity>
 
         );
       })}
+        <View style={{height:25}} />
     </ScrollView>
   );
 };

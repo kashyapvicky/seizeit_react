@@ -22,7 +22,8 @@ export const FilterItemsCheckBox = ({item,index,onSelect}) => {
 };
 
 export const FilterItemsRadio = ({item,index,onSelect}) => {
-    return  <TouchableOpacity key={index} activeOpacity={9} onPress={() => onSelect ? onSelect(item):null}>
+    return  <TouchableOpacity key={index} 
+    activeOpacity={9} onPress={() => onSelect ? onSelect(item):null}>
     <View key={index} style={{ flexDirection: 'row', paddingBottom: 7,
      alignItems: 'center' }}>
         {item.check ?

@@ -20,7 +20,7 @@ const Header = props => {
       {!props.hideLeftIcon ? (
         <TouchableOpacity
           hitSlop={{ left: 50, right: 50, top: 50, bottom: 50 }}
-          style={{ justifyContent: "center" }}
+          style={{ justifyContent: "center", }}
           onPress={() => (backPress ? backPress() : null)}
         >
           <Icon

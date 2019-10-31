@@ -14,6 +14,7 @@ import Icons from "react-native-vector-icons/Ionicons";
 
 //local imports
 import { postRequest, getRequest } from "../../redux/request/Service";
+import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
 
 import Button from "../../components/Button";
 import Text from "../../components/Text";
@@ -76,6 +77,11 @@ class Checkout extends Component {
       totalAmount:0,
       address:''
     };
+    this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
   }
   componentDidMount() {
     let { user } = this.props.screenProps.user;
@@ -436,6 +442,7 @@ class Checkout extends Component {
     );
   };
   render() {
+    let {carts} =this.props.screenProps.product
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -451,7 +458,7 @@ class Checkout extends Component {
           title={"Checkout"}
           onRightPress={() => this.props.navigation.goBack()}
         />
-        <ScrollView
+        {carts && carts.length > 0 ?   <ScrollView
           style={{ flex: 1, paddingVertical: 16 }}
           showsVerticalScrollIndicator={false}
         >
@@ -465,9 +472,22 @@ class Checkout extends Component {
           <View style={styles.borderSalesReport} />
           {this.renderScrollableTab()}
           <View style={{ height: 48 }} />
-        </ScrollView>
+        </ScrollView>:
+         <View
+         style={{ flex: 0.5, paddingHorizontal: 16,justifyContent:'center' }}
+       >
+       <ProductPlaceholder
+       array={[1, 2]}
+       message={
+         this.props.screenProps.loader ? "" : "Your cart is Empty "
+       }
+       loader={this.loaderComponent}
+     />
+     </View>
+      }
+      
 
-        {this.renderBotttomButton()}
+        {carts && carts.length > 0 &&this.renderBotttomButton()}
       </View>
     );
   }

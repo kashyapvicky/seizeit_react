@@ -41,7 +41,7 @@ export default class TextInputLabel extends Component {
     };
     // let {textAlign,fontFamilyBold,fontFamilyRegular} = this.props.user
     return (
-      <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 10, }}>
         {
         this.props.label ? <Text p style={labelStyle}>
           {this.props.label}
@@ -111,9 +111,9 @@ export default class TextInputLabel extends Component {
             </View>
           ) : null}
 
-          {/* <View style={{ height: 20 }} /> */}
         </TouchableOpacity>
-        {this.props.openDropDown ? <DropDownList 
+        {this.props.openDropDown ? 
+          <DropDownList 
             {...this.props}
          /> : null}
 

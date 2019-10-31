@@ -26,6 +26,7 @@ import ScrollableTabView from "../../components/ScrollableTab";
 import Listitems from "./Templates/ListItem";
 import { FilterButton } from "./Templates/FilterButton";
 import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
+import ListFooterComponent from "./Templates/ListFooterComponent";
 import {
   updateProductCartValue,
   updateCartSuccess,
@@ -45,9 +46,15 @@ class SubCategory extends Component {
       catId: "",
       tabPage: 0,
       tabs: [],
+      fetchingStatus: false,
+      refreshing: false,
       products: [],
-      orders: ["1", "2"]
+      orders: ["1", "2"],
+      price_filter: "",
+      usage_filter: "",
+      last_page: 0
     };
+    this.current_page = 1;
     this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
         resolve();
@@ -96,7 +103,7 @@ class SubCategory extends Component {
                 }
               ];
               this.setState({ tabs: [...prependedValue, ...this.state.tabs] });
-              this.onSelectCategoryGetProduct(-1);
+              this.onSelectCategoryGetProduct(-1, 1, false);
             }
           );
         }
@@ -104,24 +111,44 @@ class SubCategory extends Component {
       })
       .catch(err => {});
   };
-  onSelectCategoryGetProduct = catId => {
+  onSelectCategoryGetProduct = (catId, page, hideLoader) => {
     let { setIndicator } = this.props.screenProps.actions;
     let data = {};
+    if (hideLoader) {
+      this.setState({ fetchingStatus: true });
+    }
     let apiName;
     if (catId == -1) {
       data["category_id"] = this.state.catId;
+      data["page"] = page;
+      data["usage_filter"] = this.state.usage_filter;
+      data["price_filter"] = this.state.price_filter;
       apiName = `user/productList_category`;
     } else {
       data["category_id"] = this.state.catId;
       data["subcategory_id"] = catId;
-      apiName = `user/productList_subcategory`;
+      data["usage_filter"] = this.state.usage_filter;
+      data["price_filter"] = this.state.price_filter;
+      data["page"] = page;
+      apiName = `user/productList_category`;
     }
-    postRequest(apiName, data)
+    postRequest(apiName, data,hideLoader)
       .then(res => {
-        if (res && res.success && res.success.length > 0) {
+        if (
+          res &&
+          res.success &&
+          res.success.data &&
+          res.success.data.length > 0
+        ) {
           this.setState(
             {
-              products: res.success
+              products:
+                page > 1
+                  ? [...this.state.products, ...res.success.data]
+                  : res.success.data,
+              last_page: res.success.last_page,
+              fetchingStatus: false,
+              refreshing: false
             },
             () => {
               let { carts, wishlists } = this.props.screenProps.product;
@@ -134,19 +161,34 @@ class SubCategory extends Component {
                   this.props.screenProps.product
                 );
                 this.setState({
-                  products
+                  products,
+                  fetchingStatus: false,
+                  refreshing: false
                 });
               }
             }
           );
         } else {
           this.setState({
-            products: []
+            products: [],
+            fetchingStatus: false,
+            refreshing: false
           });
         }
         setIndicator(false);
       })
       .catch(err => {});
+  };
+  updateFilter = data => {
+    this.setState(
+      {
+        ...this.state,
+        ...data
+      },
+      () => {
+        this.onSelectCategoryGetProduct(-1, 1, false);
+      }
+    );
   };
   /*********** APi Call End  *****/
   pressButton = () => {};
@@ -185,8 +227,19 @@ class SubCategory extends Component {
       />
     );
   };
+  ItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: "100%",
+          backgroundColor: "#607D8B"
+        }}
+      />
+    );
+  };
   renderProductsList = (item, index) => {
-    console.log(this.state.products,"this.state.products")
+    console.log(this.state.products, "this.state.products");
     return (
       <View
         key={index}
@@ -214,18 +267,22 @@ class SubCategory extends Component {
               loader={this.loaderComponent}
             />
           }
-          // refreshing={this.state.isRefreshing}
-          // onRefresh={this.handleRefresh}
-          // onEndReached={this.handleLoadMore}
-          // onEndReachedThreshold={0.9}
-          // ListFooterComponent={this.renderFooter}
-          // ListEmptyComponent={
-          //     (this.state.allProductsListForItem.length == 0) ?
-          //         ListEmpty2({ state: this.state.visible, margin: screenDimensions.height / 3 - 20, message: string('noproductfound') })
-
-          //         :
-          //         null
-          // }
+          itemSeparatorComponent={this.ItemSeparator}
+          onScrollEndDrag={() => console.log(" *********end")}
+          onScrollBeginDrag={() => console.log(" *******start")}
+          initialNumToRender={8}
+          maxToRenderPerBatch={2}
+          onEndReachedThreshold={0.5}
+          onEndReached={({ distanceFromEnd }) => {
+            this.current_page = this.current_page + 1;
+            if (this.state.last_page >= this.current_page) {
+              let catId = this.state.tabs[this.state.tabPage].id;
+              this.onSelectCategoryGetProduct(catId, this.current_page, true);
+            }
+          }}
+          ListFooterComponent={() => (
+            <ListFooterComponent fetchingStatus={this.state.fetchingStatus} />
+          )}
         />
       </View>
     );
@@ -233,7 +290,7 @@ class SubCategory extends Component {
   setStateForTabChange = event => {
     if (event) {
       let catId = this.state.tabs[event.i].id;
-      this.onSelectCategoryGetProduct(catId);
+      this.onSelectCategoryGetProduct(catId, 0, false);
       this.setState({
         tabPage: event.i
       });
@@ -299,9 +356,14 @@ class SubCategory extends Component {
           backPress={() => this.props.navigation.goBack()}
         />
         {this.renderScrollableTab()}
-       
+
         <FilterButton
-          onPress={() => this.props.navigation.navigate("Filter")}
+          filters={this.props.screenProps.product}
+          onPress={() =>
+            this.props.navigation.navigate("Filter", {
+              updateFilter: data => this.updateFilter(data)
+            })
+          }
         />
       </View>
     );

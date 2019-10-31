@@ -41,11 +41,17 @@ export const addToWishlistSuccess = payload => {
     payload
   };
 };
-
+//Add Filter
+export const addFilterSuccess = payload => {
+  return {
+    type: type.ADD_FILTER_SUCCESS,
+    payload
+  };
+};
 // Add to cart Api 
  export const  addCartRequestApi = (payload) =>{
     let data = {}
-    data['product_id']=payload.product_id
+    data['product_id']=payload.id
     data['device_id']=DeviceInfo.getUniqueID()
     return (dispatch, getState) => {
       let api_name;
@@ -84,7 +90,7 @@ export const  getCartRequestApi = () =>{
 // Add to wishlist Api 
 export const  addWishlitsRequestApi = (payload) =>{
   let data = {}
-  data['product_id']=payload.product_id
+  data['product_id']=payload.id
   data['device_id']=DeviceInfo.getUniqueID()
   return (dispatch, getState) => {
     let api_name;

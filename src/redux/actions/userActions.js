@@ -11,6 +11,23 @@ export const checkInternet = (netStatus) => {
     netStatus
   }
 }
+// Set Internet 
+export const setLanguageActionType = (lang) => {
+  debugger
+  return {
+    type: type.APP_LANG,
+    lang
+  }
+}
+// Upadte Languages 
+export const setLanguage = (lang) => {
+  return (dispatch, getState) => {
+     return new Promise((resolve,reject) => {
+           dispatch(setLanguageActionType(lang))
+           resolve(true)
+     })
+  }
+}
 // Set Logged User Data
 export const setLoggedUserType = payload => {
     return {

@@ -1,20 +1,34 @@
 // import RNLanguages from 'react-native-languages';
-import I18n from 'i18n-js';
-import ReactNative from 'react-native';
+import React from "react";
+import {I18nManager} from 'react-native'
+import * as RNLocalize from "react-native-localize";
+import i18n from "i18n-js";
+import memoize from "lodash.memoize";
+const translationGetters = {
+  // lazy requires (metro bundler does not support symlinks)
+  ar: () => require("./translations/ar.json"),
+  en: () => require("./translations/en.json"),
+};
+export const string = memoize(
+  (key, config) => i18n.t(key, config),
+  (key, config) => (config ? key + JSON.stringify(config) : key),
+);
+export const setI18nConfig = (language='en',showRTL=false) => {
+  // fallback if no available language fits
+  const fallback = { languageTag: language, isRTL: showRTL };
+  const { languageTag, isRTL } =
+    // RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) ||
+    fallback;
+  // clear translation cache
+  string.cache.clear();
+  // update layout direction
+  I18nManager.forceRTL(isRTL);
+  // set i18n-js config
+  i18n.translations = { [languageTag]: translationGetters[languageTag]() };
+  i18n.locale = languageTag;
+};
 
-import en from './translations/en.json';
-import ar from './translations/ar.json';
 
- I18n.locale = 'en';
-I18n.fallbacks = true;
-I18n.translations = { en, ar };
 
-const currentLocale = I18n.currentLocale();
-export const isRTL = currentLocale.indexOf('ar') === 0;
-ReactNative.I18nManager.allowRTL(isRTL);
 
-export function string(name, params = {}) {
-  return I18n.t(name, params);
-}
 
-export default I18n;

@@ -10,7 +10,7 @@ import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import { screenDimensions } from "../../../utilities/contsants";
 
-const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWishlist,onPressWishlist}) => {
+const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWishlist,onPressWishlist,horizontal}) => {
 
   return (
     <TouchableOpacity
@@ -23,7 +23,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
           paddingVertical: 8,
           flex: 0.5,
           width: screenDimensions.width / 2 - 24,
-          marginRight: (index + 1) % 2 != 0 ? 16 : 0
+          marginRight: (index + 1) % 2 != 0 ? 16 : horizontal ? 16 : 0
         }
       ]}
     >
@@ -31,7 +31,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
        >
           <Animatable.View ref={ref => onGetRefWishlist(ref)}   
           // animation={'rubberBand'}
-          style={{ position: "absolute", right: 8, top: 20, zIndex: 100 }}>
+          style={{ position: "absolute", right: 8, top: 15, zIndex: 100 }}>
             {
               item.isFevorite ? 
               <Image source={require("../../../assets/images/ic_favourite_1.png")} />
@@ -55,8 +55,8 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
           <Image
             style={{ borderRadius: 8, width: "100%", height: imageHeight }}
             source={{
-              uri: item.pic
-                ? item.pic[0]
+              uri: item.pics && item.pics.length > 0 ?
+                 item.pics[0].pic
                 : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
             }}
           />
@@ -74,7 +74,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
                 // fontWeight: "600"
               }}
             >
-              {item.category.toUpperCase()}
+              {/* {item.category ?item.category.name.toUpperCase() : '' } */}
             </Text>
           </View>
           <View>

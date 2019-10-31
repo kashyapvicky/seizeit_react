@@ -3,6 +3,7 @@ import {
   View,
   SafeAreaView,
   Image,
+  Keyboard,
   StatusBar,
   TouchableOpacity,
   ScrollView,
@@ -28,6 +29,8 @@ import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import { ListEmptyComponent } from "../../components/ListEmptyComponent";
 import UpdateDeleteModal from "./Templates/UpdateDeleteModal";
+import ListFooterComponent from "../Home/Templates/ListFooterComponent";
+
 class Products extends Component {
   constructor(props) {
     super(props);
@@ -35,30 +38,51 @@ class Products extends Component {
       visible2: false,
       products: [],
       selectedStatus: "",
+      refreshing: false,
       selectedIndex: -1,
       isRefreshing: false,
+      search_text: "",
       isModalVisible: false,
+      fetchingStatus: false,
       selectedProduct: null
     };
+    this.current_page = 1;
   }
   componentDidMount() {
-    this.getProducts();
+    this.getProducts(1, false);
   }
   /****************** Api Call ************/
-  getProducts = () => {
+  getProducts = (page, hideLoader) => {
     let { setIndicator } = this.props.screenProps.actions;
-    getRequest("vendor/product-listing")
+    let data = {};
+    if (hideLoader) {
+      this.setState({ fetchingStatus: true });
+    }
+    data["search_text"] = this.state.search_text;
+    data["page"] = page;
+    postRequest(`vendor/product-listing`, data, hideLoader)
       .then(res => {
         debugger;
-        if (res && res.success && res.success.length > 0) {
+        if (
+          res &&
+          res.success &&
+          res.success.data &&
+          res.success.data.length > 0
+        ) {
           this.setState({
-            products: res.success,
-            isRefreshing: false
+            products:
+              page > 1
+                ? [...this.state.products, ...res.success.data]
+                : res.success.data,
+            last_page: res.success.last_page,
+            fetchingStatus: false,
+            refreshing: false
           });
         } else {
           this.setState({
             products: [],
-            isRefreshing: false
+            fetchingStatus: false,
+            refreshing: false
           });
         }
         setIndicator(false);
@@ -71,12 +95,12 @@ class Products extends Component {
     let { toastRef } = this.props.screenProps;
     let { setToastMessage } = this.props.screenProps.actions;
     let { setIndicator } = this.props.screenProps.actions;
-    getRequest(`vendor/deleteProducts?product_id=${selectedProduct.product_id}`)
+    getRequest(`vendor/deleteProducts?product_id=${selectedProduct.id}`)
       .then(res => {
         debugger;
         if (res.success) {
           let newFilterProduct = this.state.products.filter(
-            x => x.product_id != selectedProduct.product_id
+            x => x.id != selectedProduct.id
           );
           this.setState({
             products: newFilterProduct
@@ -91,30 +115,29 @@ class Products extends Component {
   };
 
   // Update Product Status
- updateroductStaus = (statusI, parentItem) => {
-   let statusPro = parentItem.sold_out == 1 ? 'ACTIVE' : 'SOLD OUT'
-   if(statusPro ==statusI ){
-    let { toastRef } = this.props.screenProps;
-    let { setToastMessage } = this.props.screenProps.actions;
-    let data ={}
-    data['product_id'] = parentItem.product_id
-    data['sold_out'] = parentItem.sold_out == 1 ? 0 : 1
-    postRequest(`vendor/updateProductstatus`,data)
-      .then(res => {
-        debugger
-        if(res.success){
-          this.onSelectStatus(statusI, parentItem)
-          setToastMessage(true,colors.green1)
-          toastRef.show(res.success)
-        }
-      })
-      .catch(err => {});
-   }else{
-    this.setState({
-      selectedIndex: -1
-    });
-   }
-   
+  updateroductStaus = (statusI, parentItem) => {
+    let statusPro = parentItem.sold_out == 1 ? "ACTIVE" : "SOLD OUT";
+    if (statusPro == statusI) {
+      let { toastRef } = this.props.screenProps;
+      let { setToastMessage } = this.props.screenProps.actions;
+      let data = {};
+      data["product_id"] = parentItem.id;
+      data["sold_out"] = parentItem.sold_out == 1 ? 0 : 1;
+      postRequest(`vendor/updateProductstatus`, data)
+        .then(res => {
+          debugger;
+          if (res.success) {
+            this.onSelectStatus(statusI, parentItem);
+            setToastMessage(true, colors.green1);
+            toastRef.show(res.success);
+          }
+        })
+        .catch(err => {});
+    } else {
+      this.setState({
+        selectedIndex: -1
+      });
+    }
   };
   /****************Api Call   **************/
   renderButton = (title, transparent) => {
@@ -142,10 +165,9 @@ class Products extends Component {
     });
   };
   onSelectStatus = (statusI, parentItem) => {
-    
     this.setState({
       products: this.state.products.map(res => {
-        if (parentItem.product_id == res.product_id) {
+        if (parentItem.id == res.id) {
           return { ...res, sold_out: statusI == "ACTIVE" ? 0 : 1 };
         } else {
           return { ...res };
@@ -156,8 +178,8 @@ class Products extends Component {
   };
 
   warningMessage = () => {
-    this.closeModal()
-    setTimeout(() =>{
+    this.closeModal();
+    setTimeout(() => {
       Alert.alert(
         "",
         string("areyousureremove"),
@@ -173,16 +195,32 @@ class Products extends Component {
         ],
         { cancelable: false }
       );
-    },200)
-  
+    }, 200);
   };
-updateProduct = () => {
+  updateProduct = () => {
     let { selectedProduct } = this.state;
     this.props.navigation.navigate("AddNewProduct", {
       selectedProduct: selectedProduct,
-      getProducts: () => this.getProducts()
+      getProducts: () => this.getProducts(1, false)
     });
     this.closeModal();
+  };
+  onChangeTextInput = text => {
+    if(this.searchTimeout){
+      clearTimeout(this.searchTimeout);
+    }
+    this.setState({
+      search_text: text
+    });
+   this.searchTimeout= setTimeout(()=>this.getProducts(1,false),600)
+    // this.setState(
+    //   {
+    //     search_text: text
+    //   },
+    //   () => {
+    //     this.getProducts(1, false);
+    //   }
+    //);
   };
   // Render drop dowm list
   renderDropDownListItem = parentItem => {
@@ -207,7 +245,9 @@ updateProduct = () => {
       >
         {["ACTIVE", "SOLD OUT"].map((item, index) => {
           return (
-           <TouchableOpacity onPress={() =>  this.updateroductStaus(item,parentItem)}> 
+            <TouchableOpacity
+              onPress={() => this.updateroductStaus(item, parentItem)}
+            >
               <View
                 //  duration={'300'}
                 style={[
@@ -244,11 +284,12 @@ updateProduct = () => {
   };
   //Render Item
   renderItems = ({ item, index }) => {
+    console.log(item, "teee");
     return (
       <TouchableOpacity
         onPress={() =>
           this.props.navigation.navigate("ProductDetails", {
-            productId: item.product_id
+            productId: item.id
           })
         }
         activeOpacity={9}
@@ -279,9 +320,10 @@ updateProduct = () => {
             <Image
               style={{ height: 96, width: 96, borderRadius: 4 }}
               source={{
-                uri: item.pic
-                  ? item.pic[0]
-                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
+                uri:
+                  item.pics && item.pics.length > 0
+                    ? item.pics[0].pic
+                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
               }}
             />
           </View>
@@ -298,7 +340,7 @@ updateProduct = () => {
                   fontWeight: "600"
                 }}
               >
-                {item.category}
+                {item.category ? item.category.name : ""}
               </Text>
               <TouchableOpacity
                 onPress={() =>
@@ -347,12 +389,25 @@ updateProduct = () => {
                   h5
                   textAlign
                   style={{
-                    color: item.sold_out == 1 ?"#E06D7B" : "#96C50F",
+                    color: item.sold_out == 1 ? "#E06D7B" : "#96C50F",
                     fontSize: normalize(11)
                   }}
                 >
                   {item.sold_out == 1 ? "SOLD OUT" : "ACTIVE"}
-                  <Image source={Images.drop} />
+                  {"  "}
+                  {item.sold_out == 1 ? (
+                    <Icons
+                      name={"ios-arrow-down"}
+                      color={"#E06D7B"}
+                      size={14}
+                    />
+                  ) : (
+                    <Icons
+                      name={"ios-arrow-down"}
+                      color={"#96C50F"}
+                      size={14}
+                    />
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -370,7 +425,7 @@ updateProduct = () => {
   handleRefresh = () => {
     this.setState(
       {
-        isRefreshing: true
+        refreshing: true
       },
       () => {
         this.getProducts();
@@ -395,7 +450,7 @@ updateProduct = () => {
           data={this.state.products}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
-          refreshing={this.state.isRefreshing}
+          refreshing={this.state.refreshing}
           onRefresh={this.handleRefresh}
           // onEndReached={this.handleLoadMore}
           // onEndReachedThreshold={0.9}
@@ -403,12 +458,41 @@ updateProduct = () => {
           ListEmptyComponent={() =>
             !this.props.screenProps.loader ? <ListEmptyComponent /> : null
           }
+          itemSeparatorComponent={this.ItemSeparator}
+          onScrollEndDrag={() => console.log(" *********end")}
+          onScrollBeginDrag={() => console.log(" *******start")}
+          initialNumToRender={8}
+          maxToRenderPerBatch={2}
+          onEndReachedThreshold={0.5}
+          onEndReached={({ distanceFromEnd }) => {
+            this.current_page = this.current_page + 1;
+            if (this.state.last_page >= this.current_page) {
+              this.getProducts(this.current_page, true);
+            }
+          }}
+          ListFooterComponent={() => (
+            <ListFooterComponent fetchingStatus={this.state.fetchingStatus} />
+          )}
         />
       </View>
     );
   };
   renderSearchInput = () => {
-    return <SearchInput placeHolder={"Search your products here"} />;
+    return (
+      <SearchInput
+        placeHolder={"Search your products here"}
+        onChangeText={text => {
+          this.onChangeTextInput(text);
+        }}
+        value={this.state.search_text}
+        closeSearch={() =>{
+           this.onChangeTextInput("")
+           Keyboard.dismiss()
+        }
+          }
+        searchText={this.state.search_text}
+      />
+    );
   };
   render() {
     return (

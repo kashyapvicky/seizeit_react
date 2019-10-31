@@ -46,6 +46,7 @@ export default class ProductDetail extends Component {
       isbarShow: false,
       product: "",
       similarProducts: [],
+      banners: [],
       refreshing: false
     };
     this.loaderComponent = new Promise(resolve => {
@@ -69,9 +70,10 @@ export default class ProductDetail extends Component {
     getRequest(`user/productDetails?product_id=${product_id}`)
       .then(res => {
         debugger;
-        if (res && res.success.length > 0) {
+        if (res && res.success) {
           this.setState({
-            product: res.success[0]
+            product: res.success,
+            banners: res.success.pics
           });
         }
         setIndicator(false);
@@ -195,7 +197,11 @@ export default class ProductDetail extends Component {
   renderItems = (item, index, imageHeight) => {
     return (
       <Listitems
-        onPress={() => this.props.navigation.navigate("ProductDetails")}
+        onPress={() =>
+          this.props.navigation.push("ProductDetails", {
+            productId: item.product_id
+          })
+        }
         item={item}
         index={index}
         imageHeight={imageHeight}
@@ -208,6 +214,7 @@ export default class ProductDetail extends Component {
 
   renderVendorProfile = () => {
     let { product } = this.state;
+    
     return (
       <TouchableOpacity
         style={{ flexDirection: "row" }}
@@ -217,9 +224,9 @@ export default class ProductDetail extends Component {
           })
         }
       >
-        {product.vendor_pic && product.vendor_pic[0] ? (
+        {product.vendor && product.vendor.pic ? (
           <Image
-            source={{ uri: product.vendor_pic[0] }}
+            source={{ uri: product.vendor.pic }}
             style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
           />
         ) : null}
@@ -227,7 +234,7 @@ export default class ProductDetail extends Component {
         <View style={{ justifyContent: "center", paddingLeft: 16 }}>
           <Text p style={{ fontSize: normalize(18), color: "#000000" }}>
             {" "}
-            {`${product.vendor_name}`}
+            {`${product.vendor && product.vendor.name ?product.vendor.name : ''}`}
           </Text>
         </View>
       </TouchableOpacity>
@@ -264,6 +271,7 @@ export default class ProductDetail extends Component {
 
   _renderScrollViewContent() {
     const data = Array.from({ length: 30 });
+    let { user } = this.props.screenProps.user;
     return (
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingHorizontal: 24, paddingVertical: 16 }}>
@@ -275,26 +283,33 @@ export default class ProductDetail extends Component {
           <View style={{ height: 24 }} />
           <Features product={this.state.product} />
           <View style={{ height: 24 }} />
-          <FeatureLabel title={"Posted by"} />
+          {(user &&
+            user.user_type !== "vendor") ||!user && <FeatureLabel title={"Posted by"} />}
           <View style={{ height: 16 }} />
-          <View style={{ flex: 1 }}>{this.renderVendorProfile()}</View>
-          <View style={{ height: 24 }} />
-          <View
-            style={[
-              styles.borderSalesReport,
-              {
-                marginRight:
-                  screenDimensions.width / screenDimensions.width - 24,
-                width: screenDimensions.width
-              }
-            ]}
-          />
-          <View style={{ height: 8 }} />
-          {this.renderProductsList(
-            this.state.similarProducts,
-            "Similer Products",
-            168
+          {(user && user.user_type !== "vendor")||!user && (
+            <View style={{ flex: 1 }}>{this.renderVendorProfile()}</View>
           )}
+          <View style={{ height: 24 }} />
+          {(user && user.user_type !== "vendor") ||!user && (
+            <View
+              style={[
+                styles.borderSalesReport,
+                {
+                  marginRight:
+                    screenDimensions.width / screenDimensions.width - 24,
+                  width: screenDimensions.width
+                }
+              ]}
+            />
+          )}
+          <View style={{ height: 8 }} />
+          {(user &&
+            user.user_type !== "vendor")||!user &&
+            this.renderProductsList(
+              this.state.similarProducts,
+              "Similer Products",
+              168
+            )}
           <View style={{ height: 24 }} />
         </View>
       </View>
@@ -370,8 +385,8 @@ export default class ProductDetail extends Component {
   };
   render() {
     let { carts } = this.props.screenProps.product;
+    let {user} = this.props.screenProps.user
     let { params } = this.props.navigation.state;
-    debugger;
     let title = "Add to Cart";
     if (
       carts &&
@@ -460,17 +475,16 @@ export default class ProductDetail extends Component {
             { transform: [{ translateY: headerTranslate }] }
           ]}
         >
-          <Animated.View 
-           style={[
-            detailStyles.backgroundImage,
-            {
-              opacity: imageOpacity,
-              transform: [{ translateY: imageTranslate }]
-            }
-          ]}
+          <Animated.View
+            style={[
+              detailStyles.backgroundImage,
+              {
+                opacity: imageOpacity,
+                transform: [{ translateY: imageTranslate }]
+              }
+            ]}
           >
-          <ProductSlider banners={[1,2,3,4]} />
-
+            <ProductSlider banners={this.state.banners} />
           </Animated.View>
 
           {/* <Animated.Image
@@ -502,13 +516,14 @@ export default class ProductDetail extends Component {
             >
               <Image source={require("../../assets/images/ic_back.png")} />
             </TouchableOpacity>
-            <TouchableOpacity
+           {(user &&
+            user.user_type !== "vendor")||!user && <TouchableOpacity
               onPress={() => this.props.navigation.navigate("Cart")}
               style={{ alignSelf: "center" }}
             >
               <Image source={require("../../assets/images/ic_cart.png")} />
               {this.renderCartCount(carts)}
-            </TouchableOpacity>
+            </TouchableOpacity>}
           </TouchableOpacity>
         </Animated.View>
         {this.state.isbarShow ? (
@@ -541,7 +556,8 @@ export default class ProductDetail extends Component {
             </TouchableOpacity>
           </Animated.View>
         ) : null}
-        {this.renderButton(title)}
+        {(user &&
+            user.user_type !== "vendor") ||!user && this.renderButton(title)}
       </View>
     );
   }

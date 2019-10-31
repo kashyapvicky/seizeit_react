@@ -92,6 +92,8 @@ class Cart extends Component {
   };
 
   render() {
+    let { carts } = this.props.screenProps.product;
+
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -111,7 +113,7 @@ class Cart extends Component {
         {...this.props}
         
         />
-        {this.state.cartItems.length > 0 ? (
+        {carts && carts.length > 0 ? (
           <View
             style={{
               flex: 0.1,

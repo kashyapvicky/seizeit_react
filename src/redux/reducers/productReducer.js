@@ -2,11 +2,17 @@
 import * as type from "../actionType";
 const initialState = {
    carts:[],
-   wishlists:[]
+   wishlists:[],
+   filters:{}
 
 };
 const product = (state = initialState, action) => {
   switch (action.type) {
+    case type.ADD_FILTER_SUCCESS:
+      return {
+        ...state,
+        filters: action.payload
+    }
     case type.ADD_CART_API_SUCCESS:
         return {
           ...state,

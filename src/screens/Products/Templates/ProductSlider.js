@@ -9,14 +9,14 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import colors from "../../../utilities/config/colors";
 import styles from "../../../styles";
-import { Images } from "../../../utilities/contsants";
+import { Images, screenDimensions } from "../../../utilities/contsants";
 import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 const sliderWidth = Dimensions.get("window").width;
 const sliderHeight = Dimensions.get("window").height;
 const itemWidth = Dimensions.get("window").width;
 import Carousel, { Pagination } from "react-native-snap-carousel";
-export default class ProductSlider extends React.Component {
+export default class zProductSlider extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,22 +50,23 @@ export default class ProductSlider extends React.Component {
         ]}
       >
         <ImageBackground
-          source={{
-            uri:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
-          }}
+          source={item ? {
+            uri:item.pic
+          } : Images.no_image}
           resizeMode={"stretch"}
           // imageStyle={{borderRadius:4}}
           // style={[styles.bannerImages,{resizeMode:'cover'}]}
           style={{
-            height: "100%",
+            width:screenDimensions.width,
+            height:screenDimensions.height/2,
+            // height: "100%",
             // borderRadius:4,
-            width: "100%",
-            position: "absolute",
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0
+           // width: "100%",
+            // position: "absolute",
+            // top: 0,
+            // left: 0,
+            // bottom: 0,
+            // right: 0
           }}
         ></ImageBackground>
       </View>
@@ -99,29 +100,36 @@ export default class ProductSlider extends React.Component {
             }
           ]}
         >
-          <Carousel
-            ref={c => {
-              this._carousel = c;
-            }}
-            data={this.props.banners}
-            renderItem={this.bannerImagesData}
-            autoplay={true}
-            loop={true}
-            autoplayInterval={3000}
-            sliderWidth={sliderWidth}
-            itemWidth={itemWidth}
-            onSnapToItem={index => this.setState({ slider1ActiveSlide: index })}
-          />
-          <Pagination
-            dotsLength={this.state.bannerImages.length}
-            activeDotIndex={this.state.slider1ActiveSlide}
-            containerStyle={{ position: "absolute", bottom: 0 }}
-            dotColor={"#96C50F"}
-            dotStyle={{ height: 12, width: 12, borderRadius: 12 / 2 }}
-            inactiveDotColor={"black"}
-            inactiveDotOpacity={0.4}
-            inactiveDotScale={0.8}
-          />
+          {this.props.banners.length > 0 ?
+          <View>
+
+           <Carousel
+           ref={c => {
+             this._carousel = c;
+           }}
+           data={this.props.banners}
+           renderItem={this.bannerImagesData}
+           autoplay={true}
+           loop={true}
+           autoplayInterval={3000}
+           sliderWidth={sliderWidth}
+           itemWidth={itemWidth}
+           onSnapToItem={index => this.setState({ slider1ActiveSlide: index })}
+         />
+         <Pagination
+           dotsLength={this.props.banners.length}
+           activeDotIndex={this.state.slider1ActiveSlide}
+           containerStyle={{ position: "absolute", bottom: 0,alignSelf:'center'}}
+           dotColor={colors.primary}
+           dotStyle={{ height: 12, width: 12, borderRadius: 12 / 2 }}
+           inactiveDotColor={"white"}
+           inactiveDotOpacity={0.4}
+           inactiveDotScale={0.8}
+         />
+         </View>
+         :  this.bannerImagesData({item:false,index:0})
+          }
+         
         </View>
       </View>
     );

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   FlatList,
+  Keyboard,
   TextInput
 } from "react-native";
 import DeviceInfo from "react-native-device-info";
@@ -55,32 +56,35 @@ class SearchProduct extends Component {
       })
       .catch(err => {});
   };
+  searchApi = () => {
+    const { searchText } = this.state;
+    if (searchText) {
+      let { setIndicator } = this.props.screenProps.actions;
+      getRequest(`user/search?search=${searchText}`)
+        .then(res => {
+          if (res && res.success && res.success.length > 0) {
+            this.setState({
+              searchProduct: res.success,
+              searchText: searchText
+            });
+          } else {
+            this.setState({
+              searchProduct: []
+            });
+          }
+          setIndicator(false);
+        })
+        .catch(err => {});
+    }
+  };
   onChangeSearchProduct = searchText => {
-    this.setState(
-      {
-        searchText: searchText
-      },
-      () => {
-        if (searchText) {
-          let { setIndicator } = this.props.screenProps.actions;
-          getRequest(`user/search?search=${searchText}`)
-            .then(res => {
-              if (res && res.success && res.success.length > 0) {
-                this.setState({
-                  searchProduct: res.success,
-                  searchText: searchText
-                });
-              } else {
-                this.setState({
-                  searchProduct: []
-                });
-              }
-              setIndicator(false);
-            })
-            .catch(err => {});
-        }
-      }
-    );
+    if(this.searchTimeout){
+      clearTimeout(this.searchTimeout);
+    }
+    this.setState({
+      searchText: searchText
+    });
+   this.searchTimeout= setTimeout(this.searchApi,600)
   };
   saveSearchProduct = product => {
     debugger;
@@ -100,37 +104,39 @@ class SearchProduct extends Component {
       })
       .catch(err => {});
   };
-  onSelectGetProductDetail = (product,fromPreviousSearch) => {
-    debugger
-    if(fromPreviousSearch){
+  onSelectGetProductDetail = (product, fromPreviousSearch) => {
+    if (fromPreviousSearch) {
       this.props.navigation.navigate("ProductDetails", {
         productId: product.product_id
       });
-    }else{
+    } else {
       this.saveSearchProduct(product);
-
     }
   };
   /******************** Api Call End *****************/
-  renderItem = (item,index,fromPreviousSearch) => {
+  renderItem = (item, index, fromPreviousSearch) => {
     return (
       <View style={[styles.listItemWrapper]}>
         <TouchableOpacity
+          activeOpacity={0.8}
           style={
             (styles.listItem,
             styles.shadow,
             {
               shadowRadius: 0.01,
               shadowOpacity: 0.04,
+              elevation: 2,
               flexDirection: "row",
               backgroundColor: "white",
               paddingVertical: 18
             })
           }
-          onPress={() => this.onSelectGetProductDetail(item,fromPreviousSearch)}
+          onPress={() =>
+            this.onSelectGetProductDetail(item, fromPreviousSearch)
+          }
         >
           <View style={styles.placeMeta}>
-            <Text p style={[styles.primaryText,{color:'#000000'}]}>
+            <Text p style={[styles.primaryText, { color: "#000000" }]}>
               {item.product_title || item.search_title}
             </Text>
           </View>
@@ -142,7 +148,7 @@ class SearchProduct extends Component {
   renderSearchInput = () => {
     return (
       <View
-      behavior={'height'}
+        behavior={"height"}
         style={{
           flex: 1,
           flexDirection: "row",
@@ -152,7 +158,13 @@ class SearchProduct extends Component {
         <TextInput
           style={[
             styles.searchProInput,
-            { flex: 1, paddingLeft: 16, justifyContent: "center" ,paddingTop:4}
+            {
+              flex: 1,
+              paddingLeft: 16,
+              height: 48,
+              justifyContent: "center",
+              paddingTop: 4
+            }
           ]}
           placeholder={"Search product"}
           placeholderTextColor={"rgba(0,0,0,0.56)"}
@@ -162,12 +174,13 @@ class SearchProduct extends Component {
         {this.state.searchText ? (
           <TouchableOpacity
             style={{ alignSelf: "center" }}
-            onPress={() =>
+            onPress={() => {
               this.setState({
                 searchText: "",
                 searchProduct: []
-              })
-            }
+              });
+              Keyboard.dismiss();
+            }}
           >
             <Image source={Images.inputClose} style={{ alignSelf: "center" }} />
           </TouchableOpacity>
@@ -178,15 +191,20 @@ class SearchProduct extends Component {
   keyExtractor = item => item.product_id;
   renderSerachProduct = () => {
     return (
-      <View style={[styles.list, { paddingHorizontal: 32,marginTop:16 }]}>
+      <View style={[styles.list, { paddingHorizontal: 32, marginTop: 16 }]}>
         <FlatList
           data={this.state.searchProduct}
-          renderItem={({item,index}) =>this.renderItem(item,index,false)}
+          renderItem={({ item, index }) => this.renderItem(item, index, false)}
           keyExtractor={this.keyExtractor}
           showsVerticalScrollIndicator={false}
           ListEmptyComponent={() => (
             <View
-              style={{ alignSelf: "center", flex: 1, justifyContent: "center",height:100  }}
+              style={{
+                alignSelf: "center",
+                flex: 1,
+                justifyContent: "center",
+                height: 100
+              }}
             >
               <Text p>No Search result found</Text>
             </View>
@@ -201,13 +219,18 @@ class SearchProduct extends Component {
       <View style={[styles.list, { paddingHorizontal: 32 }]}>
         <FlatList
           data={this.state.previousSerachProduct}
-          renderItem={({item,index}) =>this.renderItem(item,index,true)}
+          renderItem={({ item, index }) => this.renderItem(item, index, true)}
           keyExtractor={this.keyExtractor}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1 }}
           ListEmptyComponent={() => (
             <View
-              style={{ alignSelf: "center", flex: 1, justifyContent: "center",height:100 }}
+              style={{
+                alignSelf: "center",
+                flex: 1,
+                justifyContent: "center",
+                height: 100
+              }}
             >
               <Text p>No Previous result found</Text>
             </View>
@@ -219,7 +242,7 @@ class SearchProduct extends Component {
   renderLabel = title => {
     return (
       <View style={{ paddingHorizontal: 32 }}>
-        <Text h4 style={[styles.labelHeading,{color:'rgba(0,0,0,0.56)'}]}>
+        <Text h4 style={[styles.labelHeading, { color: "rgba(0,0,0,0.56)" }]}>
           {title}
         </Text>
       </View>
@@ -227,9 +250,9 @@ class SearchProduct extends Component {
   };
   render() {
     return (
-      <View
-        // enabled={false}
-        // behavior={"height"}
+      <KeyboardAvoidingView
+        enabled={false}
+        behavior={"height"}
         style={{ flex: 1 }}
       >
         <Header
@@ -238,8 +261,7 @@ class SearchProduct extends Component {
             styles.shadow,
             {
               backgroundColor: "#FFFFFF",
-              shadowRadius: 0.1,
-              height: 48
+              shadowRadius: 0.1
             }
           ]}
           hideLeftIcon={false}
@@ -247,19 +269,18 @@ class SearchProduct extends Component {
         >
           {this.renderSearchInput()}
         </Header>
-         <ScrollView
-            keyboardShouldPersistTaps={'handled'}
-          style={{ flex: 1,  }}
+        <ScrollView
+          keyboardShouldPersistTaps={"handled"}
+          style={{ flex: 1 }}
           showsVerticalScrollIndicator={false}
-        > 
-        {this.renderSerachProduct()}
-        <View style={{ height: 16 }} />
-        {this.renderLabel("Previous Searches")}      
-         <View style={{ height: 16 }}/>
-        {this.renderPreviousSerachProduct()} 
+        >
+          {this.renderSerachProduct()}
+          <View style={{ height: 16 }} />
+          {this.renderLabel("Previous Searches")}
+          <View style={{ height: 16 }} />
+          {this.renderPreviousSerachProduct()}
         </ScrollView>
-       
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

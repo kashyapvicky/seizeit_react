@@ -226,9 +226,11 @@ class Signup extends Component {
         }
     }).catch((error) => {
         debugger
+        setIndicator(false)
+
         setToastMessage(true,colors.danger)
         setTimeout(()=>{
-          toastRef.show(error)
+          toastRef.show(error.message)
         },1000)
         
         // ToastMessage(error)
@@ -328,23 +330,25 @@ class Signup extends Component {
                 console.log('ERROR GETTING DATA FROM INSTAGRAM')
             })
   }
-  renderButton = (title, transparent, imageLeft, color, fontSize) => {
+  renderButton = (title,transparent,imageLeft,color,fontSize,center) => {
     return (
       <CustomeButton
         buttonStyle={{
           height: 48,
           justifyContent: "center",
           alignItems: "center",
-          borderRadius: 8,
-          borderColor: transparent ? "#EAEAEA" : "transparent",
-          backgroundColor: transparent ? "transparent" : color
+          borderRadius:8,
+          borderColor:transparent ? '#EAEAEA' : 'transparent',
+          backgroundColor:transparent ?'transparent':color
         }}
         imageSource={true}
         imageLeft={imageLeft}
-        buttonTextStyle={{ fontWeight: imageLeft ? "normal" : "bold" }}
+        buttonTextStyle={{fontWeight:imageLeft ?'normal' :'bold',
+        paddingLeft:center ? 0 :16,
+        justifyContent:center ? 'center' :'flex-start'}}
         imageLeftLocal={imageLeft}
         fontSize={normalize(fontSize)}
-        color={transparent ? "#455F6C" : "#FFFFFF"}
+        color={transparent ?'#455F6C':'#FFFFFF'}
         onPress={() => this.pressButton(title)}
         title={title.toUpperCase()}
       />
@@ -503,7 +507,7 @@ class Signup extends Component {
 
           <View style={{ height: 35 }} />
           <View style={styles.continueButton}>
-            {this.renderButton("CONTINUE", false, false, colors.primary, 16)}
+            {this.renderButton("CONTINUE", false, false, colors.primary, 16,true)}
             <View style={{ height: 30 }} />
             <View style={styles.dontHaveAnAccountView}>
               <View>

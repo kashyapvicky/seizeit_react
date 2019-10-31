@@ -26,7 +26,8 @@ import ScrollableTabView from "../../components/ScrollableTab";
 import Listitems from "./Templates/ListItem";
 import { FilterButton } from "./Templates/FilterButton";
 import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
-import {updateProductCartValue} from '../../utilities/method'
+import { updateProductCartValue } from "../../utilities/method";
+import ListFooterComponent from "../Home/Templates/ListFooterComponent";
 
 class VendorProduct extends Component {
   constructor(props) {
@@ -41,8 +42,15 @@ class VendorProduct extends Component {
       tabPage: 0,
       tabs: [],
       products: [],
-      orders: ["1", "2"]
+      orders: ["1", "2"],
+      price_filter: "",
+      usage_filter: "",
+      last_page: 0,
+      fetchingStatus: false,
+      refreshing: false
     };
+    this.current_page = 1;
+
     this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
         resolve();
@@ -52,25 +60,26 @@ class VendorProduct extends Component {
   componentDidMount() {
     let { params } = this.props.navigation.state;
     if (params && params.vendor) {
-      let { vendor } = params;
+      let { vendor, category_id } = params.vendor;
       debugger;
       this.setState(
         {
-          name: vendor.vendor_name,
-          vendorId: vendor.vendor_id
+          name: vendor.name,
+          vendorId: vendor.id,
+          category_id: category_id
         },
         () => {}
       );
-      this.getSubCategories(vendor.vendor_id);
+      this.getSubCategories(vendor.id, category_id);
     }
   }
   /*************APi Call  *********/
-  getSubCategories = vendor_id => {
+  getSubCategories = (vendor_id, category_id) => {
     let { setIndicator } = this.props.screenProps.actions;
-    getRequest(`user/vendorsubcategories?vendor_id=${vendor_id}`)
+    getRequest(
+      `user/vendorsubcategories?vendor_id=${vendor_id}&category_id=${category_id}`
+    )
       .then(res => {
-    
-        debugger;
         if (res && res.success && res.success.length > 0) {
           this.setState(
             {
@@ -90,7 +99,9 @@ class VendorProduct extends Component {
                 }
               ];
               this.setState({ tabs: [...prependedValue, ...this.state.tabs] });
-              this.onSelectCategoryGetProduct(vendor_id,0);
+              this.onSelectCategoryGetProduct(vendor_id, null, 1, false);
+
+              // this.onSelectCategoryGetProduct(vendor_id,0);
             }
           );
         }
@@ -98,35 +109,76 @@ class VendorProduct extends Component {
       })
       .catch(err => {});
   };
-  onSelectCategoryGetProduct = (vendor_id,subcategoty_id) => {
+  onSelectCategoryGetProduct = (
+    vendor_id,
+    subcategoty_id,
+    page,
+    hideLoader
+  ) => {
     let { setIndicator } = this.props.screenProps.actions;
-    apiName = `user/vendorproductssubcategory?vendor_id=${vendor_id}&subcategoty_id=${subcategoty_id}`;
+    let data = {};
+    if (hideLoader) {
+      this.setState({ fetchingStatus: true });
+    }
+    let apiName;
+    apiName = `user/vendorproductssubcategory?vendor_id=${vendor_id}&subcategoty_id=${subcategoty_id}&usage_filter=${this.state.usage_filter}&price_filter=${this.state.price_filter}&page=${page}`;
     getRequest(apiName)
       .then(res => {
-        debugger;
-        if (res && res.success && res.success.length > 0) {
+        if (
+          res &&
+          res.success &&
+          res.success.data &&
+          res.success.data.length > 0
+        ) {
           this.setState(
             {
-              products: res.success
+              products:
+                page > 1
+                  ? [...this.state.products, ...res.success.data]
+                  : res.success.data,
+              last_page: res.success.last_page,
+              fetchingStatus: false,
+              refreshing: false
             },
             () => {
-              let { carts,wishlists } = this.props.screenProps.product;
-              if (carts && carts.length > 0 || wishlists && wishlists.length>0) {
-                let products = updateProductCartValue(this.state.products,this.props.screenProps.product);
+              let { carts, wishlists } = this.props.screenProps.product;
+              if (
+                (carts && carts.length > 0) ||
+                (wishlists && wishlists.length > 0)
+              ) {
+                let products = updateProductCartValue(
+                  this.state.products,
+                  this.props.screenProps.product
+                );
                 this.setState({
-                  products
+                  products,
+                  fetchingStatus: false,
+                  refreshing: false
                 });
               }
             }
           );
         } else {
           this.setState({
-            products: []
+            products: [],
+            fetchingStatus: false,
+            refreshing: false
           });
         }
         setIndicator(false);
       })
       .catch(err => {});
+  };
+  updateFilter = data => {
+    this.setState(
+      {
+        ...this.state,
+        ...data
+      },
+      () => {
+        this.onSelectCategoryGetProduct(this.state.vendorId, null, 1, false);
+      }
+    );
   };
   /*********** APi Call End  *****/
   pressButton = () => {};
@@ -165,6 +217,17 @@ class VendorProduct extends Component {
       />
     );
   };
+  ItemSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 0.5,
+          width: "100%",
+          backgroundColor: "#607D8B"
+        }}
+      />
+    );
+  };
   renderProductsList = (item, index) => {
     return (
       <View
@@ -189,28 +252,41 @@ class VendorProduct extends Component {
               loader={this.loaderComponent}
             />
           }
-          // refreshing={this.state.isRefreshing}
-          // onRefresh={this.handleRefresh}
-          // onEndReached={this.handleLoadMore}
-          // onEndReachedThreshold={0.9}
-          // ListFooterComponent={this.renderFooter}
-          // ListEmptyComponent={
-          //     (this.state.allProductsListForItem.length == 0) ?
-          //         ListEmpty2({ state: this.state.visible, margin: screenDimensions.height / 3 - 20, message: string('noproductfound') })
-
-          //         :
-          //         null
-          // }
+          itemSeparatorComponent={this.ItemSeparator}
+          onScrollEndDrag={() => console.log(" *********end")}
+          onScrollBeginDrag={() => console.log(" *******start")}
+          initialNumToRender={8}
+          maxToRenderPerBatch={2}
+          onEndReachedThreshold={0.5}
+          onEndReached={({ distanceFromEnd }) => {
+            this.current_page = this.current_page + 1;
+            if (this.state.last_page >= this.current_page) {
+              let vendor_id = this.state.tabs[this.state.tabPage].vendor_id;
+              let subcategoty_id = this.state.tabs[this.state.tabPage]
+                .subcategoty_id
+                ? this.state.tabs[this.state.tabPage].subcategoty_id
+                : null;
+              this.onSelectCategoryGetProduct(
+                vendor_id,
+                subcategoty_id,
+                this.current_page,
+                true
+              );
+            }
+          }}
+          ListFooterComponent={() => (
+            <ListFooterComponent fetchingStatus={this.state.fetchingStatus} />
+          )}
         />
       </View>
     );
   };
   setStateForTabChange = event => {
-    let {vendor} = this.props.navigation.state.params
+    let { vendor } = this.props.navigation.state.params;
     if (event) {
-      if(this.state.tabs[event.i].name){
+      if (this.state.tabs[event.i].name) {
         let catId = this.state.tabs[event.i].id;
-        this.onSelectCategoryGetProduct(vendor.vendor_id,catId);
+        this.onSelectCategoryGetProduct(vendor.vendor_id, catId);
         this.setState({
           tabPage: event.i
         });
@@ -236,7 +312,7 @@ class VendorProduct extends Component {
       .then(endState =>
         console.log(endState.finished ? "bounce finished" : "bounce cancelled")
       );
-  onPressWishlist = (item,index) => {
+  onPressWishlist = (item, index) => {
     // let {addToCartSuccess} = this.props.screenProps.productActions
     this.setState({
       products: this.state.products.map(x => {
@@ -252,8 +328,7 @@ class VendorProduct extends Component {
         }
       })
     });
-    this.bounce(index)
-
+    this.bounce(index);
   };
   addRemoveCart = item => {
     let { addToCartSuccess } = this.props.screenProps.productActions;
@@ -291,7 +366,7 @@ class VendorProduct extends Component {
     });
     return newArray;
   };
-/************** Cart Method  **************/
+  /************** Cart Method  **************/
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -310,7 +385,11 @@ class VendorProduct extends Component {
         />
         {this.renderScrollableTab()}
         <FilterButton
-          onPress={() => this.props.navigation.navigate("Filter")}
+          onPress={() =>
+            this.props.navigation.navigate("Filter", {
+              updateFilter: data => this.updateFilter(data)
+            })
+          }
         />
       </View>
     );

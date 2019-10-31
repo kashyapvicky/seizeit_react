@@ -1,8 +1,12 @@
 "use strict";
 // React
 import React, { Fragment } from "react";
-import { SafeAreaView, StatusBar, Platform } from "react-native";
+import { SafeAreaView,View,Text, StatusBar, Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
+import * as RNLocalize from "react-native-localize";
+import RNRestart from "react-native-restart";
+import SplashScreen from 'react-native-splash-screen'
+
 import NavigationService from "./utilities/NavigationServices";
 import colors from "./utilities/config/colors";
 
@@ -21,6 +25,7 @@ import Indicator from "./components/Indicator";
 import Toast from "./components/Toast";
 import OfflineNotice from "./components/OfflineNotice";
 import { styles } from "./styles";
+import {setI18nConfig,string} from './utilities/languages/i18n'
 
 //Get Active Screen
 function getActiveRouteName(navigationState) {
@@ -34,8 +39,6 @@ function getActiveRouteName(navigationState) {
   }
   return route.routeName;
 }
-
-  
 class AppNavigation extends React.Component {
   static socket;
   constructor(props) {
@@ -45,14 +48,28 @@ class AppNavigation extends React.Component {
       topBarColor: "transparent",
       bottomBarColor: "transparent"
     };
+  // set initial config
+   this.setI18nConfigReload()
     this._bootStrapApp();
   }
+  setI18nConfigReload = async ()=>{
+    let {lang,isRTL} = this.props.user
+     setI18nConfig(lang,isRTL); 
 
+  }
+  handleLocalizationChange = (lang,isRTL) => {
+    setI18nConfig(lang,isRTL);
+    this.forceUpdate();
+  };
   componentDidMount() {
     this._getNetInfo();
+    RNLocalize.addEventListener("change", this.handleLocalizationChange);
+
   }
   componentWillUnmount() {
     this.unsubscribe();
+    RNLocalize.removeEventListener("change", this.handleLocalizationChange);
+
   }
 
   //_getNetInfo isConnected Or IsReachable
@@ -66,6 +83,10 @@ class AppNavigation extends React.Component {
   });
   };
   _bootStrapApp = () => {
+    if(Platform.OS == 'android'){
+      SplashScreen.hide();
+
+    }
   };
 
   /*********** Toast Method  *******************/
@@ -118,6 +139,7 @@ class AppNavigation extends React.Component {
         >
             {this.props.loader && <Indicator />}
           {this.props.user.netStatus ? null : <OfflineNotice {...this.props} />}
+          {/* <Line name="Translation example" value={string("hello")} /> */}
 
           <AppStack
              ref={navigatorRef => {
@@ -126,7 +148,7 @@ class AppNavigation extends React.Component {
 
             screenProps={{
               ...this.props,
-              
+              setI18nConfig:(lang,isRtl) =>setI18nConfig(lang,isRtl),
               toastRef: { show: (text, color) => this.showMessage(text, color) }
             }}
             onNavigationStateChange={(prevState, currentState, action) => {
@@ -152,7 +174,6 @@ const mapStateToProps = state => {
   return {
     user: state.user,
     product: state.product,
-
     errorColor: state.user.errorColor,
     loader: state.user.loader
   };
@@ -167,3 +188,10 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AppNavigation);
+
+const Line = props => (
+  <View style={{flex:1,backgroundColor:'red'}}>
+    <Text >{props.name}</Text>
+    <Text>{JSON.stringify(props.value, null, 2)}</Text>
+  </View>
+);

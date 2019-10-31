@@ -42,7 +42,13 @@ class CartItem extends Component {
       cartItems: carts
     });
   }
-
+  
+  UNSAFE_componentWillReceiveProps(nextProps){
+    let { carts } =nextProps.screenProps.product;
+    this.setState({
+      cartItems: carts
+    })
+  }
 
   renderItems = ({ item, index }) => {
     return (

@@ -17,9 +17,9 @@ const user = (state = initialState, action) => {
         user: action.payload
       };
     case type.UPDATE_LOGGED_USER_DATA:
-        return {
-          ...state,
-          user: {...state.user,...action.payload}
+      return {
+        ...state,
+        user: { ...state.user, ...action.payload }
       };
     case type.SET_LOADER:
       return {
@@ -38,10 +38,24 @@ const user = (state = initialState, action) => {
         netStatus: action.netStatus
       };
     case type.ADD_CURRENT_LOCATION_SUCCESS:
-        return {
-          ...state,
-          currentLocation: action.payload
-    };
+      return {
+        ...state,
+        currentLocation: action.payload
+      };
+    case type.APP_LANG:
+      return {
+        ...state,
+        lang: action.lang,
+        isRTL: action.lang == "ar" ? true : false
+        // fontFamilyBold: action.lang=='en'?'MyriadPro-Bold':'Mirza-Bold',
+        //fontFamilySemibold: action.lang=='en'?'MyriadPro-Semibold':'Mirza-SemiBold',
+        //fontFamilyRegular: action.lang=='en'?'MyriadPro-Regular':'Mirza-Regular',
+        //fontFamilyBold: action.lang=='en'?'campton-book':'Noor-Bold',
+        //fontFamilySemibold: action.lang=='en'?'campton-semibold':'Noor-Regular',
+        //fontFamilyRegular: action.lang=='en'?'campton-light':'Noor-Regular',
+        //flexDirection: (action.lang =='ar') ? 'row-reverse':'row',
+        //textAlign: action.lang=='en'?'left':'right'
+      };
     case type.LOGOUT_SUCCESS:
       return initialState;
     default:

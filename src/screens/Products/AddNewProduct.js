@@ -157,22 +157,23 @@ class AddNewProduct extends Component {
   setProductData=(selectedProduct)=>{
     debugger  
     this.setState({
-      productCategory:{name:selectedProduct.category,category_id:selectedProduct.category_id},
-      productSubCategory:{name:selectedProduct.subcategory,
+      productCategory:{name:selectedProduct.category.name,category_id:selectedProduct.category_id},
+      productSubCategory:{name:selectedProduct.subcategory.name,
       id:selectedProduct.subcategory_id},
       productDes:selectedProduct.description,
       productPrice:`${selectedProduct.price}`,
       isOnAvailSale:selectedProduct.available,
       isSoldOut:selectedProduct.sold_out,
+
       noOfTimeUsed:this.noOfTimeUsedStatus(selectedProduct.times),
       productSize:this.sizeStatus(selectedProduct.size_id),
       productTitle:selectedProduct.product_title,
-      product_id:selectedProduct.product_id
+      product_id:selectedProduct.id
     })
-    if(selectedProduct.pic && selectedProduct.pic.length > 0){
-      let newImages = selectedProduct.pic.map((x) =>{
+    if(selectedProduct.pics && selectedProduct.pics.length > 0){
+      let newImages = selectedProduct.pics.map((x) =>{
           return {
-            uri:x,
+            uri:x.pic,
             remoteUrl:true
           }
         })
@@ -243,7 +244,7 @@ class AddNewProduct extends Component {
         debugger
         let myArr = newImages;
         for (var i = 0; i < myArr.length; i++) {
-          formData.append(`pics[${i}]`, myArr[i]);
+          formData.append(`image[${i}]`, myArr[i]);
         }
       }
       postRequest('vendor/AddProduct',formData).then((res) => {
@@ -285,7 +286,7 @@ class AddNewProduct extends Component {
         debugger
         let myArr = newImages;
         for (var i = 0; i < myArr.length; i++) {
-          formData.append(`pics[${i}]`, myArr[i]);
+          formData.append(`image[${i}]`, myArr[i]);
         }
       }
       postRequest('vendor/updateProducts',formData).then((res) => {

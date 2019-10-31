@@ -22,9 +22,9 @@ import { string } from "../../utilities/languages/i18n";
 import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
-import AddressListItem from './Templates/AddressListItem'
-import RenderLabel from './Templates/Label'
-import {AddressPlaceholder} from './Templates/AddressPlaceholder'
+import AddressListItem from "./Templates/AddressListItem";
+import RenderLabel from "./Templates/Label";
+import { AddressPlaceholder } from "./Templates/AddressPlaceholder";
 class Address extends Component {
   constructor(props) {
     super(props);
@@ -32,15 +32,15 @@ class Address extends Component {
       isRefreshing: false,
       addresses: []
     };
-     // Placeholder Product 
-     this.loaderComponent = new Promise(resolve => {
+    // Placeholder Product
+    this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
         resolve();
       }, 1000);
     });
   }
-  componentDidMount(){
-    this.getAddresses()
+  componentDidMount() {
+    this.getAddresses();
   }
   /*************APi Call  *********/
   getAddresses = () => {
@@ -48,102 +48,132 @@ class Address extends Component {
       .then(res => {
         debugger;
         if (res && res.success && res.success.length > 0) {
-          let {params} = this.props.navigation.state
-          this.setState({
-            addresses: res.success.map((x) =>{
-              return {
-                title:x.full_address,
-                id:x.address_id,
-                is_active:x.is_active,
-                description:`${x.flat},${x.city},${x.landmark}.${x.state} ${x.country_name} ${x.pincode}  `
+          let { params } = this.props.navigation.state;
+          this.setState(
+            {
+              addresses: res.success.map(x => {
+                return {
+                  ...x,
+                  title: x.full_address,
+                  id: x.address_id,
+                  is_active: x.is_active,
+                  description: `${x.flat},${x.city},${x.landmark}.${x.state} ${x.country_name} ${x.pincode}  `
+                };
+              }),
+              isRefreshing: false
+            },
+            () => {
+              if (
+                params &&
+                params.fromCheckout &&
+                this.state.addresses.length > 0
+              ) {
+                debugger;
+                if (this.state.addresses.length > 1) {
+                  let is_activeAddress = this.state.addresses.filter(
+                    x => x.is_active
+                  )[0];
+                  params.updateDefaultAddress(
+                    is_activeAddress.description,
+                    is_activeAddress.id
+                  );
+                } else {
+                  let is_activeAddress = this.state.addresses[0];
+                  params.updateDefaultAddress(
+                    is_activeAddress.description,
+                    is_activeAddress.id
+                  );
+                }
+
+                // this.props.navigation.goBack()
               }
-            }),
-            isRefreshing:false
-          },()=>{
-            if(params && params.fromCheckout && this.state.addresses.length>0){
-              let is_activeAddress= this.state.addresses.filter(x=>x.is_active)[0]
-              params.updateDefaultAddress(is_activeAddress.description,is_activeAddress.id)
-              // this.props.navigation.goBack()
-             }
-          });
-         
-        }else{
+            }
+          );
+        } else {
           this.setState({
-            isRefreshing:false
-          })
+            isRefreshing: false
+          });
         }
         setIndicator(false);
       })
       .catch(err => {});
   };
-
-// Update Address
-updateDefaultAddress = (item) =>{
-  let {setToastMessage} = this.props.screenProps.actions
-  let {toastRef} = this.props.screenProps
-    let data = {}
-    data['address_id'] =item.id
-    data['is_active'] =item.is_active ? 0 :1
-    postRequest("customer/updateAddressStatus",data)
+  getAddressDetail = address => {
+    debugger;
+    this.props.navigation.navigate("AddNewAddress", {
+      address: address,
+      getAddress: () => this.getAddresses()
+    });
+  };
+  // Update Address
+  updateDefaultAddress = item => {
+    let { setToastMessage } = this.props.screenProps.actions;
+    let { toastRef } = this.props.screenProps;
+    let data = {};
+    data["address_id"] = item.id;
+    data["is_active"] = item.is_active ? 0 : 1;
+    postRequest("customer/updateAddressStatus", data)
       .then(res => {
         if (res && res.success) {
-          let {params} = this.props.navigation.state
-          setToastMessage(true,colors.green1)
-           toastRef.show(res.success)
-           if(params && params.updateDefaultAddress){
-            params.updateDefaultAddress(item.description)
-            this.props.navigation.goBack()
-           }
-            this.setState({
-              addresses:this.state.addresses.map((x) =>{
-                if(x.id ==item.id){
-                  return {
-                    ...x,
-                    is_active : item.is_active ? 0 :1
-                  }
-                }else{
-                  return {
-                    ...x,
-                    is_active:0
-                  }
-                }
-              })
+          let { params } = this.props.navigation.state;
+          setToastMessage(true, colors.green1);
+          toastRef.show(res.success);
+          if (params && params.updateDefaultAddress) {
+            params.updateDefaultAddress(item.description);
+            this.props.navigation.goBack();
+          }
+          this.setState({
+            addresses: this.state.addresses.map(x => {
+              if (x.id == item.id) {
+                return {
+                  ...x,
+                  is_active: item.is_active ? 0 : 1
+                };
+              } else {
+                return {
+                  ...x,
+                  is_active: 0
+                };
+              }
             })
-         }
+          });
+        }
         setIndicator(false);
       })
-     .catch(err => {});
-  }
-// Update Address
-deleteAddress = (item) =>{
-  let {setToastMessage} = this.props.screenProps.actions
-  let {toastRef} = this.props.screenProps
-  let {params} = this.props.navigation.state
+      .catch(err => {});
+  };
+  // Update Address
+  deleteAddress = item => {
+    let { setToastMessage } = this.props.screenProps.actions;
+    let { toastRef } = this.props.screenProps;
+    let { params } = this.props.navigation.state;
     getRequest(`customer/deleteAddress?address_id=${item.id}`)
       .then(res => {
         if (res && res.status == 200) {
-           setToastMessage(true,colors.green1)
-            toastRef.show(res.response)
-            this.setState({addresses:this.state.addresses.filter(x=>x.id != item.id)})
-            if((params && params.address_id) == item.id ){
-                params.updateDefaultAddress('',false)
-            }
-         }
+          setToastMessage(true, colors.green1);
+          toastRef.show(res.response);
+          this.setState({
+            addresses: this.state.addresses.filter(x => x.id != item.id)
+          });
+          if ((params && params.address_id) == item.id) {
+            params.updateDefaultAddress("", false);
+          }
+        }
         setIndicator(false);
       })
-     .catch(err => {});
-  }
-/*************APi Call  *********/
-handleRefresh = () => {
-  this.setState(
-    {
-      isRefreshing: true
-    },
-    () => {
-      this.getAddresses();
-    }
-  );
-};
+      .catch(err => {});
+  };
+  /*************APi Call  *********/
+  handleRefresh = () => {
+    this.setState(
+      {
+        isRefreshing: true
+      },
+      () => {
+        this.getAddresses();
+      }
+    );
+  };
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -162,17 +192,21 @@ handleRefresh = () => {
     );
   };
   pressButton = () => {
-    this.props.navigation.navigate("AddNewAddress",{
-      getAddress :()=>this.getAddresses()
+    this.props.navigation.navigate("AddNewAddress", {
+      getAddress: () => this.getAddresses()
     });
   };
   renderItems = ({ item, index }) => {
-    return <AddressListItem item={item} index={index} 
-            onPress={() => null}
-            descriptionSize={normalize(14)}
-            updateDefaultAddress={()=>this.updateDefaultAddress(item)}
-            deleteAddress={() => this.deleteAddress(item)}
-            />
+    return (
+      <AddressListItem
+        item={item}
+        index={index}
+        onPress={() => this.getAddressDetail(item)}
+        descriptionSize={normalize(14)}
+        updateDefaultAddress={() => this.updateDefaultAddress(item)}
+        deleteAddress={() => this.deleteAddress(item)}
+      />
+    );
   };
   renderBankList = () => {
     return (
@@ -185,10 +219,12 @@ handleRefresh = () => {
           data={this.state.addresses}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
-          ListEmptyComponent={<AddressPlaceholder  
-            array={[1, 2,3]}
-            loader={this.loaderComponent}
-          />}
+          ListEmptyComponent={
+            <AddressPlaceholder
+              array={[1, 2, 3]}
+              loader={this.loaderComponent}
+            />
+          }
         />
       </View>
     );
@@ -209,10 +245,10 @@ handleRefresh = () => {
           title={"Address"}
           backPress={() => this.props.navigation.goBack()}
         />
-        <View style={{paddingHorizontal:24,marginBottom: 8,marginTop:16}}>
-        <RenderLabel label={'Saved Address'}/>
+        <View style={{ paddingHorizontal: 24, marginBottom: 8, marginTop: 16 }}>
+          <RenderLabel label={"Saved Address"} />
         </View>
-        
+
         {this.renderBankList()}
         <View style={{ flex: 0.2, paddingHorizontal: 16 }}>
           {this.renderButton("ADD NEW")}

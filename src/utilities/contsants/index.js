@@ -76,5 +76,6 @@ removeCart:require("../../assets/images/ic_remove_cart.png"),
  dropGreen : require("../../assets/images/ic_dd_g.png"),
  propfileimage : require("../../assets/images/Profile01.jpg"),
  propfileimageNotification : require("../../assets/images/Notification.jpg"),
- instagram:require('../../assets/images/instagram.png')
+ instagram:require('../../assets/images/instagram.png'),
+ no_image:require('../../assets/images/no_image.jpeg'),
 };

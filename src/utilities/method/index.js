@@ -10,11 +10,11 @@ export const updateProductCartValue = (array,product) => {
   let newArray = array.map(x => {
     let findIndex=-1
     if(carts && carts.length > -1){
-      findIndex = carts.findIndex(cart => cart.product_id == x.product_id);
+      findIndex = carts.findIndex(cart => cart.id == x.id);
     }
     let findIndexWishList=-1
     if(wishlists && wishlists.length > 0){
-      findIndexWishList = wishlists.findIndex(cart => cart.product_id == x.product_id);
+      findIndexWishList = wishlists.findIndex(cart => cart.id == x.id);
     }
     if (findIndex > -1 || findIndexWishList > -1) {
       return {
@@ -33,11 +33,9 @@ export const updateProductCartValue = (array,product) => {
   });
   return newArray;
 };
-
-
 export const updateCartSuccess = (array,item) =>{
   return  array.map(x => {
-    if (x.product_id == item.product_id) {
+    if (x.id == item.id){
       return {
         ...x,
          isCart: x.isCart ? false : true
@@ -51,7 +49,7 @@ export const updateCartSuccess = (array,item) =>{
 }
 export const updateWishListSuccess = (array,item) =>{
   return  array.map(x => {
-    if (x.product_id == item.product_id) {
+    if (x.id == item.id) {
       return {
         ...x,
          isFevorite: x.isFevorite ? false : true

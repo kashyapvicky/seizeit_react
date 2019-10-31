@@ -8,8 +8,8 @@ import {
   ScrollView,
   FlatList,
   Keyboard,
-  TextInput
-
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 // import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -41,37 +41,32 @@ class AddNewAddress extends Component {
         securePassword: true,
         visible: false,
         countries:[],
-        refreshToken: null
+        refreshToken: null,
+        address_id:null
       };
   }
   componentDidMount(){
-    this.getCountries()
-  }
-
-  /**************************** Api call  ********************************/
-  getCountries = () =>{
-      let { setIndicator } = this.props.screenProps.actions;
-      postRequest("user/showcountries",{})
-        .then(res => {
-          if (res && res.success && res.success.length > 0) {
-            this.setState({
-              countries: res.success.map((x) => {
-                return {
-                  name:x.country_name,
-                  id:x.country_id
-                }
-              })
-            })
-          }
-          setIndicator(false);
-        })
-        .catch(err => {});
+    let {params} = this.props.navigation.state
+    if(params && params.address){
+      this.fillAddressData(params.address)
     }
-    selectCountry =(item)=>{
+  }
+  /**************************** Api call  ********************************/
+   fillAddressData = (address) =>{
       this.setState({
-        country:item,
-        openDropDownContry:false
-      },() =>{
+        full_address:address.full_address,
+        is_active:address.is_active,
+        state: address.state,
+        streetNo: address.street,
+        title: address.title,
+        landmark:address.landmark,
+        phoneNumber:address.phone_number,
+        pinCode :address.pincode,
+        houseNo :address.flat,
+        city:address.city,
+        fullName:address.full_address,
+        address_id:address.id,
+        country:{name:address.country_name,id:address.country_id}
       })
     }
     addAddress = ()=>{
@@ -94,20 +89,28 @@ class AddNewAddress extends Component {
         data['street'] =streetNo
         data['landmark'] =landmark
         data['phone_number'] =phoneNumber
-        data['full_address'] =fullName        
-        postRequest('customer/addaddress',data).then((res) => {
-          if (res && res.success) {
-            let {params} = this.props.navigation.state
-            if(params && params.getAddress){
-                params.getAddress()
+        data['full_address'] =fullName       
+        let apiName =`customer/addaddress`
+        if(this.state.address_id){
+          data['address_id'] =this.state.address_id   
+          apiName=`customer/updateAddress`
+        } 
+        postRequest(apiName,data).then((res) => {
+            if (res && res.success) {
+              let {params} = this.props.navigation.state
+              if(params && params.getAddress){
+                  params.getAddress()
+              }
+              setToastMessage(true,colors.green1)
+              toastRef.show(res.success) 
+              this.props.navigation.goBack()
             }
-            setToastMessage(true,colors.green1)
-            toastRef.show(res.success) 
-            this.props.navigation.goBack()
-          }
-         })
+           })
+        
+      
       }
     }
+    
   /**************************** Api call End ********************************/
 /*****************  Validation  *************/
 ValidationRules = () => {
@@ -191,14 +194,21 @@ ValidationRules = () => {
   };
 
   pressButton =(title) =>{
-    if(title == 'Save new address'){
+    if(title == 'Save new address' || title == 'Update address'){
       this.addAddress()
     }
   }
-
+  updateCountry = (country) =>{
+    this.setState({
+      country : country
+    })
+  }
   render() {
     return (
-      <View style={{ flex: 1 }}>
+    <View
+      // enabled={false}
+      style={{ flex: 1 }}
+    >
       <Header
         isRightIcon={false}
         headerStyle={[
@@ -206,7 +216,7 @@ ValidationRules = () => {
             {
               backgroundColor: "#FFFFFF",
               shadowRadius: 0.1,
-
+              height:48,
             }
           ]}
         title={"Add new address"}
@@ -217,12 +227,10 @@ ValidationRules = () => {
           <TextInputComponent
                  pointerEvents="none"
                 onPress={() =>
-                  this.setState({
-                    openDropDownContry: !this.state.openDropDownContry
+                  this.props.navigation.navigate('Countries',{
+                    updateCountry :(country) => this.updateCountry(country)
                   })
                 }
-                selectItem={(item)=> this.selectCountry(item)}
-                openDropDown={this.state.openDropDownContry}
                 label={'Select your country'}
                 editable={false}
                 inputMenthod={input => {
@@ -232,7 +240,6 @@ ValidationRules = () => {
                 placeholderTextColor="#000000"
                 selectionColor="#96C50F"
                 returnKeyType="next"
-                lists={this.state.countries}
                 autoCorrect={false}
                 autoCapitalize="none"
                 blurOnSubmit={false}
@@ -464,8 +471,8 @@ ValidationRules = () => {
              <View style={{ height: 25 }} />
           </View>
         </ScrollView>
-        <View style={{flex:0.15,paddingHorizontal: 16}}>
-        {this.renderButton('Save new address')}
+        <View style={{flex:0.125,paddingHorizontal: 16}}>
+        {this.renderButton(this.state.address_id ? 'Update address' : 'Save new address')}
       </View>
     </View>
     );

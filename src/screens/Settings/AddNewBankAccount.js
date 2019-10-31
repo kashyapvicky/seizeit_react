@@ -91,7 +91,6 @@ class AddNewBankAccount extends Component {
                   openDropDownBank:false
                 })}
                 editable={false}
-
                 openDropDown={this.state.openDropDownBank}
                 bankAccount
                 placeholder={'ICICI Bank'}

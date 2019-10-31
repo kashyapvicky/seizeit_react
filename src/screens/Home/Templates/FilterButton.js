@@ -6,10 +6,14 @@ import colors from "../../../utilities/config/colors";
 import styles from "../../../styles";
 import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
+const isEmpty = (object) =>{
+  return  Object.values(object).every(x => (x === null || x === ''))
+};
 
 export const FilterButton = props => {
   return (
     <TouchableOpacity
+    activeOpacity={0.75}
     onPress={()=> props.onPress()}
       style={[styles.shadow,{
         position: "absolute",
@@ -27,9 +31,10 @@ export const FilterButton = props => {
       }]}
     >
     <Text p style={{color:'#455F6C',fontSize:normalize(18)}}>Filters</Text>
-    <View style={{backgroundColor:'#96C50F',
+    {
+    !isEmpty(props.filters.filters) && <View style={{backgroundColor:'#96C50F',
     position: "absolute",top:5,right:104/7,
-    height:6,width:6,borderRadius:6/2}}/>
+    height:6,width:6,borderRadius:6/2}}/>}
 
     </TouchableOpacity>
   );

@@ -307,9 +307,10 @@ class Home extends Component {
       <Listitems
         onPress={() =>
           this.props.navigation.navigate("ProductDetails", {
-            productId: item.product_id
+            productId: item.id
           })
         }
+        horizontal={true}
         item={item}
         index={index}
         imageHeight={imageHeight}

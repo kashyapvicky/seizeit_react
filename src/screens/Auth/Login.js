@@ -169,8 +169,6 @@ class Login extends Component {
         setTimeout(()=>{
           toastRef.show('Error from api')
         },500)
-
-        debugger
         // some other error happened
       }
     }
@@ -203,7 +201,7 @@ class Login extends Component {
         setIndicator(false)
         setToastMessage(true,colors.danger)
         setTimeout(()=>{
-          toastRef.show(error)
+          toastRef.show(error.message);
         },500)
         // ToastMessage(error)
         console.log("Login fail with error: " + error);
@@ -295,7 +293,7 @@ class Login extends Component {
       this.instagramLogin.show()
     }
   };
-  renderButton = (title,transparent,imageLeft,color,fontSize) => {
+  renderButton = (title,transparent,imageLeft,color,fontSize,center) => {
     return (
       <CustomeButton
         buttonStyle={{
@@ -308,8 +306,9 @@ class Login extends Component {
         }}
         imageSource={true}
         imageLeft={imageLeft}
-        
-        buttonTextStyle={{fontWeight:imageLeft ?'normal' :'bold'}}
+        buttonTextStyle={{fontWeight:imageLeft ?'normal' :'bold',
+        paddingLeft:center ? 0 :16,
+        justifyContent:center ? 'center' :'flex-start'}}
         imageLeftLocal={imageLeft}
         fontSize={normalize(fontSize)}
         color={transparent ?'#455F6C':'#FFFFFF'}
@@ -332,7 +331,7 @@ class Login extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               activeOpacity={9}
-              onPress={() => this.props.navigation.navigate("TabNavigator")}
+              onPress={() => this.props.navigation.navigate("CustomerTabNavigator")}
             >
               <View style={[styles.backButtonImage, { alignItems: "center" }]}>
                 <Text
@@ -438,7 +437,7 @@ class Login extends Component {
           </View>
           <View style={{ height: 16 }} />
           <View style={styles.continueButton}>
-                {this.renderButton('CONTINUE',false,false,colors.primary,16)}
+                {this.renderButton('CONTINUE',false,false,colors.primary,16,true)}
             <View style={{ height: 30 }} />
             <View style={styles.dontHaveAnAccountView}>
               <View>
