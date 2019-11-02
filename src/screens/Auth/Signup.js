@@ -242,21 +242,25 @@ class Signup extends Component {
   // Save Social Request
    postSocialRequest = (user) =>{
     let {setToastMessage,setIndicator,setLoggedUserData} = this.props.screenProps.actions
-    postRequest('user/verifySocialAccount',user).then((res) => {
-      debugger
-      if(res.statuscode == 200){
-        setLoggedUserData(res.result.user)
-        if(res.result.user.user_type == 'customer'){
-          this.props.navigation.navigate('CustomerTabNavigator')
-         }else if(res.result.user.user_type == 'vendor'){
-          this.props.navigation.navigate('VendorTabNavigator')
-         }
-      }
-      setIndicator(false)
-    }).catch((err) => {
-      setIndicator(false)
-
-    })
+      postRequest('user/verifySocialAccount',user).then((res) => {
+        if(res.statuscode == 200){
+          if(res.result && res.result.user && res.result.user.phone && (res.result.user.status_id == 1)){
+            setLoggedUserData(res.result.user)
+          if(res.result.user.user_type == 'customer'){
+             this.props.navigation.navigate('CustomerTabNavigator')
+           }else if(res.result.user.user_type == 'vendor'){
+            this.props.navigation.navigate('VendorTabNavigator')
+           }
+          }else{
+            this.props.navigation.navigate('EnterMobile',{
+              user:{user:res.result.user.id}
+             })
+          }
+        }
+        setIndicator(false)
+      }).catch((err) => {
+        setIndicator(false)
+      })
    }
   getUserInfofacebook = token => {
     debugger
@@ -308,21 +312,18 @@ class Signup extends Component {
     fetch(`https://api.instagram.com/v1/users/self/?access_token=${token}`)
        .then((response) => response.json())
             .then((json) => {
-              debugger
                 let user = {}
                 user.name = json.data.full_name
                 user.provider_user_id = json.data.id
-                // user.email = json.email
+                //user.email = json.email
                 user.profile_pic = json.data.profile_picture
                 user.provider = 'instagram'
                 user['device_id'] = DeviceInfo.getUniqueID()
                 user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
                 user.device_token ='1234'+Math.random(10)
-                debugger
                 this.postSocialRequest(user)
                })
             .catch((err) => {
-              debugger
               setToastMessage(true,colors.danger)
               setTimeout(()=>{
                 toastRef.show('ERROR GETTING DATA FROM INSTAGRAM')
@@ -596,7 +597,7 @@ class Signup extends Component {
         <InstagramLogin
         ref= {ref => this.instagramLogin= ref}
         clientId='851971e11b9a4a30b86f70a65b32200a'
-        redirectUrl='https://www.seizeit-me.com'
+        redirectUrl='https://www.seizeit-me.com/insta_callback'
         scopes={['basic']}
         onLoginSuccess={(token) => {
           this.getInstagramUserInfo(token)

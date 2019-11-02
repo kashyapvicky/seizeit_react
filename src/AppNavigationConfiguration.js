@@ -27,37 +27,38 @@ export const MainNavigator = createSwitchNavigator(
   },
   {
     initialRouteName: "AuthNavigatorStack",
-    initialRouteParams: { transition: 'horizontal' },
-    transitionConfig: TransitionConfig,
     mode: Platform.OS === "ios" ? "card" : "card",
     headerMode: "none",
     navigationOptions: {
       gesturesEnabled: false
-    }
+    },
+    swipeEnabled: false,
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );
 const TransitionSpec = {
   duration: 300,
-  easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
-  timing: Animated.timing,
+  // easing: Easing.bezier(0.2833, 0.99, 0.31833, 0.99),
+  // timing: Animated.timing,
 };
 export const TransitionConfig = () => {
-  return {
-    transitionSpec: TransitionSpec,
-    screenInterpolator: (sceneProps) => {
-      const params = sceneProps.scene.route.params || {};
-      const transition = params.transition || Platform.OS;
-
-      return {
-        horizontal: forHorizontal(sceneProps),
-        vertical: forVertical(sceneProps),
-        modal: forVertical(sceneProps),
-        fade: forFade(sceneProps),
-        ios: forHorizontal(sceneProps),
-        android: forFadeFromBottomAndroid(sceneProps),
-      }[transition];
-    }
-  }
+  // return {
+  //   transitionSpec: TransitionSpec,
+  //   screenInterpolator: (sceneProps) => {
+  //     const params = sceneProps.scene.route.params || {};
+  //     const transition = params.transition || Platform.OS;
+  //     return {
+  //       horizontal: forHorizontal(sceneProps),
+  //       vertical: forVertical(sceneProps),
+  //       modal: forVertical(sceneProps),
+  //       fade: forFade(sceneProps),
+  //       ios: forHorizontal(sceneProps),
+  //       android: forFadeFromBottomAndroid(sceneProps),
+  //     }[transition];
+  //   }
+  // }
 };
 // Main Stack Container
 export const AppStack = createAppContainer(MainNavigator);

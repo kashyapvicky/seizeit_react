@@ -26,7 +26,7 @@ class StartScreen extends Component {
       language:'en'
     };
     this.props.screenProps.actions.setIndicator(false);
-    // this.checkUserLogin()
+    this.checkUserLogin()
   }
   //component did mount
   componentDidMount(){
@@ -116,7 +116,7 @@ class StartScreen extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={() => this.changeLanguage("en")}
+            // onPress={() => this.changeLanguage("en")}
             style={
              [language == "en"
                 ? styles.selectedLangButton

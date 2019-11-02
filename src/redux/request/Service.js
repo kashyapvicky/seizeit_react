@@ -35,8 +35,12 @@ const postRequest = (apiName, data = {},hideLoader=false) => {
         NavigationService.setToastMessage(true,colors.danger)
         if(res.status == 400){
          return NavigationService.showToastMessage(res.data.error)
+        }else if(res.status == 300){
+          debugger
+            NavigationService.showToastMessage(res.data.error)
+           return res.data
         }else if(res.status == 500){
-          return NavigationService.showToastMessage(res.data.error)
+          return NavigationService.showToastMessage(res.data.error || res.data.message)
          
         }else if(res.status == 401){
           return NavigationService.showToastMessage(res.data.error)

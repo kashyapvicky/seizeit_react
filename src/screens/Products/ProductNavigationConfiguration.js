@@ -9,6 +9,7 @@ import { Easing, Animated } from "react-native";
 import Products from "./Products";
 import AddNewProduct from "./AddNewProduct";
 import ProductDetails from "./ProductDetails";
+import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
 
 
 export const ProductsNavigator = createStackNavigator(
@@ -23,12 +24,8 @@ export const ProductsNavigator = createStackNavigator(
     headerMode: "none",
     mode: "card",
     transitionConfig: () => ({
-      transitionSpec: {
-        duration: 300,
-        easing: Easing.out(Easing.poly(8)),
-        timing: Animated.timing
-      }
-    })
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );
  

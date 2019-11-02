@@ -213,11 +213,10 @@ class EditProfile extends Component {
         width: 300,
         height: 400,
         cropping: true,
-      }).then(image => {
-        console.log(image);
+      }).then(response => {
+        this.setState({ avatarSource: response.path ,clickEdit:true})
         this.closeModal()
       }).catch((err) =>{
-debugger
       })
       // ImagePicker.openCamera(this.options, (response) => {
       //     if (response.didCancel) {

@@ -95,7 +95,11 @@ class Login extends Component {
         data['device_id'] = DeviceInfo.getUniqueID()
         data['device_type'] = Platform.OS == 'ios' ? 'ios' : 'android'
         postRequest('user/login',data).then((res) => {
-          if(res.success){
+          if(res.data){
+            this.props.navigation.navigate('EnterMobile',{
+              user:{user:res.data}
+             })
+          } else if(res.success){
             setLoggedUserData(res.success)
             if(res.success.user_type == 'customer'){
               this.props.navigation.navigate('CustomerTabNavigator')
@@ -150,7 +154,7 @@ class Login extends Component {
         setTimeout(()=>{
           toastRef.show('You user cancels the sign in flow')
         },500)
-     
+    
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
         setToastMessage(true,colors.danger)
@@ -215,12 +219,18 @@ class Login extends Component {
     postRequest('user/verifySocialAccount',user).then((res) => {
       debugger
       if(res.statuscode == 200){
-        setLoggedUserData(res.result.user)
-        if(res.result.user.user_type == 'customer'){
-          this.props.navigation.navigate('CustomerTabNavigator')
-         }else if(res.result.user.user_type == 'vendor'){
-          this.props.navigation.navigate('VendorTabNavigator')
-         }
+        if(res.result && res.result.user && res.result.user.phone && (res.result.user.status_id == 1)){
+          setLoggedUserData(res.result.user)
+          if(res.result.user.user_type == 'customer'){
+             this.props.navigation.navigate('CustomerTabNavigator')
+           }else if(res.result.user.user_type == 'vendor'){
+            this.props.navigation.navigate('VendorTabNavigator')
+           }
+          }else{
+            this.props.navigation.navigate('EnterMobile',{
+              user:{user:res.result.user.id}
+             })
+          }
       }
       setIndicator(false)
     }).catch((err) => {
@@ -269,7 +279,7 @@ class Login extends Component {
                   user.device_type = Platform.OS == 'ios' ? 'ios' : 'android'
                   user.device_token ='1234'+Math.random(10)
                   debugger
-                  // this.postSocialRequest(user)
+                   this.postSocialRequest(user)
                  })
               .catch((err) => {
                 debugger
@@ -482,7 +492,7 @@ class Login extends Component {
         <InstagramLogin
         ref= {ref => this.instagramLogin= ref}
         clientId='851971e11b9a4a30b86f70a65b32200a'
-        redirectUrl='https://www.seizeit-me.com'
+        redirectUrl='https://www.seizeit-me.com/insta_callback'
         scopes={['basic']}
         onLoginSuccess={(token) => {
           this.getInstagramUserInfo(token)

@@ -36,6 +36,7 @@ class Checkout extends Component {
     super(props);
     this.state = {
       visible2: false,
+      notes:'',
       tabs: [
         {
           title: "Debit/Credit"
@@ -49,33 +50,31 @@ class Checkout extends Component {
       ],
       options: [
         {
-            name: 'Debit/Credit',
-            description: '',
-            icon: false,
-            title: 'CARDS'
-
+          name: "Debit/Credit",
+          description: "",
+          icon: false,
+          title: "CARDS"
         },
         {
-            name: 'Cash on delivery',
-            description: 'Please keep exact change handy to help you serve us better',
-            icon: true,
-            title: 'COD'
+          name: "Cash on delivery",
+          description:
+            "Please keep exact change handy to help you serve us better",
+          icon: true,
+          title: "COD"
         },
         {
-            name: 'Bank transfer',
-            description: string('youCreditsAmount'),
-            icon: false,
-            title: 'BANK'
-
+          name: "Bank transfer",
+          description: string("youCreditsAmount"),
+          icon: false,
+          title: "BANK"
         }
-    ],
+      ],
       cartItems: [],
-      
 
       user: {},
-      delivery:10,
-      totalAmount:0,
-      address:''
+      delivery: 10,
+      totalAmount: 0,
+      address: ""
     };
     this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
@@ -94,77 +93,164 @@ class Checkout extends Component {
           phone: user.phone
         },
         cartItems: carts,
-        subTotal:this.getCartTotal(carts),
-        totalAmount:this.getCartTotal(carts)+this.state.delivery
+        subTotal: this.getCartTotal(carts),
+        totalAmount: this.getCartTotal(carts) + this.state.delivery
       });
     }
-    this.getDefaultAddress()
-    
+    this.getDefaultAddress();
   }
-  updatePersonalDetail = (user)=>{
+  updatePersonalDetail = user => {
     this.setState({
-      user : {...this.state.user,...user}
-    })
-  }
-/*************************************APi Call  *********************************************/
-  getCartTotal = (carts) =>{
+      user: { ...this.state.user, ...user }
+    });
+  };
 
-    if(carts && carts.length > 0){
-      let totalBagAmount = carts.reduce((cnt, cur, currentIndex) => {
-        return Number(cnt) + Number(cur.price)
-       },0)
-       return totalBagAmount
+  /*************************************APi Call  *********************************************/
+  saveOrderApi = () =>{
+    let { setIndicator,setToastMessage } = this.props.screenProps.actions;
+    let { removeCartSuccess } = this.props.screenProps.productActions;
+
+    let {toastRef} = this.props.screenProps
+    if(!this.state.address_id){
+      setToastMessage(true,colors.danger)
+      return toastRef.show('Please add address first')
     }else{
-      return 0
-    }
+    let data = {};
+    data["address_id"] = this.state.address_id;
+    data["net_paid"] = this.state.totalAmount;
+    data["order_amount"] = this.state.totalAmount;
+    data["payment_mode"] = 1;
+    data['notes'] = this.state.notes
+    data["no_of_itmes"] =this.state.cartItems.length;
+    data["transaction_id"] = 'COD'
+   let carts = this.state.cartItems.map((x) =>{
+     return {
+      product_id : x.id,
+      amount:x.price,
+      vendor_id:x.vendor_id,
+      quantity:1
+     }
+   })
+   data["product_detail"] = carts
+   postRequest(`order/save_order`, data)
+      .then(res => {
+        if (res && res.success) {
+         setToastMessage(true,colors.green1)
+         toastRef.show(res.success)
+         removeCartSuccess()
+          this.props.navigation.navigate("OrderSuccessFull",{
+            orderArrivedDate:res.data.date
+          })
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+
   }
-  getDefaultAddress = () =>{
+  }
+  // Get Cart Total
+   getCartTotal = carts => {
+    if (carts && carts.length > 0) {
+      let totalBagAmount = carts.reduce((cnt, cur, currentIndex) => {
+        return Number(cnt) + Number(cur.price);
+      }, 0);
+      return totalBagAmount;
+    } else {
+      return 0;
+    }
+  };
+
+  getDefaultAddress = () => {
     let { setIndicator } = this.props.screenProps.actions;
     getRequest("customer/defaultAddress")
       .then(res => {
-        debugger
+        debugger;
         if (res && res.success.length > 0) {
-          debugger
-          let addArray = res.success.map(x=>{
+          debugger;
+          let addArray = res.success.map(x => {
             return {
-              title:x.full_address,
-              id:x.address_id,
-              is_active:x.is_active,
-              address:`${x.flat},${x.city},${x.landmark}.${x.state} ${x.country_name} ${x.pincode}`,
-            }
-          })[0]
+              title: x.full_address,
+              id: x.address_id,
+              is_active: x.is_active,
+              address: `${x.flat},${x.city},${x.landmark}.${x.state} ${x.country_name} ${x.pincode}`
+            };
+          })[0];
           this.setState({
-            address:addArray.address,
-            address_id:addArray.id
+            address: addArray.address,
+            address_id: addArray.id
           });
-        }else{
-           let {currentLocation} = this.props.screenProps.user
-           this.setState({
-             address:currentLocation.address
-           })
-
+        } else {
+          //  let {currentLocation} = this.props.screenProps.user
+          //  this.setState({
+          //    address:currentLocation.address
+          //  })
         }
         // setIndicator(false);
       })
       .catch(err => {});
-  }
-  updateDefaultAddress = (address,address_id) => {
-    debugger
-    if(address){
+  };
+  updateDefaultAddress = (address, address_id) => {
       this.setState({
-        address : address,
-        address_id:address_id
-      })
-    }else{
-      let {currentLocation} = this.props.screenProps.user
-      this.setState({
-        address : currentLocation.address
-      })
-    }
-    
-  }
-/***********************************APi Call  *********************************************/
+        address: address,
+        address_id: address_id
+      });
+  };
+  /***********************************APi Call  *********************************************/
+  render() {
+    let { carts } = this.props.screenProps.product;
+    return (
+      <View style={{ flex: 1 }}>
+        <Header
+          isRightIcon={Images.close_g}
+          headerStyle={[
+            styles.shadow,
+            {
+              backgroundColor: "#FFFFFF",
+              shadowRadius: 0.1
+            }
+          ]}
+          hideLeftIcon={true}
+          title={"Checkout"}
+          onRightPress={() => this.props.navigation.goBack()}
+        />
+        {carts && carts.length > 0 ? (
+          <ScrollView
+            style={{ flex: 1, paddingVertical: 16 }}
+            showsVerticalScrollIndicator={false}
+          >
+            {this.renderSectionOne()}
+            <View style={styles.borderSalesReport} />
+            {this.renderSectionTwo()}
+            <View style={styles.borderSalesReport} />
+            {this.renderProductsList()}
+            <View style={styles.borderSalesReport} />
+            {this.renderOrderInvoiceInfo()}
+            <View style={styles.borderSalesReport} />
+            {this.renderScrollableTab()}
+            <View style={{ height: 48 }} />
+          </ScrollView>
+        ) : (
+          <View
+            style={{
+              flex: 0.5,
+              paddingHorizontal: 16,
+              justifyContent: "center"
+            }}
+          >
+            <ProductPlaceholder
+              array={[1, 2]}
+              message={
+                this.props.screenProps.loader ? "" : "Your cart is Empty "
+              }
+              loader={this.loaderComponent}
+            />
+          </View>
+        )}
 
+        {carts && carts.length > 0 && this.renderBotttomButton()}
+      </View>
+    );
+  }
   pressButton = () => {};
   renderButton = (title, transparent) => {
     return (
@@ -185,10 +271,13 @@ class Checkout extends Component {
   };
 
   renderCommentInput = () => {
+
+
     let textInputStyle = {
       ...styles.textInputStyle,
       fontSize: normalize(14),
-      color: colors.primary
+      color: colors.primary,
+      height:95,
     };
     return (
       <TextInputComponent
@@ -205,17 +294,18 @@ class Checkout extends Component {
         blurOnSubmit={false}
         multiline={true}
         editable={true}
+        fromNotes
         viewTextStyle={[
           styles.viewcardTextStyle,
-          { height: 100, backgroundColor: "#F0F2FA", paddingTop: 16 }
+          { backgroundColor: "#F0F2FA", height:100 ,paddingHorizontal:8,justifyContent:'flex-start'}
         ]}
-        value={this.state.confirmAccountNumber}
+        value={this.state.notes}
         underlineColorAndroid="transparent"
         isFocused={this.state.confirmAccountFieldFocus}
         onFocus={() => this.setState({ confirmAccountFieldFocus: true })}
         onBlur={() => this.setState({ confirmAccountFieldFocus: false })}
-        onChangeText={confirmAccountNumber =>
-          this.setState({ confirmAccountNumber })
+        onChangeText={notes =>
+          this.setState({ notes })
         }
         onSubmitEditing={event => {
           // Keyboard.dismiss()
@@ -223,60 +313,74 @@ class Checkout extends Component {
         textInputStyle={textInputStyle}
         bankAccount
       />
-    );
+
+    )
   };
   renderPaymentSelectSection = (item, index) => {
     return (
       <View key={index} tabLabel={item.title} style={{ paddingTop: 16 }}>
-           <RenderLabel label={"Saved cards"} />
-
+        <RenderLabel label={"Saved cards"} />
       </View>
     );
   };
 
-  renderPaymentMethod = () =>{
-    return  <View style={[{ paddingBottom: 8 }]}>
-    { this.state.options.map((option,i) =>{
-   return <View key={i+'payment'} style={{flexDirection:'row',paddingVertical:8}}>
-
-         <TouchableOpacity 
-      onPress={()=> this.setState({
-        selectPaymentMethod :!this.state.selectPaymentMethod
-      })}
-      style={{ flex: 0.1, paddingLeft: 0,paddingTop:6,paddingRight:8 }}>
-        {
-          option.icon ?
-          <Image source={Images.check} style={{alignSelf:'center',height:18,width:18}}/>
-          :  <Image source={Images.round} style={{alignSelf:'center',height:18,width:18}}/>
-        }
-      </TouchableOpacity>
-        <View style={{ flexDirection: "row" }}>
-          <Text
-            p
-            style={{
-              color: "#000000",
-              fontSize: normalize(16),
-              // fontWeight: "bold"
-            }}
-          >
-           {`${option.name}`}
-          </Text>
-        </View>
-        </View>
-        })
-      }
-         
+  renderPaymentMethod = () => {
+    return (
+      <View style={[{ paddingBottom: 8 }]}>
+        {this.state.options.map((option, i) => {
+          return (
+            <View
+              key={i + "payment"}
+              style={{ flexDirection: "row", paddingVertical: 8 }}
+            >
+              <TouchableOpacity
+                onPress={() =>
+                  this.setState({
+                    selectPaymentMethod: !this.state.selectPaymentMethod
+                  })
+                }
+                style={{
+                  flex: 0.1,
+                  paddingLeft: 0,
+                  paddingTop: 6,
+                  paddingRight: 8
+                }}
+              >
+                {option.icon ? (
+                  <Image
+                    source={Images.check}
+                    style={{ alignSelf: "center", height: 18, width: 18 }}
+                  />
+                ) : (
+                  <Image
+                    source={Images.round}
+                    style={{ alignSelf: "center", height: 18, width: 18 }}
+                  />
+                )}
+              </TouchableOpacity>
+              <View style={{ flexDirection: "row" }}>
+                <Text
+                  p
+                  style={{
+                    color: "#000000",
+                    fontSize: normalize(16)
+                    // fontWeight: "bold"
+                  }}
+                >
+                  {`${option.name}`}
+                </Text>
+              </View>
+            </View>
+          );
+        })}
       </View>
-
-     
-  }
+    );
+  };
   renderScrollableTab = () => {
     return (
       <View style={{ paddingVertical: 16, paddingHorizontal: 24 }}>
         <RenderLabel label={"Payment"} />
-          <View style={{height:20}}>
-
-          </View>
+        <View style={{ height: 20 }}></View>
         {this.renderPaymentMethod()}
         {/* <ScrollableTabView
           tabs={this.state.tabs}
@@ -287,9 +391,16 @@ class Checkout extends Component {
       </View>
     );
   };
+  addButtonPress = title => {
+    if (title == "Add Promo Code") {
+    }
+  };
   addButton = title => {
     return (
-      <TouchableOpacity style={{ paddingTop: 16, paddingHorizontal: 24 }}>
+      <TouchableOpacity
+        style={{ paddingTop: 16 }}
+        onPress={() => this.addButtonPress(title)}
+      >
         <Text h5 style={{ color: colors.primary, fontSize: normalize(14) }}>
           +{title.toUpperCase()}
         </Text>
@@ -304,11 +415,8 @@ class Checkout extends Component {
       >
         <RenderLabel label={"Items"} />
         <View style={{ height: 10 }} />
-        <CartItem 
-         {...this.props}
+        <CartItem {...this.props} />
 
-        />
-       
         {this.renderCommentInput()}
       </View>
     );
@@ -317,29 +425,56 @@ class Checkout extends Component {
   renderSectionOne = () => {
     return (
       <View style={{ paddingHorizontal: 24, flex: 1 }}>
-        <RenderLabel label={"Personal details"} rightLabel={"Change"} 
-            onPressChange={() => this.props.navigation.navigate('EditProfile',{
-              updatePersonalDetail : (user) => this.updatePersonalDetail(user)
-            })}
+        <RenderLabel
+          label={"Personal details"}
+          rightLabel={"Change"}
+          onPressChange={() =>
+            this.props.navigation.navigate("EditProfile", {
+              updatePersonalDetail: user => this.updatePersonalDetail(user)
+            })
+          }
         />
         {this.renderPersonalDetail()}
       </View>
     );
   };
+  onPressChange = () => {
+    if (this.state.address_id) {
+      this.props.navigation.navigate("Address", {
+        updateDefaultAddress: (address, id) =>
+          this.updateDefaultAddress(address, id),
+        address_id: this.state.address_id,
+        fromCheckout: true
+      });
+    } else {
+      this.props.navigation.navigate("AddNewAddress", {
+        from: "checkout",
+        getDefaultAddress:() => this.getDefaultAddress(),
+        updateDefaultAddress: (address, id) =>
+          this.updateDefaultAddress(address, id)
+      });
+    }
+  };
   renderSectionTwo = () => {
     return (
       <View style={{ paddingHorizontal: 24, flex: 1, paddingVertical: 8 }}>
-        <RenderLabel label={"Delivering to"} rightLabel={"Change"} 
-          onPressChange={() => this.props.navigation.navigate('Address',{
-            updateDefaultAddress : (address,id) => this.updateDefaultAddress(address,id),
-            address_id:this.state.address_id,
-            fromCheckout:true
-          })}
+        <RenderLabel
+          label={"Delivering to"}
+          rightLabel={this.state.address_id ? "Change" : "Add"}
+          onPressChange={() => this.onPressChange()}
         />
+
+        {/* {this.addButton("Add Address")} */}
         <View style={{ paddingTop: 16 }}>
-          <Text p style={[styles.subLable]}>
-           {this.state.address}
-          </Text>
+          {!this.state.address ? (
+            <Text p style={[styles.subLable]}>
+              {"No default address found ."}
+            </Text>
+          ) : (
+            <Text p style={[styles.subLable]}>
+              {this.state.address}
+            </Text>
+          )}
         </View>
       </View>
     );
@@ -366,16 +501,24 @@ class Checkout extends Component {
     );
   };
   renderOrderInvoiceInfo = () => {
-    let{subTotal,totalAmount,delivery} = this.state
+    let { subTotal, totalAmount, delivery } = this.state;
+    let order = {
+      delivery_charge:delivery,
+      order_amount:totalAmount,
+      net_paid:0,
+    }
     return (
       <View>
-        <InvoiceInfo fromCheckout={true} 
-         subTotal ={subTotal}
-         totalAmount={totalAmount}
-         delivery= {delivery}
+        <InvoiceInfo
+          fromCheckout={true}
+          order={order}
+          subTotal={subTotal}
+
         />
         <View style={{ height: 10 }} />
-        {this.addButton("Add Promo code")}
+        <View style={{ paddingHorizontal: 24 }}>
+          {this.addButton("Add Promo code")}
+        </View>
         <View style={{ height: 10 }} />
       </View>
     );
@@ -383,7 +526,7 @@ class Checkout extends Component {
   renderBotttomButton = () => {
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate("OrderSuccessFull")}
+        onPress={() => this.saveOrderApi() }
         style={{
           flex: 0.12,
           justifyContent: "flex-end",
@@ -441,55 +584,5 @@ class Checkout extends Component {
       </TouchableOpacity>
     );
   };
-  render() {
-    let {carts} =this.props.screenProps.product
-    return (
-      <View style={{ flex: 1 }}>
-        <Header
-          isRightIcon={Images.close_g}
-          headerStyle={[
-            styles.shadow,
-            {
-              backgroundColor: "#FFFFFF",
-              shadowRadius: 0.1
-            }
-          ]}
-          hideLeftIcon={true}
-          title={"Checkout"}
-          onRightPress={() => this.props.navigation.goBack()}
-        />
-        {carts && carts.length > 0 ?   <ScrollView
-          style={{ flex: 1, paddingVertical: 16 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {this.renderSectionOne()}
-          <View style={styles.borderSalesReport} />
-          {this.renderSectionTwo()}
-          <View style={styles.borderSalesReport} />
-          {this.renderProductsList()}
-          <View style={styles.borderSalesReport} />
-          {this.renderOrderInvoiceInfo()}
-          <View style={styles.borderSalesReport} />
-          {this.renderScrollableTab()}
-          <View style={{ height: 48 }} />
-        </ScrollView>:
-         <View
-         style={{ flex: 0.5, paddingHorizontal: 16,justifyContent:'center' }}
-       >
-       <ProductPlaceholder
-       array={[1, 2]}
-       message={
-         this.props.screenProps.loader ? "" : "Your cart is Empty "
-       }
-       loader={this.loaderComponent}
-     />
-     </View>
-      }
-      
-
-        {carts && carts.length > 0 &&this.renderBotttomButton()}
-      </View>
-    );
-  }
 }
 export default Checkout;

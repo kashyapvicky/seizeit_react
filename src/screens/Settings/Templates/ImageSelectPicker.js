@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, View ,TouchableOpacity} from "react-native";
+import { Image, View ,Platform,TouchableOpacity,PermissionsAndroid} from "react-native";
 // Component
 import colors from "../../../utilities/config/colors";
 import styles from "../../../styles";
@@ -7,7 +7,23 @@ import Text from "../../../components/Text";
 import { string } from "../../../utilities/languages/i18n";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import CustomModal from '../../../components/CustomModal'
+async function GetAllPermissions() {
+    try {
+      if (Platform.OS === "android") {
+        const userResponse = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        ]);
+        return userResponse;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    return null;
+  }
 export default ImageSelectPickerModal = ({isModalVisible,launchCamera,openImageLibrary,closeModal}) => {
+    GetAllPermissions()
     return (
         <CustomModal isModalVisible={isModalVisible} closeModal={() => closeModal()}>
             <View style={[styles.modalBottomContent, {

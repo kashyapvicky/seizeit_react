@@ -13,8 +13,8 @@ import { string } from "../../../utilities/languages/i18n";
 import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
-export default (InvoiceInfo = props => {
-  let {fromCheckout,subTotal,totalAmount,delivery} = props
+export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
+  let {net_paid,order_amount,delivery_charge,payment_mode} = order
   return (
     <View style={{ marginTop: 10, paddingHorizontal: 24 }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -36,7 +36,7 @@ export default (InvoiceInfo = props => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${subTotal}
+          ${fromCheckout ? subTotal :order_amount}
         </Text>
       </View>
       <View
@@ -65,7 +65,7 @@ export default (InvoiceInfo = props => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${delivery}
+         ${delivery_charge ? delivery_charge : 0}
         </Text>
       </View>
       <View
@@ -89,12 +89,12 @@ export default (InvoiceInfo = props => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${totalAmount}
+          ${order_amount}
         </Text>
       </View>
       {!fromCheckout && <View style={{ justifyContent: "space-between", marginVertical: 16 }}>
         <Text style={[styles.accountSetting, { fontSize: normalize(16) }]}>
-          {"Mode of Payment: Cash on delivery"}
+          {`Mode of Payment: ${payment_mode == 1 ?'Cash on delivery' :'Online'}`}
         </Text>
       </View>}
     </View>

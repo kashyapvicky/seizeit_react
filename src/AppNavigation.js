@@ -1,7 +1,7 @@
 "use strict";
 // React
 import React, { Fragment } from "react";
-import { SafeAreaView,View,Text, StatusBar, Platform } from "react-native";
+import { SafeAreaView,View,Text, InteractionManager,StatusBar, Platform } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import * as RNLocalize from "react-native-localize";
 import RNRestart from "react-native-restart";
@@ -26,7 +26,7 @@ import Toast from "./components/Toast";
 import OfflineNotice from "./components/OfflineNotice";
 import { styles } from "./styles";
 import {setI18nConfig,string} from './utilities/languages/i18n'
-
+import LazyHOC from './LazyLoadScreen'
 //Get Active Screen
 function getActiveRouteName(navigationState) {
   if (!navigationState) {
@@ -46,7 +46,9 @@ class AppNavigation extends React.Component {
     this.state = {
       isShowToast: false,
       topBarColor: "transparent",
-      bottomBarColor: "transparent"
+      bottomBarColor: "transparent",
+      hidden: true,
+
     };
   // set initial config
    this.setI18nConfigReload()
@@ -63,12 +65,13 @@ class AppNavigation extends React.Component {
   };
   componentDidMount() {
     this._getNetInfo();
-    RNLocalize.addEventListener("change", this.handleLocalizationChange);
+    
+   // RNLocalize.addEventListener("change", this.handleLocalizationChange);
 
   }
   componentWillUnmount() {
     this.unsubscribe();
-    RNLocalize.removeEventListener("change", this.handleLocalizationChange);
+   // RNLocalize.removeEventListener("change", this.handleLocalizationChange);
 
   }
 
@@ -140,7 +143,6 @@ class AppNavigation extends React.Component {
             {this.props.loader && <Indicator />}
           {this.props.user.netStatus ? null : <OfflineNotice {...this.props} />}
           {/* <Line name="Translation example" value={string("hello")} /> */}
-
           <AppStack
              ref={navigatorRef => {
               NavigationService.setTopLevelNavigator(navigatorRef);
@@ -156,6 +158,7 @@ class AppNavigation extends React.Component {
               this.changeSafeAreaViewColor(this.currentScreen);
             }}
           />
+         
 
           {this.state.isShowToast && (
             <Toast
@@ -189,9 +192,3 @@ export default connect(
   mapDispatchToProps
 )(AppNavigation);
 
-const Line = props => (
-  <View style={{flex:1,backgroundColor:'red'}}>
-    <Text >{props.name}</Text>
-    <Text>{JSON.stringify(props.value, null, 2)}</Text>
-  </View>
-);

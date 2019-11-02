@@ -16,18 +16,18 @@ export default DropDownList = props => {
           paddingHorizontal: 24,
           borderTopWidth: 0,
           borderColor: "rgba(0,0,0,0.2)",
-          zIndex: 100,
+          zIndex: 100000,
           shadowOpacity: 0.2,
           backgroundColor: "#F9F9F9",
           shadowRadius: 5,
            minHeight: 100,
           marginBottom: 10,
-          position:'absolute',
-          overflow:'scroll'
+
+          
         }
       ]}
     >
-        <View style={{height:25}} />
+     <View style={{height:12}} />
       {props.lists.map((item, index) => {
         return (
           <TouchableOpacity onPress={() =>  props.selectItem && props.selectItem(item)}>
@@ -51,7 +51,7 @@ export default DropDownList = props => {
 
         );
       })}
-        <View style={{height:25}} />
+        <View style={{height:12}} />
     </ScrollView>
   );
 };

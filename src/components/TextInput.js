@@ -19,7 +19,7 @@ import DropDownList from "./DropDownList";
 
 export default class TextInputLabel extends Component {
   render() {
-    let { isFocused } = this.props;
+    let { isFocused ,fromNotes} = this.props;
     let labelStyle = {
       // position: 'absolute',
       // left: 0,
@@ -56,7 +56,7 @@ export default class TextInputLabel extends Component {
               flexDirection: "row",
               // paddingVertical: 5,
               marginTop: 10,
-              paddingLeft: 15
+              paddingLeft: fromNotes ? 8 : 15
             }
           ]}
           disabled={this.props.editable}
@@ -113,9 +113,11 @@ export default class TextInputLabel extends Component {
 
         </TouchableOpacity>
         {this.props.openDropDown ? 
+    
           <DropDownList 
             {...this.props}
-         /> : null}
+         /> 
+        : null}
 
       </View>
     );

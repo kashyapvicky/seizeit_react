@@ -53,7 +53,10 @@ class Home extends Component {
     backgroundColor:'#FFFFFF',
     color:'#96C50F'
   }]
+  
     };
+    this.props.screenProps.actions.setIndicator(false);
+
   }
 
   renderButton = (title, backgroundColor,color) => {

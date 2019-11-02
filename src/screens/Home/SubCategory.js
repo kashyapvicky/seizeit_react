@@ -33,6 +33,7 @@ import {
   updateWishListSuccess
 } from "../../utilities/method";
 import ProductCartItem from "./Templates/ProductCartItem";
+import LazyHOC from "../../LazyLoadScreen";
 
 class SubCategory extends Component {
   constructor(props) {
@@ -218,7 +219,7 @@ class SubCategory extends Component {
         imageHeight={168}
         onPress={() =>
           this.props.navigation.navigate("ProductDetails", {
-            productId: item.product_id
+            productId: item.id
           })
         }
         onPressWishlist={() => this.onPressWishlist(item, index)}
@@ -341,6 +342,8 @@ class SubCategory extends Component {
   /************** Cart Method  **************/
   render() {
     return (
+      <LazyHOC>
+
       <View style={{ flex: 1 }}>
         <Header
           isRightIcon={false}
@@ -366,6 +369,8 @@ class SubCategory extends Component {
           }
         />
       </View>
+      </LazyHOC>
+
     );
   }
 }

@@ -30,7 +30,7 @@ class ChooseType extends Component {
         {
           name: "Customer",
           icon: Images.customerIcon,
-          isSelect: true
+          isSelect: false
         }
       ]
     };
@@ -120,7 +120,7 @@ class ChooseType extends Component {
           </TouchableOpacity>
         </View>
         {this.renderLabel()}
-        <View style={{ height: 24 }} />
+        <View style={{ height: 32 }} />
         {this.renderType()}
       </View>
     );

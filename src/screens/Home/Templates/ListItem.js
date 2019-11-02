@@ -34,7 +34,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
           style={{ position: "absolute", right: 8, top: 15, zIndex: 100 }}>
             {
               item.isFevorite ? 
-              <Image source={require("../../../assets/images/ic_favourite_1.png")} />
+             <Ionicons name={'md-heart'} color={colors.danger} size={28}/>
               :<Image source={require("../../../assets/images/ic_favourite_0.png")} />
             }
         </Animatable.View>

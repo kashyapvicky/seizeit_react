@@ -57,7 +57,7 @@ class Verify extends Component {
 
   onSubmitOtp = () => {
     let { netStatus } = this.props.screenProps.user;
-    let {setLoggedUserData} = this.props.screenProps.actions
+    let {setLoggedUserData,setToastMessage} = this.props.screenProps.actions
     let {toastRef} = this.props.screenProps
     if(this.state.code.length < 6 ){
        return toastRef.show('Please add code first')
@@ -70,7 +70,12 @@ class Verify extends Component {
         data['otp'] = this.state.code
         data['user_id'] = params.user.user
         postRequest('user/varifyOtp',data).then((res) => {
-          if(res){
+          debugger
+          if(res && res.success == 'Invalid Otp'){
+            debugger
+            setToastMessage(true,colors.danger)
+            return toastRef.show(res.success)
+          } else if(res && res.success){
             setLoggedUserData(res.success)
             if(res.success.user_type == 'customer'){
               this.props.navigation.navigate('CustomerTabNavigator')

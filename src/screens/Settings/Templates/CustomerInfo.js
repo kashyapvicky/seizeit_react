@@ -15,7 +15,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
 import { Images } from "../../../utilities/contsants";
 
 
-export default CustomerInfo = props => {
+export default CustomerInfo = ({user,address}) => {
 return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
 <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
   <Text
@@ -35,7 +35,7 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
         { color: "#000000", lineHeight: 30, fontSize: normalize(16) }
       ]}
     >
-      {"Leo Harmon"}
+      {user.name}
     </Text>
     <Text
       style={[
@@ -48,8 +48,9 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
         }
       ]}
     >
-      3065 Kirlin Prairie Suite 200, Sector 29D, oppo. Tribune colony
-      Chandigarh 160030
+    {address && address.length > 0 ? 
+   `${address[0].flat},${address[0].city},${address[0].landmark}.${address[0].state} ${address[0].country_name} ${address[0].pincode}`
+      :''}
     </Text>
 
     <View style={{ marginTop: 10 }}>
@@ -76,27 +77,33 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
       </Text>
     </View>
   </View>
-  <View
-    style={{
-       flex: 0.135,
-      height:40,
-      width:40,
-      borderRadius:40/2,
-      marginLeft:16,
-      backgroundColor:'#96C50F',
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop:25
-    }}
-  >
-    <Image   source={Images.phoneCall} style={{alignSelf:'center'}}/>
-    {/* <Feather
-      name={"phone-call"}
-      size={28}
-      color={"#96C50F"}
-      style={{ alignSelf: "center" }}
-    /> */}
-  </View>
+  {
+     (user && user.type == 'vendor' ) &&  <View
+     style={{
+        flex: 0.135,
+       height:40,
+       width:40,
+       borderRadius:40/2,
+       marginLeft:16,
+       backgroundColor:'#96C50F',
+       justifyContent: "center",
+       alignItems: "center",
+       marginTop:25
+     }}
+   >
+     {/* {
+       user && user.type == 'vendor'
+     } */}
+     <Image   source={Images.phoneCall} style={{alignSelf:'center'}}/>
+     {/* <Feather
+       name={"phone-call"}
+       size={28}
+       color={"#96C50F"}
+       style={{ alignSelf: "center" }}
+     /> */}
+   </View>
+    } 
+ 
 </View>
 </View>
 }

@@ -223,7 +223,7 @@ class Home extends Component {
         buttonTextStyle={{ fontWeight: "normal" }}
         fontSize={normalize(16)}
         color={colors.primary}
-        onPress={() => this.props.navigation.navigate('Explore')}
+        onPress={() => this.props.navigation.navigate("Explore")}
         title={title}
       />
     );

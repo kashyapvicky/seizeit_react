@@ -6,8 +6,8 @@ import i18n from "i18n-js";
 import memoize from "lodash.memoize";
 const translationGetters = {
   // lazy requires (metro bundler does not support symlinks)
-  ar: () => require("./translations/ar.json"),
   en: () => require("./translations/en.json"),
+  ar: () => require("./translations/ar.json"),
 };
 export const string = memoize(
   (key, config) => i18n.t(key, config),
@@ -15,7 +15,7 @@ export const string = memoize(
 );
 export const setI18nConfig = (language='en',showRTL=false) => {
   // fallback if no available language fits
-  const fallback = { languageTag: language, isRTL: showRTL };
+  const fallback = { languageTag: 'en', isRTL: false };
   const { languageTag, isRTL } =
     // RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) ||
     fallback;

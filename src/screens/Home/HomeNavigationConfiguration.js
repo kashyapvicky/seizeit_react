@@ -5,6 +5,7 @@ import {
   createSwitchNavigator
 } from "react-navigation";
 import { Easing, Animated } from "react-native";
+import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
 
 import Home from "./Home";
 import SubCategory from "./SubCategory";
@@ -21,6 +22,7 @@ import OrderSuccessFull from "./OrderSuccessfull";
 import Address from "../Settings/Address";
 import AddNewAddress from "../Settings/AddNewAddress";
 import EditProfile from "../Settings/EditProfile";
+import Countries from "../Settings/Countries";
 
 
 // Stack 
@@ -51,25 +53,30 @@ const ModalStack = createStackNavigator({
     },
     AddNewAddress:AddNewAddress,
     Address:Address,
+    Countries:Countries,
     EditProfile:EditProfile
   },
   
   {
     mode: 'modal',
     headerMode: 'none',
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forVertical,
+    })
 })
 const CardStack =  createStackNavigator({
     Home:Home,
     SubCategory:SubCategory,
     ProductDetails:ProductDetails,
     VendorProduct:VendorProduct,
-
 },
 {
   initialRouteName: 'Home',
   headerMode:'none',
-  mode:'card'
-})
+  mode:'card',
+  transitionConfig: () => ({
+    screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+  }),})
 
 export const HomeNavigator = createStackNavigator({
   CardStack:CardStack,
@@ -81,8 +88,14 @@ export const HomeNavigator = createStackNavigator({
   initialRouteName:'CardStack',
   headerMode:'none',
   mode:'modal',
-  initialRouteParams: { transition: 'horizontal' },
-  transitionConfig: TransitionConfig,
+  transitionConfig: () => ({
+    transitionSpec: {
+      duration: 300,
+      easing: Easing.out(Easing.poly(8)),
+      timing: Animated.timing
+    }
+  }),
+  // transitionConfig: TransitionConfig,
 })
 
 

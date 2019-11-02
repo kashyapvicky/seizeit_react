@@ -5,6 +5,7 @@ import {
   createSwitchNavigator
 } from "react-navigation";
 import { Easing, Animated } from "react-native";
+import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
 
 import Setting from "./Setting";
 import Orders from "./Orders";
@@ -56,8 +57,12 @@ export const SettingNavigator = createStackNavigator(
     initialRouteName: "Setting",
     headerMode: "none",
     mode: "card",
-    initialRouteParams: { transition: 'horizontal' },
-    transitionConfig: TransitionConfig
+    // initialRouteParams: { transition: 'horizontal' },
+    swipeEnabled: false,
+    lazy: true,
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );
  

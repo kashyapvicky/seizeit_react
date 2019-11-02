@@ -23,6 +23,7 @@ import colors from "../../utilities/config/colors";
 const initialState = {
   username: "Leo Harmon",
   mobileNumber: "+91 902-319-4565",
+  orderArrivedDate:'',
   allProduts: [],
   addresses: [
     {
@@ -47,10 +48,15 @@ export default class OrderSuccessFull extends Component {
   constructor(props) {
     super(props);
     this.state = initialState;
-
   }
 
   componentDidMount() {
+    let {params} = this.props.navigation.state
+    if(params && params.orderArrivedDate){
+      this.setState({
+        orderArrivedDate:params.orderArrivedDate
+      })
+    }
     BackHandler.addEventListener("hardwareBackPress", this.handleBackPress);
   }
   componentWillUnmount() {
@@ -99,7 +105,7 @@ export default class OrderSuccessFull extends Component {
                 <View style={{ marginHorizontal: 10,}}>
 
                   <Text style={styles.requestSubmitedMessage}>
-                    {`Thanks for your order, You will receive it by Thursday, 21 Feb 2019`}
+                    {`Thanks for your order, You will receive it by ${this.state.orderArrivedDate}`}
                   </Text>
                 </View>
               </View>

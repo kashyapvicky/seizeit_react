@@ -34,6 +34,7 @@ import {
   updateCartSuccess,
   updateWishListSuccess
 } from "../../utilities/method";
+import LazyHOC from "../../LazyLoadScreen";
 class Explore extends Component {
   constructor(props) {
     super(props);
@@ -256,6 +257,7 @@ ItemSeparator = () => {
   };
   render() {
     return (
+      <LazyHOC>
       <View style={{ flex: 1 }}>
         <Header
           isRightIcon={false}
@@ -282,6 +284,7 @@ ItemSeparator = () => {
           }
         />
       </View>
+      </LazyHOC>
     );
   }
 }

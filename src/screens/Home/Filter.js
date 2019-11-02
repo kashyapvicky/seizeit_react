@@ -119,8 +119,6 @@ class Filter extends Component {
       addFilterSuccess(data)
       this.props.navigation.pop()
     }
-
-
   };
   seletctSortByPrice = (item)=>{
     this.setState({

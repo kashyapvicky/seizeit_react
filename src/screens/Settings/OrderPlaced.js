@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
+import { postRequest, getRequest } from "../../redux/request/Service";
 
 //local imports
 import Button from "../../components/Button";
@@ -30,30 +31,7 @@ class CustomerOrders extends Component {
     this.state = {
       visible2: false,
       orders: [
-        {
-          id: 1,
-          name: "Sleeve-less Tees Tria color grays shades",
-          author: "Brent Morgan",
-          status: "In Transit"
-        },
-        {
-          id: 1,
-          name: "Woollen Green color Top wear.",
-          author: "Popular mandy",
-          status: "Delivered"
-        },
-        {
-          id: 1,
-          name: "Dotted Red payjama  bottom wear",
-          author: "Malika Arora",
-          status: "Return completed"
-        },
-        {
-            id: 1,
-            name: "Woollen Green color Top wear.",
-            author: "Popular mandy",
-            status: "Delivered"
-          },
+       
       ]
       
     };
@@ -64,6 +42,31 @@ class CustomerOrders extends Component {
     });
  
   }
+componentDidMount(){
+  this.getOrders()
+}
+  /******************** Api Function  *****************/
+  getOrders = () => {
+    getRequest("order/order_detail")
+      .then(res => {
+        debugger;
+        if (res && res.products && res.products.length > 0) {
+          this.setState(
+            {
+              orders:res.products,
+              isRefreshing: false
+            });
+        } else {
+          this.setState({
+            isRefreshing: false
+          });
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
+/******************** Api Function End*****************/
+
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -75,6 +78,7 @@ class CustomerOrders extends Component {
           borderRadius: 4,
           backgroundColor: transparent ? "transparent" : colors.primary
         }}
+        buttonTextStyle={{fontWeight:'normal'}}
         fontSize={normalize(14)}
         color={transparent ? colors.primary : "#FFFFFF"}
         onPress={() => this.pressButton(title)}
@@ -88,8 +92,12 @@ class CustomerOrders extends Component {
     }
   };
   renderItems = ({ item, index }) => {
+    debugger
     return <OrderListItem 
-    item={item} index={index}
+    onPress={()=> this.props.navigation.navigate('OrderDetails',{
+      order:item
+    })}
+      item={item} index={index}
       renderButton={(title,transparent) =>this.renderButton(title,transparent)}
        />
   };
@@ -101,9 +109,8 @@ class CustomerOrders extends Component {
           // extraData={this.state}
           // pagingEnabled={true}
           showsVerticalScrollIndicator={false}
-          data={[]}
+          data={this.state.orders}
           keyExtractor={(item, index) => index + "product"}
-          renderItem={this.renderItems}
           renderItem={this.renderItems}
           ListEmptyComponent={<OrderPlaceholder  
             array={[1, 2, 3, 4,5,6]}

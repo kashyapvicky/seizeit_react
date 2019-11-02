@@ -5,6 +5,7 @@ import {
   createSwitchNavigator
 } from "react-navigation";
 import { Easing, Animated } from "react-native";
+import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
 
 import StartupScreen from "./StartupScreen";
 import Signup from "./Signup";
@@ -13,6 +14,7 @@ import ForgotPassword from "./ForgotPassword";
 import ChooseType from "./ChooseType";
 import EnterMobile from "./EnterMobile";
 import Verify from "./Verify";
+// import EnterEmail from "./EnterEmail";
 
 const AuthStack = createStackNavigator(
   {
@@ -22,6 +24,8 @@ const AuthStack = createStackNavigator(
     Login: { screen: Login},
     ForgotPassword: { screen: ForgotPassword},
     EnterMobile: { screen: EnterMobile},
+    // EnterEmail: { screen: EnterEmail},
+
     Verify: { screen: Verify},
   },
   {
@@ -29,7 +33,10 @@ const AuthStack = createStackNavigator(
     headerMode: "none",
     navigationOptions: {
       gesturesEnabled: false
-    }
+    },
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );
 const SwitchStack = createSwitchNavigator(
@@ -41,7 +48,10 @@ const SwitchStack = createSwitchNavigator(
     headerMode: "none",
     navigationOptions: {
       gesturesEnabled: false
-    }
+    },
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );
 
@@ -54,12 +64,8 @@ export const AuthNavigator = createStackNavigator(
     headerMode: "none",
     mode: "card",
     transitionConfig: () => ({
-      transitionSpec: {
-        duration: 300,
-        easing: Easing.out(Easing.poly(8)),
-        timing: Animated.timing
-      }
-    })
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );
  

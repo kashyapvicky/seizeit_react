@@ -6,7 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
-  FlatList,
+  Platform,
   Keyboard,
   TextInput,
   KeyboardAvoidingView,
@@ -96,10 +96,17 @@ class AddNewAddress extends Component {
           apiName=`customer/updateAddress`
         } 
         postRequest(apiName,data).then((res) => {
+          debugger
             if (res && res.success) {
               let {params} = this.props.navigation.state
               if(params && params.getAddress){
                   params.getAddress()
+              }else if(params && params.from == 'checkout'){
+                params.getDefaultAddress()
+                // params.updateDefaultAddress(
+                //   is_activeAddress.description,
+                //   is_activeAddress.id
+                // );
               }
               setToastMessage(true,colors.green1)
               toastRef.show(res.success) 
@@ -222,8 +229,11 @@ ValidationRules = () => {
         title={"Add new address"}
         backPress={() => this.props.navigation.goBack()}
       />
-       <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
-          <View  style={{ marginTop: 25,paddingHorizontal:16 }}>
+       <KeyboardAvoidingView 
+       enabled={Platform.OS =='ios' ? true:false}
+       behavior={Platform.OS =='ios' ? 'height':false}
+       showsVerticalScrollIndicator={false} style={{flex:1}}>
+          <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 25,paddingHorizontal:16,flex:1 }}>
           <TextInputComponent
                  pointerEvents="none"
                 onPress={() =>
@@ -452,7 +462,7 @@ ValidationRules = () => {
                 placeholder={'Landmark'}
                 placeholderTextColor="#000000"
                 selectionColor="#96C50F"
-                returnKeyType="next"
+                returnKeyType="done"
                 autoCorrect={false}
                 autoCapitalize="none"
                 blurOnSubmit={false}
@@ -468,10 +478,10 @@ ValidationRules = () => {
                 }}
                 textInputStyle={styles.textInputStyle}
               />
-             <View style={{ height: 25 }} />
-          </View>
-        </ScrollView>
-        <View style={{flex:0.125,paddingHorizontal: 16}}>
+             <View style={{ height: 50 }} />
+          </ScrollView>
+        </KeyboardAvoidingView>
+        <View style={{flex:0.12,paddingHorizontal: 16}}>
         {this.renderButton(this.state.address_id ? 'Update address' : 'Save new address')}
       </View>
     </View>

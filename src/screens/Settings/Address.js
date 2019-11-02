@@ -157,6 +157,7 @@ class Address extends Component {
           });
           if ((params && params.address_id) == item.id) {
             params.updateDefaultAddress("", false);
+            
           }
         }
         setIndicator(false);

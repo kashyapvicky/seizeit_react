@@ -11,13 +11,15 @@ import {
   StyleSheet,
   Animated,
   Alert,
-  RefreshControl
+  RefreshControl,
+  InteractionManager
 } from "react-native";
+
 import FlipView from "react-native-flip-view";
 import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
 import {getRequest, postRequest} from '../../redux/request/Service'
 import { GoogleSignin } from 'react-native-google-signin';
-
+import LazyHOC from '../../LazyLoadScreen'
 //local imports
 import Button from "../../components/Button";
 import Text from "../../components/Text";
@@ -194,6 +196,8 @@ closeModal() {
             return (
               <TouchableOpacity
                 key={"account" + i}
+                activeOpacity={0.8}
+
                 style={[
                   this.state.accountSettingArr.length - 1 != i && styles.shadow,
                   {
@@ -229,8 +233,8 @@ closeModal() {
             return (
               <TouchableOpacity
                 key={index + "order"}
-                onPress={() => null}
-                // onPress={() => this.props.navigation.navigate(res.routeName)}
+                activeOpacity={0.8}
+                onPress={() => this.props.navigation.navigate(res.routeName)}
               >
                 <View style={styles.contactUsView}>
                   <Text style={styles.titleOneText}>{res.name}</Text>
@@ -567,7 +571,9 @@ getUserInfo = () =>{
         }]}>
           <TouchableOpacity onPress={() => this.editprofile()}
                 underlayColor="green" style={[styles.button, {
-                    paddingVertical:8,
+                    paddingTop:8,
+                    paddingBottom:16,
+
                     paddingLeft:8,
                     borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#DCDCDC', borderBottomWidth: StyleSheet.hairlineWidth
                 }]}>
@@ -610,7 +616,7 @@ getUserInfo = () =>{
             } */}
             <TouchableOpacity
                 onPress={() => this.logOutSuccess()} underlayColor="green"
-                 style={[styles.button,{ paddingLeft:8,}]}>
+                 style={[styles.button,{ paddingLeft:8,paddingTop:16}]}>
                 <Text style={styles.buttonText}>{string('logout')}</Text>
             </TouchableOpacity>
         </Animated.View>
@@ -643,7 +649,9 @@ getUserInfo = () =>{
     }
   }
   render() {
-    return this.renderMainView()
+    return <LazyHOC>
+      {this.renderMainView()}
+    </LazyHOC>
   }
 }
 export default Settings;

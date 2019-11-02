@@ -34,6 +34,7 @@ import {
   updateCartSuccess,
   updateWishListSuccess
 } from "../../utilities/method";
+import LazyHOC from "../../LazyLoadScreen";
 export default class ProductDetail extends Component {
   constructor(props) {
     super(props);
@@ -214,7 +215,6 @@ export default class ProductDetail extends Component {
 
   renderVendorProfile = () => {
     let { product } = this.state;
-    
     return (
       <TouchableOpacity
         style={{ flexDirection: "row" }}
@@ -435,6 +435,7 @@ export default class ProductDetail extends Component {
     });
 
     return (
+      <LazyHOC> 
       <View style={detailStyles.fill}>
         <Animated.ScrollView
           style={detailStyles.fill}
@@ -559,6 +560,7 @@ export default class ProductDetail extends Component {
         {(user &&
             user.user_type !== "vendor") ||!user && this.renderButton(title)}
       </View>
+      </LazyHOC>
     );
   }
 }

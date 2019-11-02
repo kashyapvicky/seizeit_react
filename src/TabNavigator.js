@@ -6,6 +6,8 @@ import {
   createSwitchNavigator
 } from "react-navigation";
 import styles from "./styles";
+import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
+
 // Import Navigation Stack
 import { DashboardNavigatorStack } from "./screens/Dashboard/DashboardNavigationConfiguration";
 import { HomeNavigatorStack } from "./screens/Home/HomeNavigationConfiguration";
@@ -147,7 +149,10 @@ export const VendorTabNavigator = createBottomTabNavigator(
       tabStyle: {
         width: 100
       }
-    }
+    },
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );
 
@@ -228,6 +233,9 @@ export const CustomerTabNavigator = createBottomTabNavigator(
       tabStyle: {
         width: 100
       }
-    }
+    },
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    }),
   }
 );

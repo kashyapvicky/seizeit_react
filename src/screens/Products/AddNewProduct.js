@@ -38,7 +38,8 @@ let initalSetDropdownState = {
   openDropDownCat: false,
   openDropDownProductPrice: false,
   openDropDownProductSize: false,
-  openDropDownSubCat: false
+  openDropDownSubCat: false,
+  openDropDownBrand:false,
 };
 class AddNewProduct extends Component {
   constructor(props) {
@@ -48,6 +49,7 @@ class AddNewProduct extends Component {
       confirmAccountNumber: "",
       ifscNumber: "",
       productCategory: "",
+      productBrand:"",
       productSubCategory: "",
       sizes:[
         {
@@ -65,6 +67,7 @@ class AddNewProduct extends Component {
         id:4,
         name:'XXL',
       }],
+      brands:[],
       isModalVisible:false,
       productSize: "",
       noOfTimeUsed: "",
@@ -152,6 +155,7 @@ class AddNewProduct extends Component {
       this.setProductData(selectedProduct)
     }
     this.getCategories()
+    this.getBrands()
   }
 
   setProductData=(selectedProduct)=>{
@@ -164,7 +168,6 @@ class AddNewProduct extends Component {
       productPrice:`${selectedProduct.price}`,
       isOnAvailSale:selectedProduct.available,
       isSoldOut:selectedProduct.sold_out,
-
       noOfTimeUsed:this.noOfTimeUsedStatus(selectedProduct.times),
       productSize:this.sizeStatus(selectedProduct.size_id),
       productTitle:selectedProduct.product_title,
@@ -190,7 +193,21 @@ class AddNewProduct extends Component {
     postRequest('user/getsubcategory',data).then((res) => {  
       if(res && res.success && res.success.length > 0){
         this.setState({
-          subcategories : res.success
+          subcategories : res.success,
+          productSubCategory:''
+        })
+      }   
+      setIndicator(false)
+    }).catch((err) => {
+    })
+  }
+  getBrands = ()=>{
+    let {setIndicator} = this.props.screenProps.actions
+    let data ={}
+    getRequest('order/get_brands').then((res) => {  
+      if(res && res.success && res.success.length > 0){
+        this.setState({
+          brands : res.success
         })
       }   
       setIndicator(false)
@@ -217,10 +234,16 @@ class AddNewProduct extends Component {
       this.getSubCategories(item.category_id)
     })
   }
+  selectBrand = (item) =>{
+    this.setState({
+        productBrand:item,
+        openDropDownBrand:false
+    })
+  }
   addProduct = ()=>{
     let {setToastMessage} = this.props.screenProps.actions
     let {toastRef} = this.props.screenProps
-    let { productCategory, productSubCategory,productTitle,productSize,
+    let { productCategory, productSubCategory,productTitle,productSize,productBrand,
       productImages,
       productDes, noOfTimeUsed,productPrice,isOnAvailSale,isSoldOut} = this.state;
     let validation = Validation.validate(this.ValidationRules());
@@ -232,6 +255,7 @@ class AddNewProduct extends Component {
       debugger
       formData.append("product_category", productCategory.category_id);
       formData.append("product_subcategory",productSubCategory.id);
+      formData.append('brand_id',productBrand.id)
       formData.append("title", productTitle);
       formData.append("description", productDes);
       formData.append("size",productSize.id);
@@ -261,7 +285,7 @@ class AddNewProduct extends Component {
     debugger
     let {setToastMessage} = this.props.screenProps.actions
     let {toastRef} = this.props.screenProps
-    let { productCategory, productSubCategory,productTitle,productSize,
+    let { productCategory, productSubCategory,productTitle,productSize,productBrand,
       productImages,
       productDes, noOfTimeUsed,productPrice,isOnAvailSale,isSoldOut} = this.state;
     let validation = Validation.validate(this.ValidationRules());
@@ -272,6 +296,7 @@ class AddNewProduct extends Component {
       let formData = new FormData();
       debugger
       formData.append("product_id", this.state.product_id);
+      formData.append('brand_id',productBrand.id)
       formData.append("product_category", productCategory.category_id);
       formData.append("product_subcategory",productSubCategory.id);
       formData.append("title", productTitle);
@@ -310,7 +335,7 @@ class AddNewProduct extends Component {
   }
 /*****************  Validation  *************/
 ValidationRules = () => {
-  let { productCategory, productSubCategory,productTitle,productSize,
+  let { productCategory, productSubCategory,productBrand,productTitle,productSize,
   productDes, noOfTimeUsed,productPrice} = this.state;
   let { lang } = this.props.screenProps.user;
   debugger;
@@ -324,6 +349,12 @@ ValidationRules = () => {
     {
       field: productSubCategory.name,
       name: 'Sub Category',
+      rules: "required",
+      lang: lang
+    },
+    {
+      field: productBrand.name,
+      name: 'Product Brand',
       rules: "required",
       lang: lang
     },
@@ -550,28 +581,31 @@ renderProductImgaes = () => {
       this.closeModal()
       let array
       if(response && response.length > 0){
-        response.forEach((item,index) => {
-          let textOrder = "";
-          let possible = "dhsfkhkdshfkhdksjfsdf" + "mangal" + '_qazwsxedcvfrtgbnhyujmkiolp';
-          for (let i = 0; i < 60; i++) {
-              textOrder += possible.charAt(Math.floor(Math.random() * possible.length));
-          }
-          let finalTextOrder = textOrder.replace(/\s/g, '')
-          let image = {
-            uri:item.path,
-            name: finalTextOrder + '.jpg',
-            type: 'multipart/form-data',
-            id:index
-          }
-          array = this.state.productImages
-          array.unshift(image)
-        })
-        this.setState({
-          productImages :array
-         })
+        this.setImagesArray(response)
       }
          
       })
+    }
+    setImagesArray = (response) =>{
+      response.forEach((item,index) => {
+        let textOrder = "";
+        let possible = "dhsfkhkdshfkhdksjfsdf" + "mangal" + '_qazwsxedcvfrtgbnhyujmkiolp';
+        for (let i = 0; i < 60; i++) {
+            textOrder += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        let finalTextOrder = textOrder.replace(/\s/g, '')
+        let image = {
+          uri:item.path,
+          name: finalTextOrder + '.jpg',
+          type: 'multipart/form-data',
+          id:index
+        }
+        array = this.state.productImages
+        array.unshift(image)
+      })
+      this.setState({
+        productImages :array
+       })
     }
     launchCamera = () => {
       ImagePicker.openCamera({
@@ -579,8 +613,10 @@ renderProductImgaes = () => {
         height: 400,
         cropping: true,
       }).then(image => {
-        console.log(image);
         this.closeModal()
+        this.setImagesArray([image])
+        // this.setState({ avatarSource: image.path ,clickEdit:true})
+
       }).catch((err) =>{
       })
       // ImagePicker.openCamera(this.options, (response) => {
@@ -726,10 +762,51 @@ renderProductImgaes = () => {
                 //   onChangeText={productTitle => this.setState({ productTitle })}
                 rightIcon={rightIcon}
                 onSubmitEditing={event => {
+                  this.productBrandRef.focus();
+                }}
+              />
+              <View style={{ height: 10 }} />
+
+              <TextInputComponent
+                 pointerEvents="none"
+                user={this.props.user}
+                onPress={() =>
+                  this.setState({
+                    openDropDownBrand: !this.state.openDropDownBrand
+                  })
+                }
+                selectItem={(item)=> this.selectBrand(item)}
+                openDropDown={this.state.openDropDownBrand}
+                label={"Brand"}
+                editable={false}
+                inputMenthod={input => {
+                  this.productBrandRef = input;
+                }}
+                // placeholder={'6985 9685 9452 6623'}
+                placeholderTextColor="rgba(62,62,62,0.55)"
+                selectionColor="#96C50F"
+                returnKeyType="next"
+                lists={this.state.brands}
+                autoCorrect={false}
+                autoCapitalize="none"
+                blurOnSubmit={false}
+                textInputStyle={[styles.addProductTextInputStyle]}
+                viewTextStyle={styles.addProductTextInputView}
+                value={this.state.productBrand.name}
+                underlineColorAndroid="transparent"
+                isFocused={this.state.productCatFieldFocus}
+                onFocus={() => this.setState({ productCatFieldFocus: true })}
+                onBlur={() => this.setState({ productCatFieldFocus: false })}
+                //   onChangeText={productTitle => this.setState({ productTitle })}
+                rightIcon={rightIcon}
+                onSubmitEditing={event => {
                   this.productTitleRef.focus();
                 }}
               />
               <View style={{ height: 10 }} />
+
+
+
               <TextInputComponent
                 user={this.props.user}
                 label={"Product Title"}
