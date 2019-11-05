@@ -23,6 +23,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
           paddingVertical: 8,
           flex: 0.5,
           width: screenDimensions.width / 2 - 24,
+          paddingBottom:16,
           marginRight: (index + 1) % 2 != 0 ? 16 : horizontal ? 16 : 0
         }
       ]}
@@ -34,7 +35,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
           style={{ position: "absolute", right: 8, top: 15, zIndex: 100 }}>
             {
               item.isFevorite ? 
-             <Ionicons name={'md-heart'} color={colors.danger} size={28}/>
+             <Ionicons name={'md-heart'} color={'#b20000'} size={28}/>
               :<Image source={require("../../../assets/images/ic_favourite_0.png")} />
             }
         </Animatable.View>
@@ -74,7 +75,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
                 // fontWeight: "600"
               }}
             >
-              {/* {item.category ?item.category.name.toUpperCase() : '' } */}
+              {item.brand ?item.brand.name.toUpperCase() : '' }
             </Text>
           </View>
           <View>
@@ -93,7 +94,8 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              paddingTop: 6
+              paddingTop: 6,
+              flex:1,
             }}
           >
             <Text h5 style={{ color: "#000000", fontSize: normalize(13) }}>
@@ -111,6 +113,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
             </TouchableOpacity>
           </View>
         </View>
+    
       </View>
     </TouchableOpacity>
   );

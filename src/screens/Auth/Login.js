@@ -57,12 +57,12 @@ class Login extends Component {
     let { lang } = this.props.screenProps.user;
     debugger;
     return [
-      {
-        field: email.trim(),
-        name: string("email"),
-        rules: "required|email|no_space",
-        lang: lang
-      },
+      // {
+      //   field: email.trim(),
+      //   name: string("email"),
+      //   rules: "required|email|no_space",
+      //   lang: lang
+      // },
       {
         field: password,
         name: string("password"),
@@ -73,45 +73,81 @@ class Login extends Component {
   };
  
   loginByEmail = () => {
-    let { netStatus,fcm_id } = this.props.screenProps.user;
+    debugger
+    let { netStatus,fcm_id,lang } = this.props.screenProps.user;
     let {setToastMessage,setLoggedUserData} = this.props.screenProps.actions
+    let { email, password } = this.state
+    let {toastRef} = this.props.screenProps
+    let validation = Validation.validate(this.ValidationRules());
+    // Email Validation
+    if (email.match(".*[a-zA-Z]+.*")) {
+      debugger
+       let ruleEmail =  [{
+        field: email.trim(),
+        name: string("email"),
+        rules: "required|email|no_space",
+        lang: lang
+      }]
+       let validationemail = Validation.validate(ruleEmail);
+       debugger
+       if(validationemail.length != 0){
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validationemail[0].message)
+       }else{
+        this.signUpUser()
+       }
+
+    }else if(email.match(/^[0-9]*$/)){
+      let ruleEmail =  [{
+        field: email,
+        name: string("mobilenumber"),
+        rules: 'required|numeric|no_space|min:10|max:10',
+        lang: lang
+      }]
+      let validationemail = Validation.validate(ruleEmail);
+       if(validationemail.length != 0){
+        setToastMessage(true,colors.danger)
+        return toastRef.show(validationemail[0].message)
+       }else{
+        this.signUpUser()
+       }
+   }
+  };
+  signUpUser=()=>{
+    let { netStatus,fcm_id,lang } = this.props.screenProps.user;
+    let {setToastMessage,setLoggedUserData} = this.props.screenProps.actions
+    let { email, password } = this.state
     let {toastRef} = this.props.screenProps
     let validation = Validation.validate(this.ValidationRules());
     if (validation.length != 0) {
-        //this.setError(true,colors.danger)
-        setToastMessage(true,colors.danger)
-        return toastRef.show(validation[0].message)
-    }
-    else {
-      if (!netStatus) {
-        return toastRef.show(string('NetAlert'))
-      }else{
-        let { email, password } = this.state
-        let data = {}
-        debugger
-        data['email'] = email.trim()
-        data['password'] = password.trim()
-        data['device_token'] = '1234'+Math.random(10)
-        data['device_id'] = DeviceInfo.getUniqueID()
-        data['device_type'] = Platform.OS == 'ios' ? 'ios' : 'android'
-        postRequest('user/login',data).then((res) => {
-          if(res.data){
-            this.props.navigation.navigate('EnterMobile',{
-              user:{user:res.data}
-             })
-          } else if(res.success){
-            setLoggedUserData(res.success)
-            if(res.success.user_type == 'customer'){
-              this.props.navigation.navigate('CustomerTabNavigator')
-             }else if(res.success.user_type == 'vendor'){
-              this.props.navigation.navigate('VendorTabNavigator')
-             }
-          }
-        }).catch((err) => {
-        })
+      //this.setError(true,colors.danger)
+      setToastMessage(true,colors.danger)
+      return toastRef.show(validation[0].message)
+  }else {
+    let data = {}
+    debugger
+    data['email'] = email.trim()
+    data['password'] = password.trim()
+    data['device_token'] = '1234'+Math.random(10)
+    data['device_id'] = DeviceInfo.getUniqueID()
+    data['device_type'] = Platform.OS == 'ios' ? 'ios' : 'android'
+    postRequest('user/login',data).then((res) => {
+      if(res.data){
+        this.props.navigation.navigate('EnterMobile',{
+          user:{user:res.data}
+         })
+      } else if(res.success){
+        setLoggedUserData(res.success)
+        if(res.success.user_type == 'customer'){
+          this.props.navigation.navigate('CustomerTabNavigator')
+         }else if(res.success.user_type == 'vendor'){
+          this.props.navigation.navigate('VendorTabNavigator')
+         }
       }
-    }
-  };
+    }).catch((err) => {
+    })
+  }
+  }
   configureGoogleSignIn =() =>{
     GoogleSignin.configure()
   }
@@ -311,6 +347,7 @@ class Login extends Component {
           justifyContent: "center",
           alignItems: "center",
           borderRadius:8,
+       
           borderColor:transparent ? '#EAEAEA' : 'transparent',
           backgroundColor:transparent ?'transparent':color
         }}
@@ -327,6 +364,21 @@ class Login extends Component {
       />
     );
   };
+  renderSocialButton = (title,transparent,imageLeft,color,fontSize,center) =>{
+    return <TouchableOpacity 
+    activeOpacity={0.8}
+    onPress={() => this.pressButton(title.toUpperCase())}
+    style={{
+      borderColor:transparent ? '#EAEAEA' : 'transparent',
+      justifyContent:'center',
+      borderWidth:1,
+      height:50,width:50,backgroundColor:transparent ?'transparent':color
+      ,borderRadius:50/2}}>
+        <Image source={imageLeft} 
+        style={{alignSelf:'center',height:fontSize,
+        width:fontSize}}/>
+    </TouchableOpacity>
+  }
   render() {
     return (
       <View style={{ flex: 1,paddingHorizontal:24 }}>
@@ -466,24 +518,39 @@ class Login extends Component {
           </View>
 
           <View style={[styles.orView,{paddingTop:8}]}>
-            <View style={{ flex: 0.5 }}>
+            <View style={{ flex: 0.48 }}>
               <View style={{ height: 1, backgroundColor: "rgba(0,0,0,0.2)" }} />
             </View>
-            <View>
-              <Text style={{ color: "rgba(0,0,0,0.56)" }}>
+            <View style={{justifyContent:'center',flex:0.07,
+            alignItems:'center',
+            marginTop:-7,
+           }}>
+              <Text style={{ color: "rgba(0,0,0,0.56)",lineHeight:15 }}>
               {string("or")}
               </Text>
             </View>
-            <View style={{ flex: 0.5 }}>
+            <View style={{ flex: 0.48 }}>
               <View style={{ height: 1, backgroundColor: "rgba(0,0,0,0.2)" }} />
             </View>
           </View>
           <View style={{ height: 20 }} />
-          {this.renderButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',14)}
+          <View style={{flexDirection:'row',justifyContent:'center'}}>
+            <View>
+            {this.renderSocialButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',28)}
+            </View>
+            <View style={{paddingHorizontal:24}}>
+            {this.renderSocialButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,32)}
+            </View>   
+            <View>
+            {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',38)}
+            </View>
+
+          </View>
+          {/* {this.renderButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',14)}
           <View style={{ height: 20 }} />
           {this.renderButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,14)}
           <View style={{ height: 20 }} />
-          {this.renderButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',14)}
+          {this.renderButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',14)} */}
           <View style={{ height: 20 }} />
           <View>
     

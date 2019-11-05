@@ -73,7 +73,9 @@ class Wishlist extends Component {
         item={item}
         index={index}
         imageHeight={168}
-        onPress={() => this.props.navigation.navigate("ProductDetails")}
+        onPress={() => this.props.navigation.navigate("ProductDetails",{
+          productId:item.id
+        })}
         onPressWishlist={() => this.checkCartItem(item, index)}
         onPressCart={() => this.addRemoveCart(item)}
         onGetRefWishlist={ref => (this.veiwRef[index] = ref)}

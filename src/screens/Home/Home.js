@@ -55,9 +55,9 @@ class Home extends Component {
       name: "Location",
       visible2: false,
       categories: [],
-      featureProducts: [],
-      banners: [],
-      popularProducts: [],
+      featured: [],
+      banner: [],
+      popular: [],
       isbarShow: false,
       scrollY: new Animated.Value(
         Platform.OS === "ios" ? -HEADER_MAX_HEIGHT : 0
@@ -84,6 +84,17 @@ class Home extends Component {
   componentDidMount() {
     this.getCategories();
     this.getCartData();
+    let {homeData} = this.props.screenProps.product
+    this.setState({
+      ...homeData
+    })
+  }
+  UNSAFE_componentWillReceiveProps(nextProps){
+
+    let {homeData} = nextProps.screenProps.product
+    this.setState({
+      ...homeData
+    })
   }
   /*********** Get current Location  *****/
   getCartData = () => {
@@ -156,47 +167,50 @@ class Home extends Component {
 
   getHomeData = () => {
     let { setIndicator } = this.props.screenProps.actions;
+    let { setHomeDataSuccess } = this.props.screenProps.productActions;
+
     let { carts, wishlists } = this.props.screenProps.product;
     getRequest("user/home-page")
       .then(res => {
         if (res && res.success) {
-          this.setState(
-            {
-              featureProducts:
-                res.success.featured && res.success.featured.length > 0
-                  ? res.success.featured
-                  : [],
-              popularProducts:
-                res.success.popular && res.success.popular.length > 0
-                  ? res.success.popular
-                  : [],
-              banners:
-                res.success.banner && res.success.banner.length > 0
-                  ? res.success.banner
-                  : [],
-              refreshing: false
-            },
-            () => {
-              if (
-                (carts && carts.length > 0) ||
-                (wishlists && wishlists.length > 0)
-              ) {
-                let featureProducts = updateProductCartValue(
-                  this.state.featureProducts,
-                  this.props.screenProps.product
-                );
-                let popularProducts = updateProductCartValue(
-                  this.state.popularProducts,
-                  this.props.screenProps.product
-                );
-                this.setState({
-                  featureProducts,
-                  popularProducts,
-                  refreshing: false
-                });
-              }
-            }
-          );
+          setHomeDataSuccess(res.success)
+          // this.setState(
+          //   {
+          //     featured:
+          //       res.success.featured && res.success.featured.length > 0
+          //         ? res.success.featured
+          //         : [],
+          //     popular:
+          //       res.success.popular && res.success.popular.length > 0
+          //         ? res.success.popular
+          //         : [],
+          //     banners:
+          //       res.success.banner && res.success.banner.length > 0
+          //         ? res.success.banner
+          //         : [],
+          //     refreshing: false
+          //   },
+          //   () => {
+          //     if (
+          //       (carts && carts.length > 0) ||
+          //       (wishlists && wishlists.length > 0)
+          //     ) {
+          //       let featured = updateProductCartValue(
+          //         this.state.featured,
+          //         this.props.screenProps.product
+          //       );
+          //       let popular = updateProductCartValue(
+          //         this.state.popular,
+          //         this.props.screenProps.product
+          //       );
+          //       this.setState({
+          //         featured,
+          //         popular,
+          //         refreshing: false
+          //       });
+          //     }
+          //   }
+          // );
         } else {
           this.setState({
             refreshing: false
@@ -255,12 +269,14 @@ class Home extends Component {
             style={{
               alignItems: "center",
               justifyContent: "center",
-              paddingHorizontal: 16
+              paddingHorizontal: 16,
             }}
           >
             <Image
               source={{ uri: `${item.pic}` }}
-              style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
+              style={{ width: 48, height: 48,
+                borderRadius: 48 / 2, 
+                }}
             />
             <View style={{ paddingTop: 8 }}>
               <Text p style={styles.itemName}>
@@ -349,11 +365,11 @@ class Home extends Component {
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 16 }}>
           <View style={{ flex: 1, marginVertical: 12, borderRadius: 16 }}>
-            <BannerCarousel banners={this.state.banners} />
+            <BannerCarousel banners={this.state.banner} />
           </View>
           <View style={{ height: 28 }} />
           {this.renderProductsList(
-            this.state.popularProducts,
+            this.state.popular,
             "Trending Products",
             96
           )}
@@ -361,7 +377,7 @@ class Home extends Component {
           {this.renderButton("Explore more in Trending")}
           <View style={{ height: 32 }} />
           {this.renderProductsList(
-            this.state.featureProducts,
+            this.state.featured,
             "Featured Products",
             168
           )}
@@ -419,19 +435,19 @@ class Home extends Component {
     this.bounce(index, label);
     if (label == "Trending Products") {
       let updateProducts = updateWishListSuccess(
-        this.state.popularProducts,
+        this.state.popular,
         item
       );
       this.setState({
-        popularProducts: updateProducts
+        popular: updateProducts
       });
     } else if (label == "Featured Products") {
       let updateProducts = updateWishListSuccess(
-        this.state.featureProducts,
+        this.state.featured,
         item
       );
       this.setState({
-        featureProducts: updateProducts
+        featured: updateProducts
       });
     }
     addWishlitsRequestApi({
@@ -444,14 +460,14 @@ class Home extends Component {
   addRemoveCart = (item, label) => {
     let { addCartRequestApi } = this.props.screenProps.productActions;
     if (label == "Trending Products") {
-      let updateProducts = updateCartSuccess(this.state.popularProducts, item);
+      let updateProducts = updateCartSuccess(this.state.popular, item);
       this.setState({
-        popularProducts: updateProducts
+        popular: updateProducts
       });
     } else if (label == "Featured Products") {
-      let updateProducts = updateCartSuccess(this.state.featureProducts, item);
+      let updateProducts = updateCartSuccess(this.state.featured, item);
       this.setState({
-        featureProducts: updateProducts
+        featured: updateProducts
       });
     }
     addCartRequestApi({ ...item, isCart: item.isCart ? false : true });

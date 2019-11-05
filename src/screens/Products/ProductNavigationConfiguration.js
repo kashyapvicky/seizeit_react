@@ -10,6 +10,7 @@ import Products from "./Products";
 import AddNewProduct from "./AddNewProduct";
 import ProductDetails from "./ProductDetails";
 import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
+import Cart from "../Home/Cart";
 
 
 export const ProductsNavigator = createStackNavigator(
@@ -17,7 +18,7 @@ export const ProductsNavigator = createStackNavigator(
         Products:Products,
         AddNewProduct:AddNewProduct,
         ProductDetails:ProductDetails,
-        // Cart:Cart
+        Cart:Cart
       },
   {
     initialRouteName: "Products",

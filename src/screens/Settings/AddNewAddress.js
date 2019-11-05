@@ -232,7 +232,8 @@ ValidationRules = () => {
        <KeyboardAvoidingView 
        enabled={Platform.OS =='ios' ? true:false}
        behavior={Platform.OS =='ios' ? 'height':false}
-       showsVerticalScrollIndicator={false} style={{flex:1}}>
+       showsVerticalScrollIndicator={false} 
+       style={{flex:1}}>
           <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 25,paddingHorizontal:16,flex:1 }}>
           <TextInputComponent
                  pointerEvents="none"

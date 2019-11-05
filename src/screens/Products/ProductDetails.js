@@ -198,10 +198,11 @@ export default class ProductDetail extends Component {
   renderItems = (item, index, imageHeight) => {
     return (
       <Listitems
-        onPress={() =>
+        onPress={() =>{
           this.props.navigation.push("ProductDetails", {
-            productId: item.product_id
+            productId: item.id
           })
+        }
         }
         item={item}
         index={index}
@@ -284,13 +285,13 @@ export default class ProductDetail extends Component {
           <Features product={this.state.product} />
           <View style={{ height: 24 }} />
           {(user &&
-            user.user_type !== "vendor") ||!user && <FeatureLabel title={"Posted by"} />}
+            user.user_type == "customer" || !user)  && <FeatureLabel title={"Posted by"} />}
           <View style={{ height: 16 }} />
-          {(user && user.user_type !== "vendor")||!user && (
+          {(user && user.user_type == "customer" || !user ) && (
             <View style={{ flex: 1 }}>{this.renderVendorProfile()}</View>
           )}
           <View style={{ height: 24 }} />
-          {(user && user.user_type !== "vendor") ||!user && (
+          {(user && user.user_type == "customer" || !user)  && (
             <View
               style={[
                 styles.borderSalesReport,
@@ -304,10 +305,10 @@ export default class ProductDetail extends Component {
           )}
           <View style={{ height: 8 }} />
           {(user &&
-            user.user_type !== "vendor")||!user &&
+            user.user_type == "customer" || !user) &&
             this.renderProductsList(
               this.state.similarProducts,
-              "Similer Products",
+              "Similar Products",
               168
             )}
           <View style={{ height: 24 }} />
@@ -518,7 +519,7 @@ export default class ProductDetail extends Component {
               <Image source={require("../../assets/images/ic_back.png")} />
             </TouchableOpacity>
            {(user &&
-            user.user_type !== "vendor")||!user && <TouchableOpacity
+            user.user_type == "customer" || !user) && <TouchableOpacity
               onPress={() => this.props.navigation.navigate("Cart")}
               style={{ alignSelf: "center" }}
             >
@@ -546,7 +547,7 @@ export default class ProductDetail extends Component {
               <Image source={require("../../assets/images/ic_back.png")} />
             </TouchableOpacity>
             <View>
-              <Text style={detailStyles.title}>{product.product_title}</Text>
+              <Text style={detailStyles.title}>{product.brand ? product.brand.name :''}</Text>
             </View>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate("Cart")}
@@ -558,7 +559,7 @@ export default class ProductDetail extends Component {
           </Animated.View>
         ) : null}
         {(user &&
-            user.user_type !== "vendor") ||!user && this.renderButton(title)}
+            user.user_type == "customer" || !user)  && this.renderButton(title)}
       </View>
       </LazyHOC>
     );

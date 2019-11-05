@@ -29,11 +29,13 @@ import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import { screenDimensions } from "../../utilities/contsants";
 import Validation from "../../utilities/validations";
+import {sizeStatus} from '../../utilities/method'
 
 import { normalize } from "../../utilities/helpers/normalizeText";
 import TextInputComponent from "../../components/TextInput";
 import DropDownList from "../../components/DropDownList";
 const rightIcon=require('../../assets/images/ic_dd_g.png')
+
 let initalSetDropdownState = {
   openDropDownCat: false,
   openDropDownProductPrice: false,
@@ -95,35 +97,7 @@ class AddNewProduct extends Component {
       openDropDown: false
     };
   }
-  sizeStatus = (status) =>{
-    switch(status){
-      case 1 :
-      return  {
-        id:1,
-        name:'X',
-      }
-      case 2 :
-      return {
-        id:2,
-        name:'M',
-      }
-      case 3 :
-       return  {
-        id:3,
-        name:'XL',
-      }
-      case 4 :
-       return  {
-        id:4,
-        name:'XXL',
-      }
-       default:
-       return {
-        id:1,
-        name:'X',
-      }
-    }
-  }
+ 
   noOfTimeUsedStatus = (status) =>{
     switch(status){
       case 1 :
@@ -166,10 +140,11 @@ class AddNewProduct extends Component {
       id:selectedProduct.subcategory_id},
       productDes:selectedProduct.description,
       productPrice:`${selectedProduct.price}`,
+      productBrand:selectedProduct.brand,
       isOnAvailSale:selectedProduct.available,
       isSoldOut:selectedProduct.sold_out,
       noOfTimeUsed:this.noOfTimeUsedStatus(selectedProduct.times),
-      productSize:this.sizeStatus(selectedProduct.size_id),
+      productSize:sizeStatus(selectedProduct.size_id),
       productTitle:selectedProduct.product_title,
       product_id:selectedProduct.id
     })
@@ -642,6 +617,7 @@ renderProductImgaes = () => {
 /***************** Camera Function  *************/
 
   render() {
+    console.log("productBrand",this.state.productBrand)
     let {toastRef} = this.props.screenProps
     let {setToastMessage} = this.props.screenProps.actions
     let {params} =this.props.navigation.state
@@ -847,11 +823,11 @@ renderProductImgaes = () => {
                 autoCapitalize="none"
                 textInputStyle={[
                   styles.addProductTextInputStyle,
-                  { height: 72 }
+                  { height: 100 }
                 ]}
                 blurOnSubmit={false}
                 multiline
-                viewTextStyle={[styles.addProductTextInputView, { height: 72 }]}
+                viewTextStyle={[styles.addProductTextInputView, { height: 100 }]}
                 value={this.state.productDes}
                 underlineColorAndroid="transparent"
                 isFocused={this.state.productDesFieldFocus}

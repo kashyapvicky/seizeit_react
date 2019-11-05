@@ -347,7 +347,7 @@ export default container = StyleSheet.create({
   },
   addProductTextInputView: {
     backgroundColor: "#FFFFFF",
-    height: 48,
+    // height: 48,
     borderWidth: 1,
     borderRadius: 4
   },

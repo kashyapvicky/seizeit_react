@@ -69,7 +69,7 @@ export default class TextInputLabel extends Component {
           >
             <TextInput
               
-              style={{
+              style={[{
                 height: 48,
                 fontSize: normalize(20),
                 textAlign: "left",
@@ -77,12 +77,12 @@ export default class TextInputLabel extends Component {
                 color: '#000000',
                 fontFamily: fonts.sourcesanspro,
 
-             
                 ...styles.text,
                 ...this.props.textInputStyle,
                 // lineHeight:16
                 // borderBottomWidth: 1, borderBottomColor: isFocused ? '#75B152' : 'rgba(0,0,0,0.11)'
-              }}
+              },styles.text,
+              this.props.textInputStyle,]}
               {...this.props}
               // secureTextEntry={this.props.secureTextEntry?this.props.secureTextEntry:false}
               ref={ref =>

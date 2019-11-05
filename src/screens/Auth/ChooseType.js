@@ -35,10 +35,25 @@ class ChooseType extends Component {
       ]
     };
   }
-  
-  pressButton = (role) => {
-    this.props.navigation.navigate("Signup",{
-      role:role
+
+  pressButton = role => {
+    this.setState({
+      chooseType: this.state.chooseType.map(x => {
+        if (x.name == role) {
+          return {
+            ...x,
+            isSelect: true
+          };
+        } else {
+          return {
+            ...x,
+            isSelect: false
+          };
+        }
+      })
+    });
+    this.props.navigation.navigate("Signup", {
+      role: role
     });
   };
   renderButton = (title, transparent) => {
@@ -73,21 +88,21 @@ class ChooseType extends Component {
   renderType = () => {
     return this.state.chooseType.map(item => (
       <TouchableOpacity
-      onPress={() => this.pressButton(item.name)}
+        onPress={() => this.pressButton(item.name)}
         style={[
           styles.shadow,
           {
             alignSelf: "center",
             justifyContent: "center",
             marginBottom: 24,
-            elevation:2,
+            elevation: 2,
             backgroundColor: "#FFFFFF",
 
             width: 168,
             height: 192,
             borderRadius: 24,
-            borderColor: item.isSelect  ? colors.primary : 'transparent',
-            borderWidth:1
+            borderColor: item.isSelect ? colors.primary : "transparent",
+            borderWidth: 1
           }
         ]}
       >

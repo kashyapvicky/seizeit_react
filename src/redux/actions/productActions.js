@@ -4,7 +4,9 @@ import DeviceInfo from 'react-native-device-info';
 
 import * as type from "../actionType";
 import { postRequest, getRequest } from "../request/Service";
-
+import NavigationService from "../../utilities/NavigationServices";
+import {string} from '../../utilities/languages/i18n'
+import colors from "../../utilities/config/colors";
 //Add To Cart
 export const addToCartSuccess = payload => {
   return {
@@ -48,6 +50,15 @@ export const addFilterSuccess = payload => {
     payload
   };
 };
+
+//Home Data
+export const setHomeDataSuccess = payload => {
+  return {
+    type: type.SET_HOME_DATA_SUCCESS,
+    payload
+  };
+};
+
 // Add to cart Api 
  export const  addCartRequestApi = (payload) =>{
     let data = {}
@@ -63,9 +74,13 @@ export const addFilterSuccess = payload => {
       }
       return postRequest(api_name,data).then((res) => {
         debugger
-      if (res) {
+        if (res && res.statusCode == 200) {
+          NavigationService.setToastMessage(true,colors.green1)
+          NavigationService.showToastMessage(res.success)
           dispatch(addToCartSuccess(payload))
           return res
+       }else{
+        dispatch(addToCartSuccess(payload))
        }
     })
    }
@@ -101,7 +116,9 @@ export const  addWishlitsRequestApi = (payload) =>{
     }
     debugger
     return postRequest(api_name,data).then((res) => {
-    if (res) {
+    if (res && res.statusCode == 200) {
+      NavigationService.setToastMessage(true,colors.green1)
+      NavigationService.showToastMessage(res.success)
         dispatch(addToWishlistSuccess(payload))
         return res
      }

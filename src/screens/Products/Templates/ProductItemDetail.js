@@ -22,7 +22,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
                 // fontWeight: "600"
               }}
             >
-             {product.subcategory}
+             {product.brand ? product.brand.name :''}
             </Text>
           </View>
           <View  style={{

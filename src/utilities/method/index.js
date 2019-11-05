@@ -3,13 +3,32 @@ import {
   NetInfo,
   Alert,
   Platform
-} from 'react-native';
+} from 'react-native'
 
+export const setAllFalseValue = (array,type) =>{
+  if(type == 'wishlist'){
+    return  array.map(x => {
+      return {
+        ...x,
+        isFevorite: false
+      };
+  })
+  }else{
+    return  array.map(x => {
+      return {
+        ...x,
+        isCart: false
+      };
+  })
+  }
+  
+}
+// Update Cart And Wishlist 
 export const updateProductCartValue = (array,product) => {
   let { carts,wishlists } = product;
   let newArray = array.map(x => {
     let findIndex=-1
-    if(carts && carts.length > -1){
+    if(carts && carts.length > 0){
       findIndex = carts.findIndex(cart => cart.id == x.id);
     }
     let findIndexWishList=-1
@@ -33,6 +52,9 @@ export const updateProductCartValue = (array,product) => {
   });
   return newArray;
 };
+
+
+// Update Cart Success
 export const updateCartSuccess = (array,item) =>{
   return  array.map(x => {
     if (x.id == item.id){
@@ -47,6 +69,8 @@ export const updateCartSuccess = (array,item) =>{
     }
   })
 }
+
+// Update Wishlist Success
 export const updateWishListSuccess = (array,item) =>{
   return  array.map(x => {
     if (x.id == item.id) {
@@ -60,4 +84,35 @@ export const updateWishListSuccess = (array,item) =>{
       };
     }
   })
+}
+
+// Calculate Size Status 
+export const sizeStatus = (status) =>{
+  switch(status){
+    case 1 :
+    return  {
+      id:1,
+      name:'X',
+    }
+    case 2 :
+    return {
+      id:2,
+      name:'M',
+    }
+    case 3 :
+     return  {
+      id:3,
+      name:'XL',
+    }
+    case 4 :
+     return  {
+      id:4,
+      name:'XXL',
+    }
+     default:
+     return {
+      id:1,
+      name:'X',
+    }
+  }
 }

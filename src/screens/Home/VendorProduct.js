@@ -28,6 +28,7 @@ import { FilterButton } from "./Templates/FilterButton";
 import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
 import { updateProductCartValue } from "../../utilities/method";
 import ListFooterComponent from "../Home/Templates/ListFooterComponent";
+import LazyHOC from "../../LazyLoadScreen";
 
 class VendorProduct extends Component {
   constructor(props) {
@@ -207,8 +208,8 @@ class VendorProduct extends Component {
         index={index}
         imageHeight={168}
         onPress={() =>
-          this.props.navigation.navigate("ProductDetails", {
-            productId: item.product_id
+          this.props.navigation.push("ProductDetails", {
+            productId: item.id
           })
         }
         onPressWishlist={() => this.onPressWishlist(item, index)}
@@ -369,6 +370,7 @@ class VendorProduct extends Component {
   /************** Cart Method  **************/
   render() {
     return (
+      <LazyHOC>
       <View style={{ flex: 1 }}>
         <Header
           isRightIcon={false}
@@ -385,6 +387,7 @@ class VendorProduct extends Component {
         />
         {this.renderScrollableTab()}
         <FilterButton
+         filters={this.props.screenProps.product}
           onPress={() =>
             this.props.navigation.navigate("Filter", {
               updateFilter: data => this.updateFilter(data)
@@ -392,6 +395,8 @@ class VendorProduct extends Component {
           }
         />
       </View>
+            </LazyHOC>
+
     );
   }
 }

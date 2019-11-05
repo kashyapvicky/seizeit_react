@@ -20,8 +20,8 @@
 {
   [GMSPlacesClient provideAPIKey:@"AIzaSyACzNPUcNFFHmxVHqd9PywDLxMzkJxkrH0"];
   [GMSServices provideAPIKey:@"AIzaSyACzNPUcNFFHmxVHqd9PywDLxMzkJxkrH0"];
-  [[RCTI18nUtil sharedInstance] allowRTL:YES];
-  [[RCTI18nUtil sharedInstance] forceRTL:YES];
+//  [[RCTI18nUtil sharedInstance] allowRTL:YES];
+//  [[RCTI18nUtil sharedInstance] forceRTL:YES];
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"seize_it"

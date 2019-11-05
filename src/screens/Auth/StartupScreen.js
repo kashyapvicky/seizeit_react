@@ -62,7 +62,7 @@ class StartScreen extends Component {
           this.props.screenProps.setI18nConfig("ar", true);         
         }
         this.props.screenProps.actions.setLanguage(lang);
-        this.reloadApp(lang)
+        //this.reloadApp(lang)
       }
     );
   };
@@ -140,7 +140,7 @@ class StartScreen extends Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.changeLanguage("ar")}
+            // onPress={() => this.changeLanguage("ar")}
             style={
              [ language == "ar"
                 ? styles.selectedLangButton

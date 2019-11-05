@@ -6,6 +6,7 @@ import colors from "../../../utilities/config/colors";
 import  styles  from "../../../styles";
 import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
+import {sizeStatus} from '../../../utilities/method'
 
 export const FeatureLabel = ({title}) => {
     return (
@@ -30,7 +31,7 @@ const FeatureText = ({title}) => {
     );
 };
 const Features = ({product}) => {
-  debugger
+  let sizeText = sizeStatus(product.size_id)
   return <View style={{flex:1,}}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}} >
               <FeatureLabel title={'Size'}/>
@@ -39,7 +40,7 @@ const Features = ({product}) => {
             <View style={{height:8}}/>
 
             <View style={{flexDirection:'row',justifyContent:'space-between'}} >
-              <FeatureText title={product.size}/>
+              <FeatureText title={sizeText ?sizeText.name :'' }/>
               <FeatureText title={product.times == 1 ? product.times == 2 ?'Two' :'Once' :'Once'}/>
             </View>
        </View>

@@ -94,7 +94,7 @@ export default class  BannerCarousel extends React.Component {
          
         </View>
         <Pagination
-            dotsLength={this.state.bannerImages.length}
+            dotsLength={this.props.banners.length}
             activeDotIndex={this.state.slider1ActiveSlide}
             containerStyle={{ paddingTop: 20 }}
             dotColor={'#96C50F'}

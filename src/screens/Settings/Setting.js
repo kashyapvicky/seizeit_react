@@ -649,9 +649,7 @@ getUserInfo = () =>{
     }
   }
   render() {
-    return <LazyHOC>
-      {this.renderMainView()}
-    </LazyHOC>
+    return this.renderMainView()
   }
 }
 export default Settings;

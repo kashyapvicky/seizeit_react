@@ -57,7 +57,7 @@ class CartItem extends Component {
         index={index}
         imageHeight={168}
         onPress={() =>   this.props.navigation.navigate("ProductDetails", {
-          productId: item.product_id
+          productId: item.id
         })}
         onPressWishlist={() => this.onPressWishlist(item, index)}
         onPressCart={() => this.addRemoveCart(item)}
