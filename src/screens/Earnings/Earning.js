@@ -257,7 +257,7 @@ class Earnings extends Component {
           ]}
           hideLeftIcon={true}
           title={"Earnings"}
-          backPress={() => this.props.navigation.dismiss()}
+          backPress={() => this.props.navigation.goBack()}
         />
         {this.renderTopSection()}
         <View style={{ height: 16 }} />

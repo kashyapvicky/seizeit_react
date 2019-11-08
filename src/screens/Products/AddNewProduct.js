@@ -248,9 +248,10 @@ class AddNewProduct extends Component {
       }
       postRequest('vendor/AddProduct',formData).then((res) => {
         if (res && res.success) {
-      
           setToastMessage(true,colors.green1)
           toastRef.show(res.success) 
+          let {params} = this.props.navigation.state
+          params.getProducts()
           this.props.navigation.goBack()
         }
        })
@@ -626,14 +627,7 @@ renderProductImgaes = () => {
       buttonTitle='Update a Product'
     }
     return (
-      <TouchableWithoutFeedback
-        onPress={() =>
-          this.setState({
-            ...this.state,
-            ...initalSetDropdownState
-          })
-        }
-      >
+   
         <View style={{ flex: 1 }}>
           <Header
             isRightIcon={Images.close_g}
@@ -649,7 +643,16 @@ renderProductImgaes = () => {
             onRightPress={() => this.props.navigation.goBack()}
           />
           <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-            <View style={{ height: 16 }} />
+         <TouchableWithoutFeedback
+        onPress={() =>
+          this.setState({
+            ...this.state,
+            ...initalSetDropdownState
+          })
+        }
+      >
+        <View>
+        <View style={{ height: 16 }} />
             {this.renderTopSection()}
             <View style={styles.borderSalesReport} />
             <View
@@ -958,12 +961,15 @@ renderProductImgaes = () => {
               {this.renderProductImgaes()}
             </View>
             <View style={{ height: 35 }} />
+        </View>
+        </TouchableWithoutFeedback>
+           
           </ScrollView>
           {this.renderButton(buttonTitle)}
           {this.state.isModalVisible ? this.renderBottomModal() : null}
 
         </View>
-      </TouchableWithoutFeedback>
+    
     );
   }
 }

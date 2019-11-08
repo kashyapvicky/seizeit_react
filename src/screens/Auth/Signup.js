@@ -338,10 +338,10 @@ class Signup extends Component {
           borderColor: transparent ? "#EAEAEA" : "transparent",
           justifyContent: "center",
           borderWidth: 1,
-          height: 50,
-          width: 50,
+          height: 48,
+          width: 48,
           backgroundColor: transparent ? "transparent" : color,
-          borderRadius: 50 / 2
+          borderRadius: 48 / 2
         }}
       >
         <Image
@@ -607,34 +607,17 @@ class Signup extends Component {
             </View>
           </View>
           <View style={{ height: 16 }} />
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <View style={{flexDirection:'row',justifyContent:'center'}}>
             <View>
-              {this.renderSocialButton(
-                string("continueusingfacebook"),
-                false,
-                Images.facebookIcon,
-                "#3E5F97",
-                28
-              )}
+            {this.renderSocialButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',22)}
             </View>
-            <View style={{ paddingHorizontal: 24 }}>
-              {this.renderSocialButton(
-                string("continueusinggoogle"),
-                true,
-                Images.googleIcon,
-                colors.transparent,
-                32
-              )}
-            </View>
+            <View style={{paddingHorizontal:24}}>
+            {this.renderSocialButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,24)}
+            </View>   
             <View>
-              {this.renderSocialButton(
-                string("continueusinginstagram"),
-                true,
-                Images.instagram,
-                "#E1306C",
-                38
-              )}
+            {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',32)}
             </View>
+
           </View>
           <View style={{ height: 16 }} />
 

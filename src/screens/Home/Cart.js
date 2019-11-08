@@ -107,7 +107,7 @@ class Cart extends Component {
           ]}
           hideLeftIcon={true}
           title={"Cart"}
-          onRightPress={() => this.props.navigation.dismiss()}
+          onRightPress={() => this.props.navigation.goBack()}
         />
         <CartItem 
         {...this.props}

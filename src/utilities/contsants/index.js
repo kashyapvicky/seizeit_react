@@ -78,4 +78,10 @@ removeCart:require("../../assets/images/ic_remove_cart.png"),
  propfileimageNotification : require("../../assets/images/Notification.jpg"),
  instagram:require('../../assets/images/instagram.png'),
  no_image:require('../../assets/images/no_image.jpeg'),
+ walk1:require('../../assets/images/walk1.png'),
+ walk3:require('../../assets/images/walk3.png'),
+ walk2:require('../../assets/images/walk2.png'),
+ walk4:require('../../assets/images/walk4.png'),
+
+
 };

@@ -8,11 +8,13 @@ import { Easing, Animated } from "react-native";
 import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
 
 import Dashboard from "./Dashboard";
+import OrdeDetail from "../Settings/OrdeDetail";
 
 
 export const DashboardNavigator = createStackNavigator(
     {
       Dashboard:Dashboard,
+      OrdeDetail:OrdeDetail
       },
   {
     initialRouteName: "Dashboard",

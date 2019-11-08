@@ -4,7 +4,6 @@ import {
   Alert,
   Platform
 } from 'react-native'
-
 export const setAllFalseValue = (array,type) =>{
   if(type == 'wishlist'){
     return  array.map(x => {
@@ -21,10 +20,10 @@ export const setAllFalseValue = (array,type) =>{
       };
   })
   }
-  
 }
 // Update Cart And Wishlist 
 export const updateProductCartValue = (array,product) => {
+  debugger
   let { carts,wishlists } = product;
   let newArray = array.map(x => {
     let findIndex=-1
@@ -56,7 +55,9 @@ export const updateProductCartValue = (array,product) => {
 
 // Update Cart Success
 export const updateCartSuccess = (array,item) =>{
+  debugger
   return  array.map(x => {
+    console.log(x.isCart)
     if (x.id == item.id){
       return {
         ...x,

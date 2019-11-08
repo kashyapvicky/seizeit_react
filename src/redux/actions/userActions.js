@@ -19,6 +19,12 @@ export const setLanguageActionType = (lang) => {
     lang
   }
 }
+export const setWalkThrough = payload => {
+  return {
+    type: type.SET_WALK_THROUGH,
+    payload
+  };
+};
 // Upadte Languages 
 export const setLanguage = (lang) => {
   return (dispatch, getState) => {

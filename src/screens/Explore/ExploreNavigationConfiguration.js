@@ -5,51 +5,42 @@ import {
   createSwitchNavigator
 } from "react-navigation";
 import { Easing, Animated } from "react-native";
-import {TransitionConfig} from "../../AppNavigationConfiguration";
+import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator'
 
 import Explore from "./Explore";
 import Filter from "../Home/Filter";
-const ModalStack = createStackNavigator(
+
+
+export const CardStack = createStackNavigator(
   {
+    Explore: Explore,
     ExploreFilter: {
       screen: Filter,
       params: { isModal: true }
     }
   },
   {
-    mode: "modal",
-    headerMode: "none"
-  }
-);
-
-export const CardStack = createStackNavigator(
-  {
-    Explore: Explore
-  },
-  {
     initialRouteName: "Explore",
     headerMode: "none",
     mode: "card",
     transitionConfig: () => ({
-      transitionSpec: {
-        duration: 300,
-        easing: Easing.out(Easing.poly(8)),
-        timing: Animated.timing
-      }
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
     })
   }
 );
 export const ExploreNavigator = createStackNavigator(
   {
     CardStack: CardStack,
-    ModalStack: { screen: ModalStack, params: { isModalStack: true } }
+    // ModalStack: { screen: ModalStack, params: { isModalStack: true } }
   },
   {
     initialRouteName: "CardStack",
     headerMode: "none",
     mode: "modal",
     initialRouteParams: { transition: "horizontal" },
-    transitionConfig: TransitionConfig
+    transitionConfig: () => ({
+      screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+    })
   }
 );
 

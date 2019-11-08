@@ -1,14 +1,23 @@
 "use strict";
 // React
 import React, { Fragment } from "react";
-import { SafeAreaView,View,Text, InteractionManager,StatusBar, Platform } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  BackHandler,
+  InteractionManager,
+  StatusBar,
+  Platform
+} from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import * as RNLocalize from "react-native-localize";
 import RNRestart from "react-native-restart";
-import SplashScreen from 'react-native-splash-screen'
+import SplashScreen from "react-native-splash-screen";
 
 import NavigationService from "./utilities/NavigationServices";
 import colors from "./utilities/config/colors";
+import { GoogleSignin, statusCodes } from 'react-native-google-signin';
 
 // Navigation
 import { AppStack } from "./AppNavigationConfiguration";
@@ -25,8 +34,8 @@ import Indicator from "./components/Indicator";
 import Toast from "./components/Toast";
 import OfflineNotice from "./components/OfflineNotice";
 import { styles } from "./styles";
-import {setI18nConfig,string} from './utilities/languages/i18n'
-import LazyHOC from './LazyLoadScreen'
+import { setI18nConfig, string } from "./utilities/languages/i18n";
+import LazyHOC from "./LazyLoadScreen";
 //Get Active Screen
 function getActiveRouteName(navigationState) {
   if (!navigationState) {
@@ -47,48 +56,60 @@ class AppNavigation extends React.Component {
       isShowToast: false,
       topBarColor: "transparent",
       bottomBarColor: "transparent",
-      hidden: true,
-
+      hidden: true
     };
-  // set initial config
-   this.setI18nConfigReload()
+    // set initial config
+    this.setI18nConfigReload();
     this._bootStrapApp();
   }
-  setI18nConfigReload = async ()=>{
-    let {lang,isRTL} = this.props.user
-     setI18nConfig(lang,isRTL); 
 
-  }
-  handleLocalizationChange = (lang,isRTL) => {
-    setI18nConfig(lang,isRTL);
-    this.forceUpdate();
-  };
   componentDidMount() {
     this._getNetInfo();
-    
-   // RNLocalize.addEventListener("change", this.handleLocalizationChange);
+    GoogleSignin.configure({})
 
+    BackHandler.addEventListener("hardwareBackPress", this._backhandle);
+
+    // RNLocalize.addEventListener("change", this.handleLocalizationChange);
   }
   componentWillUnmount() {
     this.unsubscribe();
-   // RNLocalize.removeEventListener("change", this.handleLocalizationChange);
-
+    BackHandler.removeEventListener("hardwareBackPress", this._backhandle);
+    // RNLocalize.removeEventListener("change", this.handleLocalizationChange);
   }
 
+  setI18nConfigReload = async () => {
+    let { lang, isRTL } = this.props.user;
+    setI18nConfig(lang, isRTL);
+  };
+  handleLocalizationChange = (lang, isRTL) => {
+    setI18nConfig(lang, isRTL);
+    this.forceUpdate();
+  };
+
+  // Abck Handler
+  _backhandle = async () => {
+    const currentScreen = this.currentScreen;
+    const prevScreen = this.prevScreen;
+     NavigationService.goBackScreen()
+      return true;
+    
+  };
   //_getNetInfo isConnected Or IsReachable
   _getNetInfo = () => {
-    NetInfo.isConnected.fetch().then().done(() => {
-
-    this.unsubscribe = NetInfo.addEventListener(state => {
-      let value = state.isInternetReachable && state.isConnected ? true : false;
-      this.props.actions.checkInternet(value);
-    });
-  });
+    NetInfo.isConnected
+      .fetch()
+      .then()
+      .done(() => {
+        this.unsubscribe = NetInfo.addEventListener(state => {
+          let value =
+            state.isInternetReachable && state.isConnected ? true : false;
+          this.props.actions.checkInternet(value);
+        });
+      });
   };
   _bootStrapApp = () => {
-    if(Platform.OS == 'android'){
+    if (Platform.OS == "android") {
       SplashScreen.hide();
-
     }
   };
 
@@ -123,34 +144,33 @@ class AppNavigation extends React.Component {
       });
     }
   };
+
   render() {
     return (
       <Fragment>
         {Platform.OS == "ios" && (
           <StatusBar barStyle="dark-content" translucent />
         )}
-         {Platform.OS == "android" && (
+        {Platform.OS == "android" && (
           <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         )}
         <SafeAreaView
           style={{ flex: 0, backgroundColor: this.state.topBarColor }}
         />
-              
 
         <SafeAreaView
           style={{ flex: 1, backgroundColor: this.state.bottomBarColor }}
         >
-            {this.props.loader && <Indicator />}
+          {this.props.loader && <Indicator />}
           {this.props.user.netStatus ? null : <OfflineNotice {...this.props} />}
           {/* <Line name="Translation example" value={string("hello")} /> */}
           <AppStack
-             ref={navigatorRef => {
+            ref={navigatorRef => {
               NavigationService.setTopLevelNavigator(navigatorRef);
             }}
-
             screenProps={{
               ...this.props,
-              setI18nConfig:(lang,isRtl) =>setI18nConfig(lang,isRtl),
+              setI18nConfig: (lang, isRtl) => setI18nConfig(lang, isRtl),
               toastRef: { show: (text, color) => this.showMessage(text, color) }
             }}
             onNavigationStateChange={(prevState, currentState, action) => {
@@ -158,7 +178,6 @@ class AppNavigation extends React.Component {
               this.changeSafeAreaViewColor(this.currentScreen);
             }}
           />
-         
 
           {this.state.isShowToast && (
             <Toast
@@ -191,4 +210,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AppNavigation);
-

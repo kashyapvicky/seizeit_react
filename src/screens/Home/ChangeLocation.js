@@ -107,7 +107,7 @@ export default class ChangeLocation extends Component {
           location['name'] = results.name
           location['currentLocation'] = results.location
           params.updateLocation(location)
-          this.props.navigation.dismiss()
+          this.props.navigation.goBack()
         }
       })
       .catch(error => console.log(error.message));
@@ -213,7 +213,7 @@ export default class ChangeLocation extends Component {
             }
           ]}
           title={"Location"}
-          backPress={() => this.props.navigation.dismiss()}
+          backPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
           style={{ flex: 1, paddingHorizontal: 24 }}

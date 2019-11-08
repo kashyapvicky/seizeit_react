@@ -1,6 +1,6 @@
 "use-strict";
 import * as type from "../actionType";
-import { updateProductCartValue,setAllFalseValue } from "../../utilities/method";
+import { updateProductCartValue,updateCartSuccess,updateWishListSuccess } from "../../utilities/method";
 const initialState = {
   carts: [],
   wishlists: [],
@@ -49,7 +49,7 @@ const product = (state = initialState, action) => {
       return {
         ...state,
         carts: newCart,
-        homeData: updateHomeListCart({ ...state, carts: newCart })
+        homeData: updateHomeListCart({ ...state, carts: newCart },{id:action.payload.id})
       };
 
     case type.REMOVE_CART_SUCCESS:
@@ -83,7 +83,7 @@ const product = (state = initialState, action) => {
       return {
         ...state,
         wishlists: newWishlist,
-        homeData: updateHomeListWishList({ ...state, wishlists: newWishlist })
+        homeData: updateHomeListWishList({ ...state, wishlists: newWishlist },{id:action.payload.id})
 
       };
 
@@ -102,7 +102,7 @@ const addHomeList = (previousState, payload) => {
     return {
       ...previousState,
       homeData: {
-        banners: payload.banner,
+        banner: payload.banner,
         featured,
         popular
       }
@@ -115,54 +115,39 @@ const addHomeList = (previousState, payload) => {
   }
 };
 
+
 // Update Cart List
-const updateHomeListCart = previousState => {
-  if (previousState.carts.length > 0) {
-    let featured = updateProductCartValue(
+const updateHomeListCart = (previousState,productId) => {
+  debugger
+    let featured = updateCartSuccess(
       previousState.homeData.featured,
-      previousState
+      productId
     );
-    let popular = updateProductCartValue(
+    let popular = updateCartSuccess(
       previousState.homeData.popular,
-      previousState
+      productId
     );
     return {
       ...previousState.homeData,
       featured,
       popular
     };
-  } else {
-    let featured = setAllFalseValue(previousState.homeData.featured,'cart');
-    let popular = setAllFalseValue(previousState.homeData.popular,'cart');
-    return {
-      ...previousState.homeData,
-      featured,
-      popular
-    };
-  }
 };
-const updateHomeListWishList= previousState => {
-  if (previousState.wishlists.length > 0) {
-    let featured = updateProductCartValue(
+
+const updateHomeListWishList= (previousState,productId) => {
+
+    let featured = updateWishListSuccess(
       previousState.homeData.featured,
-      previousState
+      productId
     );
-    let popular = updateProductCartValue(
+    let popular = updateWishListSuccess(
       previousState.homeData.popular,
-      previousState
+      productId
     );
     return {
       ...previousState.homeData,
       featured,
       popular
     };
-  } else {
-    let featured = setAllFalseValue(previousState.homeData.featured,'wishlist');
-    let popular = setAllFalseValue(previousState.homeData.popular,'wishlist');
-    return {
-      ...previousState.homeData,
-      featured,
-      popular
-    };
-  }
+
 };

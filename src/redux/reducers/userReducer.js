@@ -6,6 +6,7 @@ const initialState = {
   toastMessage: null,
   loader: false,
   lang: "en",
+  walkThrough:false,
   netStatus: true,
   currentLocation: null
 };
@@ -56,8 +57,13 @@ const user = (state = initialState, action) => {
         //flexDirection: (action.lang =='ar') ? 'row-reverse':'row',
         //textAlign: action.lang=='en'?'left':'right'
       };
+      case type.SET_WALK_THROUGH:
+        return {
+          ...state,
+          walkThrough: action.payload
+        };
     case type.LOGOUT_SUCCESS:
-      return initialState;
+      return {...initialState,walkThrough:state.walkThrough};
     default:
       return state;
   }

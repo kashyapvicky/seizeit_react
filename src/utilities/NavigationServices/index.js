@@ -1,5 +1,5 @@
 // NavigationService.js
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions,StackActions } from 'react-navigation';
 let _navigator;
 function setTopLevelNavigator(navigatorRef) {
   _navigator = navigatorRef;
@@ -27,6 +27,13 @@ function navigateToSubRoute(routeName,params,subRoute,subParam){
 function goBackScreen(routeName, params) {
   _navigator.dispatch(
      NavigationActions.back()
+  );
+}
+function goBackStackScreen(routeName, params) {
+  _navigator.dispatch(
+    StackActions.pop({
+      n: 2,
+    })
   );
 }
 function getNavigationProps() {
@@ -77,5 +84,6 @@ export default {
   setIndicator,
   checkNetStatus,
   getUser,
+  goBackStackScreen,
   setToastMessage
 };

@@ -287,10 +287,14 @@ class Products extends Component {
     console.log(item, "teee");
     return (
       <TouchableOpacity
-        onPress={() =>
+        onPress={() =>{
           this.props.navigation.navigate("ProductDetails", {
             productId: item.id
           })
+          this.setState({
+            selectedIndex: -1
+          });
+        }
         }
         activeOpacity={9}
         index={index}
@@ -501,7 +505,7 @@ class Products extends Component {
           isRightIcon={false}
           hideLeftIcon={true}
           title={"Products"}
-          backPress={() => this.props.navigation.dismiss()}
+          backPress={() => this.props.navigation.goBack()}
         />
         <View
           style={[
@@ -520,7 +524,10 @@ class Products extends Component {
 
         {this.renderProductsList()}
         <AddButton
-          onPress={() => this.props.navigation.navigate("AddNewProduct")}
+          onPress={() => this.props.navigation.navigate("AddNewProduct",{
+            getProducts: () => this.getProducts(1, false)
+
+          })}
         />
         {this.state.isModalVisible ? this.renderBottomModal() : null}
       </View>

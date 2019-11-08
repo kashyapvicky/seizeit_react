@@ -14,6 +14,8 @@ import ForgotPassword from "./ForgotPassword";
 import ChooseType from "./ChooseType";
 import EnterMobile from "./EnterMobile";
 import Verify from "./Verify";
+import AppIntro from "./AppIntro";
+
 // import EnterEmail from "./EnterEmail";
 
 const AuthStack = createStackNavigator(
@@ -25,7 +27,6 @@ const AuthStack = createStackNavigator(
     ForgotPassword: { screen: ForgotPassword},
     EnterMobile: { screen: EnterMobile},
     // EnterEmail: { screen: EnterEmail},
-
     Verify: { screen: Verify},
   },
   {
@@ -42,9 +43,11 @@ const AuthStack = createStackNavigator(
 const SwitchStack = createSwitchNavigator(
   {
     AuthStack: { screen: AuthStack},
+    AppIntro:{ screen: AppIntro},
+
   },
   {
-    initialRouteName: "AuthStack",
+    initialRouteName: "AppIntro",
     headerMode: "none",
     navigationOptions: {
       gesturesEnabled: false

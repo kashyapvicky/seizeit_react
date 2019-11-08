@@ -15,7 +15,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
 import { Images } from "../../../utilities/contsants";
 
 
-export default CustomerInfo = ({user,address}) => {
+export default CustomerInfo = ({user,address,customer_info}) => {
 return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
 <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
   <Text
@@ -35,7 +35,7 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
         { color: "#000000", lineHeight: 30, fontSize: normalize(16) }
       ]}
     >
-      {user.name}
+      {customer_info ? customer_info.name : ''}
     </Text>
     <Text
       style={[
@@ -48,8 +48,8 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
         }
       ]}
     >
-    {address && address.length > 0 ? 
-   `${address[0].flat},${address[0].city},${address[0].landmark}.${address[0].state} ${address[0].country_name} ${address[0].pincode}`
+    {address && address ? 
+   `${address.flat},${address.city},${address.landmark}.${address.state} ${address.country_name} ${address.pincode}`
       :''}
     </Text>
 
@@ -78,7 +78,7 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
     </View>
   </View>
   {
-     (user && user.type == 'vendor' ) &&  <View
+     (user && user.user_type == 'vendor' ) &&  <View
      style={{
         flex: 0.135,
        height:40,

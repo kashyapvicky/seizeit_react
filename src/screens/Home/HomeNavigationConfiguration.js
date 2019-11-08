@@ -25,18 +25,22 @@ import EditProfile from "../Settings/EditProfile";
 import Countries from "../Settings/Countries";
 
 
-// Stack 
-const ModalStack = createStackNavigator({
-  Filter: {
-      screen: Filter,
-      params:{isModal : true},
-    },
+const CardStack =  createStackNavigator({
+    Home:Home,
+    SubCategory:SubCategory,
+    ProductDetails:ProductDetails,
+    VendorProduct:VendorProduct,
+   
     SearchProduct: {
       screen: SearchProduct,
       params:{isModal : true},
     },
     ChangeLocation: {
       screen: ChangeLocation,
+      params:{isModal : true},
+    },
+    Filter: {
+      screen: Filter,
       params:{isModal : true},
     },
     Cart: {
@@ -55,20 +59,6 @@ const ModalStack = createStackNavigator({
     Address:Address,
     Countries:Countries,
     EditProfile:EditProfile
-  },
-  
-  {
-    mode: 'modal',
-    headerMode: 'none',
-    transitionConfig: () => ({
-      screenInterpolator: CardStackStyleInterpolator.forVertical,
-    })
-})
-const CardStack =  createStackNavigator({
-    Home:Home,
-    SubCategory:SubCategory,
-    ProductDetails:ProductDetails,
-    VendorProduct:VendorProduct,
 },
 {
   initialRouteName: 'Home',
@@ -80,10 +70,7 @@ const CardStack =  createStackNavigator({
 
 export const HomeNavigator = createStackNavigator({
   CardStack:CardStack,
-  ModalStack:{screen:ModalStack,
-    params:{isModalStack : true},
-
-  }
+  
 },{
   initialRouteName:'CardStack',
   headerMode:'none',

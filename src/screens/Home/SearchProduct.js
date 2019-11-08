@@ -105,6 +105,7 @@ class SearchProduct extends Component {
       .catch(err => {});
   };
   onSelectGetProductDetail = (product, fromPreviousSearch) => {
+    debugger
     if (fromPreviousSearch) {
       this.props.navigation.navigate("ProductDetails", {
         productId: product.product_id
@@ -265,7 +266,7 @@ class SearchProduct extends Component {
             }
           ]}
           hideLeftIcon={false}
-          backPress={() => this.props.navigation.dismiss()}
+          backPress={() => this.props.navigation.goBack()}
         >
           {this.renderSearchInput()}
         </Header>

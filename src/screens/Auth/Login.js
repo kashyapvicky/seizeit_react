@@ -372,8 +372,8 @@ class Login extends Component {
       borderColor:transparent ? '#EAEAEA' : 'transparent',
       justifyContent:'center',
       borderWidth:1,
-      height:50,width:50,backgroundColor:transparent ?'transparent':color
-      ,borderRadius:50/2}}>
+      height:48,width:48,backgroundColor:transparent ?'transparent':color
+      ,borderRadius:48/2}}>
         <Image source={imageLeft} 
         style={{alignSelf:'center',height:fontSize,
         width:fontSize}}/>
@@ -533,16 +533,16 @@ class Login extends Component {
               <View style={{ height: 1, backgroundColor: "rgba(0,0,0,0.2)" }} />
             </View>
           </View>
-          <View style={{ height: 20 }} />
+          <View style={{ height: 28 }} />
           <View style={{flexDirection:'row',justifyContent:'center'}}>
             <View>
-            {this.renderSocialButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',28)}
+            {this.renderSocialButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',22)}
             </View>
             <View style={{paddingHorizontal:24}}>
-            {this.renderSocialButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,32)}
+            {this.renderSocialButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,24)}
             </View>   
             <View>
-            {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',38)}
+            {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',32)}
             </View>
 
           </View>
@@ -551,7 +551,7 @@ class Login extends Component {
           {this.renderButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,14)}
           <View style={{ height: 20 }} />
           {this.renderButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',14)} */}
-          <View style={{ height: 20 }} />
+          <View style={{ height: 16 }} />
           <View>
     
        </View>

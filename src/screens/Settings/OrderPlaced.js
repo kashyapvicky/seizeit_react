@@ -47,13 +47,13 @@ componentDidMount(){
 }
   /******************** Api Function  *****************/
   getOrders = () => {
-    getRequest("order/order_detail")
+    getRequest(`order/vendor_order_detail?status=${0}`)
       .then(res => {
         debugger;
-        if (res && res.products && res.products.length > 0) {
+        if (res && res.data && res.data.length > 0) {
           this.setState(
             {
-              orders:res.products,
+              orders:res.data,
               isRefreshing: false
             });
         } else {
@@ -94,9 +94,9 @@ componentDidMount(){
   renderItems = ({ item, index }) => {
     debugger
     return <OrderListItem 
-    onPress={()=> this.props.navigation.navigate('OrderDetails',{
+     onPress={()=> this.props.navigation.navigate('OrderDetails',{
       order:item
-    })}
+     })}
       item={item} index={index}
       renderButton={(title,transparent) =>this.renderButton(title,transparent)}
        />

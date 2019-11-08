@@ -30,15 +30,18 @@ class OrderDetails extends Component {
       visible2: false,
       order: []
     };
+    
   }
   componentDidMount(){
+    debugger
+    
     let {params} = this.props.navigation.state
     if(params && params.order){
+      debugger
       this.setState({
         order : params.order
       })
     }
-
   }
   renderButton = (title, transparent) => {
     return (
@@ -85,8 +88,8 @@ class OrderDetails extends Component {
           >
             <Image
               style={{ height: 96, width: 96, borderRadius: 4 }}
-              source={item.product_detail.pics && item.product_detail.pics.length > 0 ? {
-                uri:item.product_detail.pics[0].pic }: Images.no_image}
+              source={item.pics && item.pics.length > 0 ? {
+                uri:item.pics[0].pic }: Images.no_image}
             />
           </View>
           <View style={{ flex: 0.7, paddingLeft: 16 }}>
@@ -108,7 +111,7 @@ class OrderDetails extends Component {
             </View>
             <View>
               <Text p style={{ color: "#000000" }}>
-                {item.product_detail.product_title}
+                {item.product_title}
               </Text>
             </View>
             <View
@@ -119,7 +122,7 @@ class OrderDetails extends Component {
               }}
             >
               <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-               ${item.product_detail.price}
+               ${item.price}
               </Text>
             </View>
           </View>
@@ -128,13 +131,14 @@ class OrderDetails extends Component {
     );
   };
   renderOrdersItem = () => {
-    let {order_detail} = this.state.order
+    let {order_detail,product_detail} = this.state.order
+    debugger
     return (
       <View style={{ flex: 1, paddingHorizontal: 24, marginTop: 8 }}>
         <FlatList
           bounces={true}
           showsVerticalScrollIndicator={false}
-          data={order_detail}
+          data={order_detail && order_detail.length > 0 ? order_detail:product_detail ? [product_detail]:[]}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
         />
@@ -143,10 +147,11 @@ class OrderDetails extends Component {
   };
   renderCustomerInfo = () => {
     let {user} = this.props.screenProps.user
-    let {address} = this.state.order
+    let {customer_address,customer_info} = this.state.order
     return <CustomerInfo 
-           address={address}
+           address={customer_address}
            user={user}
+           customer_info={customer_info}
        />
   };
   renderOrderInvoiceInfo = () => {

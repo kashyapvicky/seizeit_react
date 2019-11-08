@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
+
 import RNGooglePlaces from "react-native-google-places";
 import {
   PlaceholderContainer,
@@ -382,7 +383,7 @@ class Home extends Component {
             168
           )}
           <View style={{ height: 16 }} />
-          {this.renderButton("Explore more in Trending")}
+          {this.renderButton("Explore more products")}
           <View style={{ height: 16 }} />
         </View>
       </View>

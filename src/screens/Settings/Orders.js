@@ -12,6 +12,7 @@ import {
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
 import Dash from "react-native-dash";
+import { postRequest, getRequest } from "../../redux/request/Service";
 
 //local imports
 import Button from "../../components/Button";
@@ -39,9 +40,32 @@ class Orders extends Component {
           title: "Past Orders"
         }
       ],
-      orders: ["1", "2","2"],
+      orders: [],
     };
   }
+  componentDidMount(){
+    this.getOrders(1)
+  }
+  /******************** Api Function  *****************/
+  getOrders = status => {
+    getRequest(`order/vendor_order_detail?status=${status}`)
+      .then(res => {
+        if (res && res.data && res.data.length > 0) {
+          this.setState({
+            orders: res.data,
+            isRefreshing: false
+          });
+        } else {
+          this.setState({
+            isRefreshing: false,
+            orders: []
+          });
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
+
   pressButton = () => {};
   renderButton = (title, transparent) => {
     return (

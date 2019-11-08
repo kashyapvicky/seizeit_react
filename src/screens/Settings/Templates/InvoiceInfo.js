@@ -14,7 +14,8 @@ import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
 export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
-  let {net_paid,order_amount,delivery_charge,payment_mode} = order
+  debugger
+  let {net_paid,amount,delivery_charge,payment_mode} = order
   return (
     <View style={{ marginTop: 10, paddingHorizontal: 24 }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -36,7 +37,7 @@ export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${fromCheckout ? subTotal :order_amount}
+          ${fromCheckout ? subTotal :amount}
         </Text>
       </View>
       <View
@@ -89,7 +90,7 @@ export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${order_amount}
+          ${amount}
         </Text>
       </View>
       {!fromCheckout && <View style={{ justifyContent: "space-between", marginVertical: 16 }}>

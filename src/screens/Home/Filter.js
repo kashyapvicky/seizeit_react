@@ -248,7 +248,7 @@ class Filter extends Component {
           hideLeftIcon={false}
           title={"Filter"}
           onRightPress={() => this.resetFilter()}
-          backPress={() => this.props.navigation.dismiss()}
+          backPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
           style={{ flex: 1, paddingHorizontal: 24 }}

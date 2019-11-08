@@ -19,12 +19,12 @@ export default  SearchInput = (props) =>{
     return <TouchableOpacity 
     onPress={()=> props.onPress ? props.onPress() : null}
     style={[styles.searchView,props.style && props.style]}>
-    <View style={{flex:0.1,alignSelf:'center',paddingLeft:16}}>
+    <View style={{flex:0.05,alignSelf:'center',paddingLeft:16}}>
     <Icons  name={'ios-search'} size={22} color={'#96C50F'} />
     </View>
     <TouchableOpacity 
     activeOpacity={0.9}
- behavior={'height'}
+     behavior={'height'}
     style={{
       flex: 0.9,
       flexDirection: "row",
@@ -34,8 +34,8 @@ export default  SearchInput = (props) =>{
           style={{
             height: 40,
             fontSize: normalize(14),
-            textAlign: "left",
-            marginLeft:8,
+            // textAlign: "left",
+            paddingHorizontal:16,
             // fontWeight: "500",
             color: "#96C50F",
             // fontFamily: fonts.sourcesanspro

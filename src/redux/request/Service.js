@@ -1,8 +1,15 @@
+import React, { Component } from 'react';
+import {
+  Alert,
+} from 'react-native'
 import AsyncStorage from "@react-native-community/async-storage";
+import { LoginManager, AccessToken, setAvatar } from "react-native-fbsdk";
+import { GoogleSignin } from 'react-native-google-signin';
 import AxiosInstance from "./Interceptor";
 import NavigationService from "../../utilities/NavigationServices";
 import {string} from '../../utilities/languages/i18n'
 import colors from "../../utilities/config/colors";
+
 // Get Access Token
 const getAccessTokenFromCookies = () => {
   return new Promise ((resolve,reject) =>{
@@ -43,6 +50,8 @@ const postRequest = (apiName, data = {},hideLoader=false) => {
           return NavigationService.showToastMessage(res.data.error || res.data.message)
          
         }else if(res.status == 401){
+          logOutSuccess('Session has been expired. Please login again to continue')
+
           return NavigationService.showToastMessage(res.data.error)
          }else{
           return NavigationService.showToastMessage(res.data.message)
@@ -77,7 +86,8 @@ const getRequest = apiName => {
           if(res.status == 400){
             return NavigationService.showToastMessage(res.data.error)
            }else if(res.status == 401){
-             return NavigationService.showToastMessage(res.data.error)
+            logOutSuccess('Session has been expired. Please login again to continue')
+             return false
             }else if(res.status == 500){
               debugger
              return NavigationService.showToastMessage(res.data.message)
@@ -93,4 +103,39 @@ const getRequest = apiName => {
       });
   }
 };
+
 export { getAccessTokenFromCookies, postRequest, getRequest };
+
+const logOutSuccess = (message) => {
+  Alert.alert(
+      '',
+      message,
+      [
+          { text: string('cancel'), onPress: () => null },
+          {
+
+              text: string('OK'),
+              onPress: () => {
+                logout()
+              },
+              // style:'cancel'
+          }
+      ],
+      { cancelable: false }
+  )
+}
+
+const logout = async () => {
+     let {logOutUserSuccess} = NavigationService.getScreenPropsOfNavigation().actions
+      let {user} = NavigationService.getScreenPropsOfNavigation().user
+      if(user && user.login_from && user.login_from == 'facebook') {
+        await  LoginManager.logOut()
+      }else if(user && user.login_from && user.login_from == 'google'){
+       await GoogleSignin.revokeAccess();
+       await GoogleSignin.signOut();
+      }    
+      logOutUserSuccess(true) 
+       setTimeout(() =>{
+        NavigationService.navigate('AuthNavigatorStack')
+       },200)
+    }

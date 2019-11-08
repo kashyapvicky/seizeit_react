@@ -31,12 +31,9 @@ export default OrderListItem = ({
       ]}
     >
         {item &&
-          item.order_detail &&
-          item.order_detail.length > 0 &&
-          item.order_detail.map((x, i) => {
-            return (
+          item.product_detail &&
+          item.product_detail &&
               <View
-                key={i + "orderproduct"}
                 style={{ flexDirection: "row", flex: 1 }}
               >
                 <View
@@ -52,8 +49,8 @@ export default OrderListItem = ({
                 >
                   <Image
                     style={{ height: 96, width: "100%", borderRadius: 4 }}
-                    source={x.product_detail.pics && x.product_detail.pics.length > 0 ? {
-                      uri:x.product_detail.pics[0].pic }: Images.no_image}
+                    source={item.product_detail.pics && item.product_detail.pics.length > 0 ? {
+                      uri:item.product_detail.pics[0].pic }: Images.no_image}
                   />
                 </View>
                 <View style={{ flex: 0.7, paddingLeft: 12 }}>
@@ -66,7 +63,7 @@ export default OrderListItem = ({
                         lineHeight: 20
                       }}
                     >
-                      {x.product_detail.product_title}
+                      {item.product_detail.product_title}
                     </Text>
                     <View style={{ justifyContent: "flex-end", flex: 1,paddingTop:8 }}>
                     <Text
@@ -77,8 +74,8 @@ export default OrderListItem = ({
                       }}
                     >
                       by{" "}
-                      {x.product_detail.vendor && x.product_detail.vendor.name
-                        ? x.product_detail.vendor.name
+                      {item.product_detail.vendor && item.product_detail.vendor.name
+                        ? item.product_detail.vendor.name
                         : ""}
                     </Text>
                   </View>
@@ -86,9 +83,8 @@ export default OrderListItem = ({
               
                 </View>
               </View>
-            );
-          })}
-      <View
+        }
+        <View
           style={{
             flex:1,
             flexDirection:'row',
@@ -100,38 +96,16 @@ export default OrderListItem = ({
             h5
             style={{
               color:
-                item.shipping_status == 1 || item.shipping_status == 5
+                item.status == 1 || item.status == 5
                   ? "#96C50F"
                   : "rgba(0,0,0,0.56)",
               fontSize: normalize(14)
             }}
           >
-            {item.shipping_status == 4 ? `${item.stausMessage} on 2·Feb·2018` : item.stausMessage}
+            {item.status == 4 ? `${item.stausMessage} on 2·Feb·2018` : item.stausMessage}
           </Text>
           </View>
-         
         </View>
-      {item.shipping_status == 4 && !fromReturn ? (
-        <View style={{ flex: 1, flexDirection: "row", paddingTop: 14 }}>
-          <View style={{ flex: 0.5 }} />
-          {[
-            { title: "Return", transparent: true },
-            { title: "Order again", transparent: false }
-          ].map((btn, index) => {
-            return (
-              <View
-                style={{
-                  flex: 0.4,
-                  justifyContent: "flex-end",
-                  paddingRight: index == 0 ? 10 : 0
-                }}
-              >
-                {renderButton(btn.title, btn.transparent)}
-              </View>
-            );
-          })}
-        </View>
-      ) : null}
     </TouchableOpacity>
   );
 };
