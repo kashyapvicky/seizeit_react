@@ -317,7 +317,7 @@ class VendorProduct extends Component {
     // let {addToCartSuccess} = this.props.screenProps.productActions
     this.setState({
       products: this.state.products.map(x => {
-        if (x.product_id == item.product_id) {
+        if (x.id == item.id) {
           return {
             ...x,
             isFevorite: x.isFevorite ? false : true
@@ -335,7 +335,7 @@ class VendorProduct extends Component {
     let { addToCartSuccess } = this.props.screenProps.productActions;
     this.setState({
       products: this.state.products.map(x => {
-        if (x.product_id == item.product_id) {
+        if (x.id == item.id) {
           return {
             ...x,
             isCart: x.isCart ? false : true
@@ -353,7 +353,7 @@ class VendorProduct extends Component {
     debugger;
     let { carts } = this.props.screenProps.product;
     let newArray = array.map(x => {
-      let findIndex = carts.findIndex(cart => cart.product_id == x.product_id);
+      let findIndex = carts.findIndex(cart => cart.id == x.id);
       if (findIndex > -1) {
         return {
           ...x,

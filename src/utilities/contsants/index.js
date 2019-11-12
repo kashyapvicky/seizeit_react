@@ -82,6 +82,7 @@ removeCart:require("../../assets/images/ic_remove_cart.png"),
  walk3:require('../../assets/images/walk3.png'),
  walk2:require('../../assets/images/walk2.png'),
  walk4:require('../../assets/images/walk4.png'),
+ returnRequestSuccess:require('../../assets/images/illustration_return.png'),
 
 
 };

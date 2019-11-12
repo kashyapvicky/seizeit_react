@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   SafeAreaView,
@@ -8,29 +8,59 @@ import {
   ScrollView,
   FlatList,
   TextInput
-
-} from 'react-native';
+} from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
 
 //local imports
-import Button from '../../components/Button'
-import Text from '../../components/Text'
-import styles from '../../styles'
+import Button from "../../components/Button";
+import Text from "../../components/Text";
+import styles from "../../styles";
 import Header from "../../components/Header";
-import { string } from '../../utilities/languages/i18n'
-import colors from '../../utilities/config/colors';
-import {Images} from '../../utilities/contsants'
+import { string } from "../../utilities/languages/i18n";
+import colors from "../../utilities/config/colors";
+import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
+import { postRequest, getRequest } from "../../redux/request/Service";
+import OrderCommonItem from "../Dashboard/Templates/OrderCommonItem";
+import { OrderPlaceholder } from "./Templates/OrderPlaceHolder";
 
 class Returns extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible2: false,
-      cartItems: [],
+      visible2: false
     };
+    this.loaderComponent = new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
   }
+  componentDidMount() {
+    this.getReturnOrders(6);
+  }
+  /******************** Api Function  *****************/
+  getReturnOrders = status => {
+    getRequest(`order/vendor_order_detail?status=${status}`)
+      .then(res => {
+        debugger;
+        if (res && res.data && res.data.length > 0) {
+          this.setState({
+            orders: res.data,
+            isRefreshing: false
+          });
+        } else {
+          this.setState({
+            isRefreshing: false,
+            orders: []
+          });
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
+
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -51,7 +81,7 @@ class Returns extends Component {
   renderItems = ({ item, index }) => {
     return (
       <TouchableOpacity
-      onPress={() => this.props.navigation.navigate('ReturnDetail')}
+        onPress={() => this.props.navigation.navigate("ReturnDetail")}
         activeOpacity={9}
         index={index}
         style={[
@@ -63,98 +93,40 @@ class Returns extends Component {
           }
         ]}
       >
-        <View style={{ flexDirection: "row" }}>
-          <View
-            style={[
-              styles.shadow,
-              {
-                flex: 0.3,
-                shadowColor: "rgba(0,0,0)",
-                shadowOpacity: 1,
-                shadowRadius: 0
-              }
-            ]}
-          >
-            <Image
-              style={{ height: 96, width: 96, borderRadius: 4 }}
-              source={{
-                uri:
-                  "https://lsco.scene7.com/is/image/lsco/Levis/clothing/373910227-front-pdp.jpg?$grid_desktop_full$"
-              }}
-            />
-          </View>
-          <View style={{ flex: 0.7,paddingLeft:8 }}>
-            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-              <Text
-                p
-                style={{
-                  color: "#233138",
-                  letterSpacing: 0.5,
-                  fontSize: normalize(12),
-                  fontWeight: "600"
-                }}
-              >
-                CLOTHING
-              </Text>
-              {/* <Ionicons  name={'dots-vertical'} size={28} color={'#D8D8D8'} /> */}
-            </View>
-            <View>
-              <Text p style={{ color: "#000000",lineHeight:26 }}>
-                Dotted Red payjama bottom wear
-              </Text>
-            </View>
-            <View style={{flexDirection:'row',justifyContent:'space-between',paddingTop:6}}>
-              <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-                $1,256
-              </Text>
-              <View style={{width:'auto',
-                alignItems:'center',
-                paddingHorizontal:6,
-                height:16,
-                // justifyContent:'center',
-                // flexDirection:'row',
-                backgroundColor:'rgba(150,197,15,0.12)',
-               borderRadius:12}}>
-              <Text  textAlign style={[styles.text,{ color: "#96C50F", fontSize: normalize(11) }]}>
-                REFUND APPROVED 
-              </Text>
-        
-                </View>
-            </View>
-          </View>
-        </View>
-
+        <OrderCommonItem item={item} />
       </TouchableOpacity>
     );
   };
-  renderProductsList = () =>{
-    return  <View style={{flex:1, paddingHorizontal: 16 ,marginTop:8}} >
-     <FlatList
-      bounces={true}
-      // extraData={this.state}
-      // pagingEnabled={true}
-      showsVerticalScrollIndicator={false}
-      data={[1, 2]}
-      keyExtractor={(item, index) => index + "product"}
-      renderItem={this.renderItems}
-      // refreshing={this.state.isRefreshing}
-      // onRefresh={this.handleRefresh}
-      // onEndReached={this.handleLoadMore}
-      // onEndReachedThreshold={0.9}
-      // ListFooterComponent={this.renderFooter}
-      // ListEmptyComponent={
-      //     (this.state.allProductsListForItem.length == 0) ?
-      //         ListEmpty2({ state: this.state.visible, margin: screenDimensions.height / 3 - 20, message: string('noproductfound') })
+  renderProductsList = () => {
+    return (
+      <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}>
+        <FlatList
+          bounces={true}
+          // extraData={this.state}
+          // pagingEnabled={true}
+          showsVerticalScrollIndicator={false}
+          data={this.state.orders}
+          keyExtractor={(item, index) => index + "product"}
+          renderItem={this.renderItems}
+          // refreshing={this.state.isRefreshing}
+          // onRefresh={this.handleRefresh}
+          // onEndReached={this.handleLoadMore}
+          // onEndReachedThreshold={0.9}
+        
+          ListEmptyComponent={
+            <OrderPlaceholder
+              array={[1, 2, 3, 4,]}
+              message={
+                this.props.screenProps.loader ? "" : "No data found "
+              }
+              loader={this.loaderComponent}
+            />
+          }
+        />
+      </View>
+    );
+  };
 
-      //         :
-      //         null
-      // }
-    />
-    </View>
-  }
-
- 
-  
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -167,13 +139,13 @@ class Returns extends Component {
               shadowRadius: 0.1
             }
           ]}
-        //   hideLeftIcon={true}
+          //   hideLeftIcon={true}
           title={"Returns"}
           backPress={() => this.props.navigation.goBack()}
         />
 
-    {this.renderProductsList()}     
- </View>
+        {this.renderProductsList()}
+      </View>
     );
   }
 }

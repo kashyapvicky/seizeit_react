@@ -9,7 +9,7 @@ import { string } from "../../../utilities/languages/i18n";
 import {Images} from '../../../utilities/contsants'
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
-export default (AddressListItem = ({item,index,onPress,descriptionSize,deleteAddress,updateDefaultAddress}) => {
+export default (AddressListItem = ({item,index,onPress,descriptionSize,deleteAddress,updateDefaultAddress,from}) => {
 return <TouchableOpacity
 onPress={()=>onPress ? onPress() : null}
 activeOpacity={9}
@@ -83,7 +83,7 @@ style={[
       </Text>
       </View>
      
-      {descriptionSize ? <TouchableOpacity 
+      {descriptionSize && from == 'Address' ? <TouchableOpacity 
        onPress={() => deleteAddress ? deleteAddress() : null}
       style={{ flex: 0.2, alignItems: "center" }}>
         <Image source={Images.delete} />

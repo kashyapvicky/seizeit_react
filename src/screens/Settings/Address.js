@@ -30,7 +30,8 @@ class Address extends Component {
     super(props);
     this.state = {
       isRefreshing: false,
-      addresses: []
+      addresses: [],
+      selectedPickupAddress:null
     };
     // Placeholder Product
     this.loaderComponent = new Promise(resolve => {
@@ -105,42 +106,55 @@ class Address extends Component {
       getAddress: () => this.getAddresses()
     });
   };
+  updateAddressState = (item)=>{
+    this.setState({
+      addresses: this.state.addresses.map(x => {
+        if (x.id == item.id) {
+          return {
+            ...x,
+            is_active: item.is_active ? 0 : 1
+          };
+        } else {
+          return {
+            ...x,
+            is_active: 0
+          };
+        }
+      })
+    });
+  }
   // Update Address
   updateDefaultAddress = item => {
-    let { setToastMessage } = this.props.screenProps.actions;
-    let { toastRef } = this.props.screenProps;
-    let data = {};
-    data["address_id"] = item.id;
-    data["is_active"] = item.is_active ? 0 : 1;
-    postRequest("customer/updateAddressStatus", data)
-      .then(res => {
-        if (res && res.success) {
-          let { params } = this.props.navigation.state;
-          setToastMessage(true, colors.green1);
-          toastRef.show(res.success);
-          if (params && params.updateDefaultAddress) {
-            params.updateDefaultAddress(item.description);
-            this.props.navigation.goBack();
-          }
-          this.setState({
-            addresses: this.state.addresses.map(x => {
-              if (x.id == item.id) {
-                return {
-                  ...x,
-                  is_active: item.is_active ? 0 : 1
-                };
-              } else {
-                return {
-                  ...x,
-                  is_active: 0
-                };
-              }
-            })
-          });
-        }
-        setIndicator(false);
+    let {params} = this.props.navigation.state
+    if(params && params.from =='Return'){
+      this.setState({
+        selectedPickupAddress : item
+      },()=> {
+        this.updateAddressState(item)
       })
-      .catch(err => {});
+    }else{
+      let { setToastMessage } = this.props.screenProps.actions;
+      let { toastRef } = this.props.screenProps;
+      let data = {};
+      data["address_id"] = item.id;
+      data["is_active"] = item.is_active ? 0 : 1;
+      postRequest("customer/updateAddressStatus", data)
+        .then(res => {
+          if (res && res.success) {
+            let { params } = this.props.navigation.state;
+            setToastMessage(true, colors.green1);
+            toastRef.show(res.success);
+            if (params && params.updateDefaultAddress) {
+              params.updateDefaultAddress(item.description);
+              this.props.navigation.goBack();
+            }
+            this.updateAddressState(item)
+          }
+          setIndicator(false);
+        })
+        .catch(err => {});
+    }
+    
   };
   // Update Address
   deleteAddress = item => {
@@ -164,7 +178,33 @@ class Address extends Component {
       })
       .catch(err => {});
   };
-  /*************APi Call  *********/
+
+  submitReturnRequestApi = () =>{
+    let { setToastMessage } = this.props.screenProps.actions;
+    let { toastRef } = this.props.screenProps;
+    let { params } = this.props.navigation.state;
+    if (params && params.form == 'Return') {
+      if(this.state.selectedPickupAddress){
+        let {id} = this.state.selectedPickupAddress
+        let data = {...params.data}
+        data['pickup_address_id'] =id
+        postRequest(`order/change_product_status`,params.data)
+        .then(res => {
+          if (res && res.success) {
+            setToastMessage(true, colors.primary);
+            toastRef.show(res.success);
+            this.props.navigation.navigate('ReturnRequestSubmitSuccess');
+          }
+          setIndicator(false);
+         })
+        .catch(err => {});
+      }else{
+        setToastMessage(true, colors.danger);
+        toastRef.show('Please select pickup address');
+      }
+    }
+  }
+/*************APi Call  *********/
   handleRefresh = () => {
     this.setState(
       {
@@ -192,16 +232,23 @@ class Address extends Component {
       />
     );
   };
-  pressButton = () => {
-    this.props.navigation.navigate("AddNewAddress", {
-      getAddress: () => this.getAddresses()
-    });
+  pressButton = (title) => {
+    if(title == 'SUBMIT'){
+      // this.props.navigation.navigate('ReturnRequestSubmitSuccess');
+      this.submitReturnRequestApi()
+    }else{
+      this.props.navigation.navigate("AddNewAddress", {
+        getAddress: () => this.getAddresses()
+      });
+    }
   };
   renderItems = ({ item, index }) => {
-    return (
+  let {params} = this.props.navigation.state
+  return (
       <AddressListItem
         item={item}
         index={index}
+        from={(params && params.from =='Return') ? 'Return' :'Address'}
         onPress={() => this.getAddressDetail(item)}
         descriptionSize={normalize(14)}
         updateDefaultAddress={() => this.updateDefaultAddress(item)}
@@ -232,6 +279,13 @@ class Address extends Component {
   };
 
   render() {
+    let {params} = this.props.navigation.state
+    let title = 'Address'
+    let buttonTitle='ADD NEW'
+    if(params && params.from =='Return'){
+      title = 'Select Address'
+      buttonTitle='SUBMIT'
+    }
     return (
       <View style={{ flex: 1 }}>
         <Header
@@ -243,7 +297,7 @@ class Address extends Component {
               shadowRadius: 0.1
             }
           ]}
-          title={"Address"}
+          title={title}
           backPress={() => this.props.navigation.goBack()}
         />
         <View style={{ paddingHorizontal: 24, marginBottom: 8, marginTop: 16 }}>
@@ -252,7 +306,7 @@ class Address extends Component {
 
         {this.renderBankList()}
         <View style={{ flex: 0.2, paddingHorizontal: 16 }}>
-          {this.renderButton("ADD NEW")}
+          {this.renderButton(buttonTitle)}
         </View>
       </View>
     );

@@ -23,6 +23,7 @@ import styles from "../../styles";
 import { string } from "../../utilities/languages/i18n";
 import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
+import OrderCommonItem from "./Templates/OrderCommonItem";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -38,6 +39,9 @@ class Home extends Component {
         },
         {
           title: "In Processing"
+        },
+        {
+          title: "Packed"
         },
         {
           title: "Dispatched"
@@ -64,7 +68,21 @@ class Home extends Component {
   componentDidMount() {
     this.getOrders(1);
   }
-
+  buttonStatus = value => {
+    debugger;
+    switch (value) {
+      case 1:
+        return "Confirm Order";
+      case 2:
+        return "Packed Order";
+      case 3:
+        return "Dispatched";
+      case 4:
+        return "Delivered";
+      default:
+        return "";
+    }
+  };
   /******************** Api Function  *****************/
   getOrders = status => {
     getRequest(`order/vendor_order_detail?status=${status}`)
@@ -98,8 +116,8 @@ class Home extends Component {
         if (res && res.success) {
           setToastMessage(true, colors.primary);
           toastRef.show(res.success);
-          let filterorders = this.state.orders.filter(x=> x.id != orderId )
-          this.setState({orders:filterorders})
+          let filterorders = this.state.orders.filter(x => x.id != orderId);
+          this.setState({ orders: filterorders });
         }
         debugger;
         setIndicator(false);
@@ -112,10 +130,16 @@ class Home extends Component {
       this.changeOrderStatus(order.id, 8);
     } else if (title == "Confirm Order") {
       this.changeOrderStatus(order.id, 2);
+    } else if (title == "Packed Order") {
+      this.changeOrderStatus(order.id, 3);
+    } else if (title == "Dispatched") {
+      this.changeOrderStatus(order.id, 4);
+    } else if (title == "Delivered") {
+      this.changeOrderStatus(order.id, 7);
     } else if (title == "Order details") {
-      this.props.navigation.navigate('OrdeDetail',{
-        order:order
-      })
+      this.props.navigation.navigate("OrdeDetail", {
+        order: order
+      });
     }
   };
   /******************** Api Function  End *****************/
@@ -139,7 +163,6 @@ class Home extends Component {
     );
   };
   //***************** */Tabs Function  **********************//
-  setStateForTabChange = i => {};
   renderListForProducts = (item, index) => {
     return (
       <View
@@ -166,6 +189,18 @@ class Home extends Component {
   };
 
   renderItems = ({ item, index }) => {
+    let buttons;
+    if (item.status >= 4) {
+      buttons = [
+        {
+          name: "Order details",
+          backgroundColor: "#FFFFFF",
+          color: "#96C50F"
+        }
+      ];
+    } else {
+      buttons = this.state.buttons;
+    }
     return (
       <TouchableOpacity
         activeOpacity={9}
@@ -180,57 +215,8 @@ class Home extends Component {
           }
         ]}
       >
-        <View style={{ flexDirection: "row" }}>
-          <View
-            style={[
-              styles.shadow,
-              {
-                flex: 0.3,
-                shadowColor: "rgba(0,0,0)",
-                shadowOpacity: 0.19,
-                shadowRadius: 0.1
-              }
-            ]}
-          >
-            <Image
-              style={{ height: 96, width: 96, borderRadius: 4 }}
-              source={
-                item.product_detail && item.product_detail.pics.length > 0
-                  ? {
-                      uri: item.product_detail.pics[0].pic
-                    }
-                  : Images.no_image
-              }
-            />
-          </View>
-          <View style={{ flex: 0.7, paddingLeft: 8 }}>
-            <View>
-              <Text
-                p
-                style={{
-                  color: "#233138",
-                  letterSpacing: 0.5,
-                  fontSize: normalize(12),
-                  fontWeight: "600"
-                }}
-              >
-                {item.product_detail.brand
-                  ? item.product_detail.brand.name
-                  : ""}
-              </Text>
-            </View>
-            <View>
-              <Text p style={{ color: "#000000" }}>
-                {item.product_detail.product_title}
-              </Text>
-            </View>
-            <View style={{ paddingTop: 6 }}>
-              <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-                ${item.product_detail.price}
-              </Text>
-            </View>
-          </View>
-        </View>
+        <OrderCommonItem item={item} />
+
         <View
           style={{
             flexDirection: "row",
@@ -239,15 +225,22 @@ class Home extends Component {
             paddingBottom: 8
           }}
         >
-          {this.state.buttons.map((button, index) => {
+          {buttons.map((button, index) => {
             return (
               <View style={{ flex: 0.5 }}>
-                {this.renderButton(
-                  button.name,
-                  button.backgroundColor,
-                  button.color,
-                  item
-                )}
+                {index == 1
+                  ? this.renderButton(
+                      this.buttonStatus(item.status),
+                      button.backgroundColor,
+                      button.color,
+                      item
+                    )
+                  : this.renderButton(
+                      button.name,
+                      button.backgroundColor,
+                      button.color,
+                      item
+                    )}
               </View>
             );
           })}

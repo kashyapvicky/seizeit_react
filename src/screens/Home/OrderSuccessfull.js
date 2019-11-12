@@ -115,7 +115,7 @@ export default class OrderSuccessFull extends Component {
                 <View style={{height:10 }} />
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate("Orders", {
+                    this.props.navigation.navigate("OrderPlaced", {
                       orderSuccessTrue: true
                     })
                   }

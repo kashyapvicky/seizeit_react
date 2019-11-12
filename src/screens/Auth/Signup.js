@@ -615,7 +615,7 @@ class Signup extends Component {
             {this.renderSocialButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,24)}
             </View>   
             <View>
-            {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',32)}
+            {/* {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',32)} */}
             </View>
 
           </View>

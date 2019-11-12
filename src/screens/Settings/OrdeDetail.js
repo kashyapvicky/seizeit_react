@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
-  TextInput,
-  
+  TextInput
 } from "react-native";
 
 //local imports
@@ -23,6 +22,7 @@ import { normalize } from "../../utilities/helpers/normalizeText";
 import CustomerInfo from "./Templates/CustomerInfo";
 import InvoiceInfo from "./Templates/InvoiceInfo";
 
+
 class OrderDetails extends Component {
   constructor(props) {
     super(props);
@@ -30,17 +30,17 @@ class OrderDetails extends Component {
       visible2: false,
       order: []
     };
-    
   }
-  componentDidMount(){
-    debugger
-    
-    let {params} = this.props.navigation.state
-    if(params && params.order){
-      debugger
+  componentDidMount() {
+    let { params } = this.props.navigation.state;
+    if (params && params.order && params.from == "order-placed") {
       this.setState({
-        order : params.order
-      })
+        order: params.order
+      });
+    } else {
+      this.setState({
+        order: params.order
+      });
     }
   }
   renderButton = (title, transparent) => {
@@ -74,71 +74,25 @@ class OrderDetails extends Component {
           }
         ]}
       >
-        <View style={{ flexDirection: "row" }}>
-          <View
-            style={[
-              styles.shadow,
-              {
-                flex: 0.3,
-                shadowColor: "rgba(0,0,0)",
-                shadowOpacity: 1,
-                shadowRadius: 0
-              }
-            ]}
-          >
-            <Image
-              style={{ height: 96, width: 96, borderRadius: 4 }}
-              source={item.pics && item.pics.length > 0 ? {
-                uri:item.pics[0].pic }: Images.no_image}
-            />
-          </View>
-          <View style={{ flex: 0.7, paddingLeft: 16 }}>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <Text
-                p
-                style={{
-                  color: "#233138",
-                  letterSpacing: 0.5,
-                  fontSize: normalize(12),
-                  fontWeight: "600"
-                }}
-              >
-                CLOTHING
-              </Text>
-              {/* <Ionicons  name={'dots-vertical'} size={28} color={'#D8D8D8'} /> */}
-            </View>
-            <View>
-              <Text p style={{ color: "#000000" }}>
-                {item.product_title}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                paddingTop: 6
-              }}
-            >
-              <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-               ${item.price}
-              </Text>
-            </View>
-          </View>
-        </View>
+        <ItemsProduct item={item.product_detail ? item.product_detail : item} />
       </TouchableOpacity>
     );
   };
   renderOrdersItem = () => {
-    let {order_detail,product_detail} = this.state.order
-    debugger
+    let { order_detail, product_detail } = this.state.order;
+    debugger;
     return (
       <View style={{ flex: 1, paddingHorizontal: 24, marginTop: 8 }}>
         <FlatList
           bounces={true}
           showsVerticalScrollIndicator={false}
-          data={order_detail && order_detail.length > 0 ? order_detail:product_detail ? [product_detail]:[]}
+          data={
+            order_detail && order_detail.length > 0
+              ? order_detail
+              : product_detail
+              ? [product_detail]
+              : []
+          }
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
         />
@@ -146,19 +100,26 @@ class OrderDetails extends Component {
     );
   };
   renderCustomerInfo = () => {
-    let {user} = this.props.screenProps.user
-    let {customer_address,customer_info} = this.state.order
-    return <CustomerInfo 
-           address={customer_address}
-           user={user}
-           customer_info={customer_info}
-       />
+    let { user } = this.props.screenProps.user;
+    let { customer_address, customer_info, address } = this.state.order;
+    return (
+      <CustomerInfo
+        address={customer_address ? customer_address : address}
+        user={user}
+        customer_info={customer_info ? customer_info : user}
+      />
+    );
   };
   renderOrderInvoiceInfo = () => {
-    let {order} = this.state
-    return  <InvoiceInfo 
-             order={order}
-        />
+    let { order } = this.state;
+    return (
+      <InvoiceInfo
+        order={{
+          ...order,
+          amount: order.order_amount ? order.order_amount : order.amount
+        }}
+      />
+    );
   };
   render() {
     return (
@@ -176,16 +137,78 @@ class OrderDetails extends Component {
           title={"Order details"}
           onRightPress={() => this.props.navigation.goBack()}
         />
-        <ScrollView style={{flex:1}} showsVerticalScrollIndicator={false}>
-        {this.renderOrdersItem()}
-        <View style={styles.borderSalesReport} />
-        {this.renderCustomerInfo()}
-        <View style={styles.borderSalesReport} />
-        {this.renderOrderInvoiceInfo()}
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+          {this.renderOrdersItem()}
+          <View style={styles.borderSalesReport} />
+          {this.renderCustomerInfo()}
+          <View style={styles.borderSalesReport} />
+          {this.renderOrderInvoiceInfo()}
         </ScrollView>
-       
       </View>
     );
   }
 }
 export default OrderDetails;
+
+
+//ItemsProduct
+const ItemsProduct = ({ item }) => {
+  return (
+    <View style={{ flexDirection: "row" }}>
+      <View
+        style={[
+          styles.shadow,
+          {
+            flex: 0.3,
+            shadowColor: "rgba(0,0,0)",
+            shadowOpacity: 1,
+            shadowRadius: 0
+          }
+        ]}
+      >
+        <Image
+          style={{ height: 96, width: 96, borderRadius: 4 }}
+          source={
+            item.pics && item.pics.length > 0
+              ? {
+                  uri: item.pics[0].pic
+                }
+              : Images.no_image
+          }
+        />
+      </View>
+      <View style={{ flex: 0.7, paddingLeft: 16 }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <Text
+            p
+            style={{
+              color: "#233138",
+              letterSpacing: 0.5,
+              fontSize: normalize(12),
+              fontWeight: "600"
+            }}
+          >
+            CLOTHING
+          </Text>
+          {/* <Ionicons  name={'dots-vertical'} size={28} color={'#D8D8D8'} /> */}
+        </View>
+        <View>
+          <Text p style={{ color: "#000000" }}>
+            {item.product_title}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            paddingTop: 6
+          }}
+        >
+          <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
+            ${item.price}
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+};

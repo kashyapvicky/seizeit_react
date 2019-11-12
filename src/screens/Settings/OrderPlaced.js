@@ -23,51 +23,48 @@ import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import OrderListItem from "./Templates/OrderListItem";
-import {OrderPlaceholder} from './Templates/OrderPlaceHolder'
+import { OrderPlaceholder } from "./Templates/OrderPlaceHolder";
+import OrderPlacedListItem from "./Templates/OrderPlacedListItem";
 
 class CustomerOrders extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible2: false,
-      orders: [
-       
-      ]
-      
+      orders: []
     };
     this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
         resolve();
       }, 1000);
     });
- 
   }
-componentDidMount(){
-  this.getOrders()
-}
+  componentDidMount() {
+    this.getOrders();
+  }
   /******************** Api Function  *****************/
   getOrders = () => {
-    getRequest(`order/vendor_order_detail?status=${0}`)
+    getRequest(`order/order_detail`)
       .then(res => {
         debugger;
-        if (res && res.data && res.data.length > 0) {
-          this.setState(
-            {
-              orders:res.data,
-              isRefreshing: false
-            });
+        if (res && res.products && res.products.length > 0) {
+          this.setState({
+            orders: res.products,
+            isRefreshing: false
+          });
         } else {
           this.setState({
-            isRefreshing: false
+            isRefreshing: false,
+            orders: []
           });
         }
         setIndicator(false);
       })
       .catch(err => {});
   };
-/******************** Api Function End*****************/
+  /******************** Api Function End*****************/
 
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,item,orderItem) => {
     return (
       <Button
         buttonStyle={{
@@ -78,28 +75,39 @@ componentDidMount(){
           borderRadius: 4,
           backgroundColor: transparent ? "transparent" : colors.primary
         }}
-        buttonTextStyle={{fontWeight:'normal'}}
+        buttonTextStyle={{ fontWeight: "normal" }}
         fontSize={normalize(14)}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(title,item,orderItem)}
         title={title}
       />
     );
   };
-  pressButton = (title) => {
-    if(title == 'Return'){
-        this.props.navigation.navigate('CustomerReturnOrderRequest')
+  pressButton = (title,item,orderItem) => {
+    if (title == "Return") {
+      this.props.navigation.navigate("CustomerReturnOrderRequest",{
+        order: orderItem,
+        product:item,
+        getOrders:()=> this.getOrders()
+      });
     }
   };
   renderItems = ({ item, index }) => {
-    debugger
-    return <OrderListItem 
-     onPress={()=> this.props.navigation.navigate('OrderDetails',{
-      order:item
-     })}
-      item={item} index={index}
-      renderButton={(title,transparent) =>this.renderButton(title,transparent)}
-       />
+    return (
+      <OrderPlacedListItem
+        onPress={() =>
+          this.props.navigation.navigate("OrderDetails", {
+            order: item,
+            from: "order-placed"
+          })
+        }
+        item={item}
+        index={index}
+        renderButton={(title, transparent,item,orderItem) =>
+          this.renderButton(title, transparent,item,orderItem)
+        }
+      />
+    );
   };
   renderProductsList = () => {
     return (
@@ -112,10 +120,12 @@ componentDidMount(){
           data={this.state.orders}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
-          ListEmptyComponent={<OrderPlaceholder  
-            array={[1, 2, 3, 4,5,6]}
-            loader={this.loaderComponent}
-          />}
+          ListEmptyComponent={
+            <OrderPlaceholder
+              array={[1, 2, 3, 4, 5, 6]}
+              loader={this.loaderComponent}
+            />
+          }
           // refreshing={this.state.isRefreshing}
           // onRefresh={this.handleRefresh}
           // onEndReached={this.handleLoadMore}
@@ -149,10 +159,7 @@ componentDidMount(){
           title={"Orders"}
           backPress={() => this.props.navigation.goBack()}
         />
-          <ScrollView style={{flex:1}}>
-          {this.renderProductsList()}
-
-          </ScrollView>
+        <ScrollView style={{ flex: 1 }}>{this.renderProductsList()}</ScrollView>
       </View>
     );
   }

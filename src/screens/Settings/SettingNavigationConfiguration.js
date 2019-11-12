@@ -29,8 +29,9 @@ import BlogDetail from "./BlogDetail";
 import {TransitionConfig} from "../../AppNavigationConfiguration";
 import EditProfile from "./EditProfile";
 import Countries from "./Countries";
+import ReturnRequestSubmitSuccess from "./ReturnRequestSubmitSuccess";
 
-export const SettingNavigator = createStackNavigator(
+export const CardStack = createStackNavigator(
       {
         Setting:Setting,
         Orders:Orders,
@@ -41,6 +42,7 @@ export const SettingNavigator = createStackNavigator(
         AddNewBankAccount:AddNewBankAccount,
         Wishlist:Wishlist,
         Address:Address,
+        ReturnRequestSubmitSuccess:ReturnRequestSubmitSuccess,
         AddNewAddress:AddNewAddress,
         Countries:Countries,
         OrderPlaced:OrderPlaced,
@@ -65,5 +67,18 @@ export const SettingNavigator = createStackNavigator(
     }),
   }
 );
- 
+export const SettingNavigator = createStackNavigator(
+  {
+    CardStack:CardStack,
+    },
+{
+  initialRouteName: "CardStack",
+  headerMode: "none",
+  mode: "card",
+  transitionConfig: () => ({
+    screenInterpolator: CardStackStyleInterpolator.forHorizontal,
+  }),
+}
+);
+
 export const SettingNavigatorStack = createAppContainer(SettingNavigator);
