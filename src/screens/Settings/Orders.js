@@ -13,6 +13,7 @@ import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
 import Dash from "react-native-dash";
 import { postRequest, getRequest } from "../../redux/request/Service";
+import { ListEmptyComponent } from "../../components/ListEmptyComponent";
 
 //local imports
 import Button from "../../components/Button";
@@ -25,6 +26,7 @@ import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import ScrollableTabView from "../../components/ScrollableTab";
 import { screenDimensions } from "../../utilities/contsants";
+import { getGroups} from '../../utilities/method'
 
 class Orders extends Component {
   constructor(props) {
@@ -44,15 +46,70 @@ class Orders extends Component {
     };
   }
   componentDidMount(){
-    this.getOrders(1)
+    this.getOrders(2)
   }
   /******************** Api Function  *****************/
+  buttonStatus = value => {
+    debugger;
+    switch (value) {
+      case 1:
+        return "Confirm Order";
+      case 2:
+        return "Packed Order";
+      case 3:
+        return "Dispatched";
+      case 4:
+        return "Delivered";
+      default:
+        return "";
+    }
+  };
+  pressButton = (title, order) => {
+    if (title == "Confirm Order") {
+      this.changeOrderStatus(order.id, 2);
+    } else if (title == "Packed Order") {
+      this.changeOrderStatus(order.id, 3);
+    } else if (title == "Dispatched") {
+      this.changeOrderStatus(order.id, 4);
+    } else if (title == "Delivered") {
+      this.changeOrderStatus(order.id, 7);
+    }
+  };
+  changeOrderStatus = (orderId, status) => {
+    let { setToastMessage } = this.props.screenProps.actions;
+    let { toastRef } = this.props.screenProps;
+    let data = {};
+    data["order_detail_id"] = orderId;
+    data["status"] = status;
+    postRequest(`order/change_product_status`, data)
+      .then(res => {
+        if (res && res.success) {
+          setToastMessage(true, colors.primary);
+          toastRef.show(res.success);
+          this.getOrders(1)
+          //let filterorders = this.state.orders.filter(x => x.id != orderId);
+         // this.setState({ orders: filterorders });
+        }
+        debugger;
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
   getOrders = status => {
     getRequest(`order/vendor_order_detail?status=${status}`)
       .then(res => {
+        debugger
         if (res && res.data && res.data.length > 0) {
+          let groups =getGroups(res.data)
+          // Grouping Array
+          const groupArrays = Object.keys(groups).map((date) => {
+            return {
+              date,
+              orders:groups[date]
+            };
+          });
           this.setState({
-            orders: res.data,
+            orders: groupArrays,
             isRefreshing: false
           });
         } else {
@@ -65,9 +122,20 @@ class Orders extends Component {
       })
       .catch(err => {});
   };
-
-  pressButton = () => {};
-  renderButton = (title, transparent) => {
+  setStateForTabChange = event => {
+    if (event) {
+       if(event.i == 0){
+       this.getOrders(2);
+       }
+       else if(event.i == 1){
+        this.getOrders(7);
+        this.setState({
+          tabPage: event.i
+        });
+      }
+    }
+  };
+  renderButton = (title, transparent,order) => {
     return (
       <Button
         buttonStyle={{
@@ -80,7 +148,7 @@ class Orders extends Component {
         }}
         fontSize={14}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(title,order)}
         title={title}
       />
     );
@@ -98,16 +166,16 @@ class Orders extends Component {
             fontSize: normalize(18)
           }}
         >
-          03-16-2019
+          {item.date}
         </Text>
         <View style={{ flex: 1, marginTop: 16 }}>
-          {this.renderItems(item, index)}
+          {this.renderItems(item.orders,index,item)}
         </View>
       </TouchableOpacity>
     );
   };
-  renderItems = (item, index) => {
-    return this.state.orders.map((order, i) => {
+  renderItems = (orders, index) => {
+    return orders.map((order, i) => {
       return (
         <View key={i + "order"} style={{ flexDirection: "row",flex:1}}>
           <View style={{flex:0.1,marginTop: i == 0 ? 8 : 0,}}>
@@ -126,7 +194,7 @@ class Orders extends Component {
           <View
             style={{
               width:2,
-              height:(i + 1 == this.state.orders.length) ? '55%':'100%',
+              height:'100%',
               // height:
               //   i + 1 == this.state.orders.length
               //     ? 30 * this.state.orders.length
@@ -134,14 +202,14 @@ class Orders extends Component {
               backgroundColor: "rgba(0,0,0,0.09)",
             }}
           ></View>
-          {i + 1 == this.state.orders.length && (
+          {i + 1 == orders.length && (
             <View
               style={{
                 backgroundColor: "green",
                 height: 5,
                 width: 5,
                 borderRadius: 5 / 2,
-                bottom: (i + 1 == this.state.orders.length) ? 65:0,
+                bottom: 0,
                 left:-1,
                 position: "absolute"
               }}
@@ -179,12 +247,12 @@ class Orders extends Component {
                       // fontWeight: "600"
                     }}
                   >
-                    Order ID: Mi468337
+                    Order ID: {`#ORDER${order.id}`}
                   </Text>
                 </View>
                 <View>
                   <Text p style={{ color: "#000000", fontSize: normalize(16) }}>
-                    3 items · $245
+                    {`${order.amount}`}
                   </Text>
                 </View>
                 <View
@@ -209,7 +277,11 @@ class Orders extends Component {
                     paddingTop: 6
                   }}
                 >
-                  {this.renderButton("Dispatch")}
+                  {this.renderButton(
+                      this.buttonStatus(order.status),
+                      false,
+                      order
+                  )}
                 </View>
               </View>
               <View
@@ -229,11 +301,11 @@ class Orders extends Component {
                     { color: "#96C50F", fontSize: normalize(10) }
                   ]}
                 >
-                  PACKING DONE
+                {order.stausMessage}
                 </Text>
               </View>
             </View>
-            {this.state.orders.length - 1 != i && (
+            {orders.length - 1 != i && (
               <View style={{ marginVertical: 16, paddingHorizontal: 16 }}>
                 <Dash
                   dashThickness={1}
@@ -255,7 +327,7 @@ class Orders extends Component {
           // extraData={this.state}
           // pagingEnabled={true}
           showsVerticalScrollIndicator={false}
-          data={[1, 2, 3, 4, 5]}
+          data={this.state.orders}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderOrders}
           // refreshing={this.state.isRefreshing}
@@ -263,13 +335,11 @@ class Orders extends Component {
           // onEndReached={this.handleLoadMore}
           // onEndReachedThreshold={0.9}
           // ListFooterComponent={this.renderFooter}
-          // ListEmptyComponent={
-          //     (this.state.allProductsListForItem.length == 0) ?
-          //         ListEmpty2({ state: this.state.visible, margin: screenDimensions.height / 3 - 20, message: string('noproductfound') })
-
-          //         :
-          //         null
-          // }
+          ListEmptyComponent={() =>
+            !this.props.screenProps.loader ? (
+              <ListEmptyComponent message={"No Orders found"} style={{marginTop:'15%'}}/>
+            ) : null
+          }
         />
       </View>
     );
@@ -305,6 +375,9 @@ class Orders extends Component {
     return (
       <ScrollableTabView
         tabs={this.state.tabs}
+        onChangeTab={event => {
+          this.setStateForTabChange(event);
+        }}
         renderListTabs={(item, index) => this.renderProductsList(item, index)}
       />
     );

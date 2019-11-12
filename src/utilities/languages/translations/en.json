@@ -4,8 +4,12 @@
   "NetAlert" :"No internet connection",
   "mobileEnterMessage":"Enter your 10 digit mobile number. ",
   "verifyMobile":"Mobile Verification",
+  "Ordervaluemustbegreaterthen":"Bag total  must be greater then",
   "otpNotReceive":"Didn’t received OTP yet? ",
   "resendOTP": "RESEND OTP",
+  "promoDash": "Promo -",
+
+  "Pleadseenterpromocodefirst":"Please enter promo code first",
   "enter6Digit":"Enter the 6 digit OTP sent to your mobile number",
     "petDemanding": "What is your pet demanding?",
      "BecomeAVendor":"Become a vendor",

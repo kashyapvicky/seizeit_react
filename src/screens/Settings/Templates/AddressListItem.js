@@ -11,7 +11,7 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
 
 export default (AddressListItem = ({item,index,onPress,descriptionSize,deleteAddress,updateDefaultAddress,from}) => {
 return <TouchableOpacity
-onPress={()=>onPress ? onPress() : null}
+onPress={()=>(onPress && from == 'Address') ? onPress() : null}
 activeOpacity={9}
 index={index}
 style={[

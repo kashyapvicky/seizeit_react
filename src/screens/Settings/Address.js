@@ -44,6 +44,26 @@ class Address extends Component {
     this.getAddresses();
   }
   /*************APi Call  *********/
+  checkPickupAdress = () =>{
+  let { params } = this.props.navigation.state;
+    if (
+      (params &&
+      params.from == 'Return')){
+        if (this.state.addresses.length > 1) {
+          let is_activeAddress = this.state.addresses.filter(
+            x => x.is_active
+          )[0];
+        this.setState({
+          selectedPickupAddress :is_activeAddress
+        })
+      }else{
+        let is_activeAddress = this.state.addresses[0];
+        this.setState({
+          selectedPickupAddress :is_activeAddress
+        })
+      }
+    }
+  }
   getAddresses = () => {
     getRequest("customer/address-listing")
       .then(res => {
@@ -64,6 +84,8 @@ class Address extends Component {
               isRefreshing: false
             },
             () => {
+              //Check for pickuo address
+              this.checkPickupAdress()
               if (
                 params &&
                 params.fromCheckout &&
@@ -78,14 +100,15 @@ class Address extends Component {
                     is_activeAddress.description,
                     is_activeAddress.id
                   );
+               
                 } else {
                   let is_activeAddress = this.state.addresses[0];
                   params.updateDefaultAddress(
                     is_activeAddress.description,
                     is_activeAddress.id
                   );
+               
                 }
-
                 // this.props.navigation.goBack()
               }
             }
@@ -183,12 +206,12 @@ class Address extends Component {
     let { setToastMessage } = this.props.screenProps.actions;
     let { toastRef } = this.props.screenProps;
     let { params } = this.props.navigation.state;
-    if (params && params.form == 'Return') {
+    if (params && params.from == 'Return') {
       if(this.state.selectedPickupAddress){
         let {id} = this.state.selectedPickupAddress
         let data = {...params.data}
         data['pickup_address_id'] =id
-        postRequest(`order/change_product_status`,params.data)
+        postRequest(`order/change_product_status`,data)
         .then(res => {
           if (res && res.success) {
             setToastMessage(true, colors.primary);
@@ -235,7 +258,7 @@ class Address extends Component {
   pressButton = (title) => {
     if(title == 'SUBMIT'){
       // this.props.navigation.navigate('ReturnRequestSubmitSuccess');
-      this.submitReturnRequestApi()
+    this.submitReturnRequestApi()
     }else{
       this.props.navigation.navigate("AddNewAddress", {
         getAddress: () => this.getAddresses()
@@ -282,9 +305,11 @@ class Address extends Component {
     let {params} = this.props.navigation.state
     let title = 'Address'
     let buttonTitle='ADD NEW'
+    let label = 'Saved Address'
     if(params && params.from =='Return'){
       title = 'Select Address'
       buttonTitle='SUBMIT'
+      label='Select address for pickup'
     }
     return (
       <View style={{ flex: 1 }}>
@@ -301,7 +326,7 @@ class Address extends Component {
           backPress={() => this.props.navigation.goBack()}
         />
         <View style={{ paddingHorizontal: 24, marginBottom: 8, marginTop: 16 }}>
-          <RenderLabel label={"Saved Address"} />
+          <RenderLabel label={label} />
         </View>
 
         {this.renderBankList()}

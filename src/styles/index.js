@@ -35,6 +35,18 @@ export default container = StyleSheet.create({
     fontWeight: "bold",
     fontSize: normalize(16)
   },
+  medium: {
+    ...Platform.select({
+      android: {
+        ...fontsCustom.android.medium
+      },
+      ios: {
+        ...fontsCustom.android.medium
+      }
+    }),
+    color: colorsCustom.black,
+    fontSize: normalize(16)
+  },
   shadow: {
     shadowColor: "#000",
     shadowOffset: {

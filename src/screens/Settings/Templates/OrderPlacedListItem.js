@@ -66,7 +66,7 @@ export default OrderPlacedListItem = ({
                   <Image
                     style={{ height: 96, width: "100%", borderRadius: 4 }}
                     source={
-                      product_detail.pics && product_detail.pics.length > 0
+                      product_detail && product_detail.pics && product_detail.pics.length > 0
                         ? {
                             uri: product_detail.pics[0].pic
                           }
@@ -84,7 +84,7 @@ export default OrderPlacedListItem = ({
                         lineHeight: 20
                       }}
                     >
-                      {product_detail.product_title}
+                      {product_detail ? product_detail.product_title : ''}
                     </Text>
                     <View
                       style={{
@@ -101,7 +101,7 @@ export default OrderPlacedListItem = ({
                         }}
                       >
                         by{" "}
-                        {product_detail.vendor && product_detail.vendor.name
+                        {product_detail && product_detail.vendor && product_detail.vendor.name
                           ? product_detail.vendor.name
                           : ""}
                       </Text>

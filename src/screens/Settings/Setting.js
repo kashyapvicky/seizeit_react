@@ -71,11 +71,11 @@ class Settings extends Component {
           description: "Add, Edit or remove your address",
           routeName: "Address"
         },
-        {
-          name: "Cards",
-          description: "2 cards Saved",
-          routeName: "PaymentsCards"
-        }
+        // {
+        //   name: "Cards",
+        //   description: "2 cards Saved",
+        //   routeName: "PaymentsCards"
+        // }
       ],
       ordersArray: [
         {
@@ -115,7 +115,7 @@ class Settings extends Component {
         ordersArray
       });
     } else if (user && user.user_type == "vendor") {
-      let toRemoveAccountM = ["Wishlist", "Address", "Cards"];
+      let toRemoveAccountM = ["Wishlist", "Address"];
       let toRemoveOrderM = ["Order Placed"];
       let accountArray = this.state.accountSettingArr;
       let orderArray = this.state.ordersArray;

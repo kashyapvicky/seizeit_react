@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View ,StyleSheet} from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 
 import { LineChart } from "react-native-chart-kit";
 import Feather from "react-native-vector-icons/Feather";
@@ -13,9 +13,9 @@ import { string } from "../../../utilities/languages/i18n";
 import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
-export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
-  debugger
-  let {net_paid,amount,delivery_charge,payment_mode} = order
+export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmount }) => {
+  debugger;
+  let { net_paid, amount, delivery_charge, payment_mode, } = order;
   return (
     <View style={{ marginTop: 10, paddingHorizontal: 24 }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -37,9 +37,10 @@ export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${fromCheckout ? subTotal :amount}
+          ${fromCheckout ? subTotal : amount}
         </Text>
       </View>
+
       <View
         style={{
           marginTop: 2,
@@ -66,9 +67,42 @@ export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-         ${delivery_charge ? delivery_charge : 0}
+          ${delivery_charge ? delivery_charge : 0}
         </Text>
       </View>
+      {
+        promoCode && 
+        <View
+        style={{
+          marginTop: 2,
+          paddingBottom: 5,
+          justifyContent: "space-between",
+          flexDirection: "row"
+        }}
+      >
+        <Text
+          style={[
+            styles.profileLabel,
+            {
+              color: "#FF7E5D",
+              fontWeight: "normal",
+              fontSize: normalize(13)
+            }
+          ]}
+        >
+          {`Promo -${promoCode.coupan_code}`}
+        </Text>
+        <Text
+          style={[
+            styles.amountMoney,
+            { color: "#FF7E5D", fontSize: normalize(13) }
+          ]}
+        >
+          {`-${promoAmount}`}
+        </Text>
+      </View>
+      }
+     
       <View
         style={{
           marginTop: 10,
@@ -93,11 +127,15 @@ export default (InvoiceInfo = ({order,fromCheckout,subTotal}) => {
           ${amount}
         </Text>
       </View>
-      {!fromCheckout && <View style={{ justifyContent: "space-between", marginVertical: 16 }}>
-        <Text style={[styles.accountSetting, { fontSize: normalize(16) }]}>
-          {`Mode of Payment: ${payment_mode == 1 ?'Cash on delivery' :'Online'}`}
-        </Text>
-      </View>}
+      {!fromCheckout && (
+        <View style={{ justifyContent: "space-between", marginVertical: 16 }}>
+          <Text style={[styles.accountSetting, { fontSize: normalize(16) }]}>
+            {`Mode of Payment: ${
+              payment_mode == 1 ? "Cash on delivery" : "Online"
+            }`}
+          </Text>
+        </View>
+      )}
     </View>
   );
-});
+};

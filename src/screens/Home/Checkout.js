@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  StyleSheet,
+  Dimensions,
   TextInput
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -30,13 +32,14 @@ import RenderLabel from "../Settings/Templates/Label";
 import InvoiceInfo from "../Settings/Templates/InvoiceInfo";
 import TextInputComponent from "../../components/TextInput";
 import CartItem from "./Templates/CartItem";
+const { width, height } = Dimensions.get("window");
 
 class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible2: false,
-      notes:'',
+      notes: "",
       tabs: [
         {
           title: "Debit/Credit"
@@ -59,7 +62,7 @@ class Checkout extends Component {
           name: "Cash on delivery",
           description:
             "Please keep exact change handy to help you serve us better",
-          icon: true,
+          icon: false,
           title: "COD"
         },
         {
@@ -72,8 +75,10 @@ class Checkout extends Component {
       cartItems: [],
 
       user: {},
-      delivery: 10,
+      delivery: 0,
       totalAmount: 0,
+      promoAmount:0,
+      promoCode:null,
       address: ""
     };
     this.loaderComponent = new Promise(resolve => {
@@ -106,50 +111,52 @@ class Checkout extends Component {
   };
 
   /*************************************APi Call  *********************************************/
-  saveOrderApi = () =>{
-    let { setIndicator,setToastMessage } = this.props.screenProps.actions;
+  saveOrderApi = () => {
+    let { setIndicator, setToastMessage } = this.props.screenProps.actions;
     let { removeCartSuccess } = this.props.screenProps.productActions;
-
-    let {toastRef} = this.props.screenProps
-    if(!this.state.address_id){
-      setToastMessage(true,colors.danger)
-      return toastRef.show('Please add address first')
-    }else{
-    let data = {};
-    data["address_id"] = this.state.address_id;
-    data["net_paid"] = this.state.totalAmount;
-    data["order_amount"] = this.state.totalAmount;
-    data["payment_mode"] = 1;
-    data['notes'] = this.state.notes
-    data["no_of_itmes"] =this.state.cartItems.length;
-    data["transaction_id"] = 'COD'
-   let carts = this.state.cartItems.map((x) =>{
-     return {
-      product_id : x.id,
-      amount:x.price,
-      vendor_id:x.vendor_id,
-      quantity:1
-     }
-   })
-   data["product_detail"] = carts
-   postRequest(`order/save_order`, data)
-      .then(res => {
-        if (res && res.success) {
-         setToastMessage(true,colors.green1)
-         toastRef.show(res.success)
-         removeCartSuccess()
-          this.props.navigation.navigate("OrderSuccessFull",{
-            orderArrivedDate:res.data.date
-          })
-        }
-        setIndicator(false);
-      })
-      .catch(err => {});
-
-  }
-  }
+    let selectedPaymentType = this.state.options.filter(x => x.icon);
+    let { toastRef } = this.props.screenProps;
+    if (!this.state.address_id) {
+      setToastMessage(true, colors.danger);
+      return toastRef.show("Please add address first");
+    } else if (selectedPaymentType && selectedPaymentType.length < 1) {
+      setToastMessage(true, colors.danger);
+      return toastRef.show("Please select payment type");
+    } else {
+      let data = {};
+      data["address_id"] = this.state.address_id;
+      data["net_paid"] = this.state.totalAmount;
+      data["order_amount"] = this.state.totalAmount;
+      data["payment_mode"] = 1;
+      data["notes"] = this.state.notes;
+      data["no_of_itmes"] = this.state.cartItems.length;
+      data["transaction_id"] = "COD";
+      let carts = this.state.cartItems.map(x => {
+        return {
+          product_id: x.id,
+          amount: x.price,
+          vendor_id: x.vendor_id,
+          quantity: 1
+        };
+      });
+      data["product_detail"] = carts;
+      postRequest(`order/save_order`, data)
+        .then(res => {
+          if (res && res.success) {
+            setToastMessage(true, colors.green1);
+            toastRef.show(res.success);
+            removeCartSuccess();
+            this.props.navigation.navigate("OrderSuccessFull", {
+              orderArrivedDate: res.data.date
+            });
+          }
+          setIndicator(false);
+        })
+        .catch(err => {});
+    }
+  };
   // Get Cart Total
-   getCartTotal = carts => {
+  getCartTotal = carts => {
     if (carts && carts.length > 0) {
       let totalBagAmount = carts.reduce((cnt, cur, currentIndex) => {
         return Number(cnt) + Number(cur.price);
@@ -159,7 +166,6 @@ class Checkout extends Component {
       return 0;
     }
   };
-
   getDefaultAddress = () => {
     let { setIndicator } = this.props.screenProps.actions;
     getRequest("customer/defaultAddress")
@@ -189,12 +195,87 @@ class Checkout extends Component {
       })
       .catch(err => {});
   };
+
   updateDefaultAddress = (address, address_id) => {
-      this.setState({
-        address: address,
-        address_id: address_id
-      });
+    this.setState({
+      address: address,
+      address_id: address_id
+    });
   };
+  setPromoAmount = (coupan, amount) => {
+    let { carts } = this.props.screenProps.product;
+
+    this.setState(
+      {
+        promoCode: coupan,
+        promoAmount: amount
+      },
+      () => {
+        if (Number(amount) >= Number(coupan.max_discount)) {
+          this.setState({
+            promoAmount : Number(coupan.max_discount),
+            totalAmount: (this.getCartTotal(carts) + this.state.delivery)-Number(coupan.max_discount) 
+
+          })
+        }else{
+          this.setState({
+            totalAmount: (this.getCartTotal(carts) + this.state.delivery)-Number(amount) 
+          })
+        }
+      }
+    );
+  };
+  applyPromoCode = coupan => {
+    let { subTotal, totalAmount, delivery } = this.state;
+    if (coupan && coupan.discount_type == 1) {
+      this.setPromoAmount(coupan, coupan.discount);
+    } else if (coupan && coupan.discount_type == 2) {
+      let promoAmount = (Number(subTotal) * Number(coupan.discount)) / 100;
+      this.setPromoAmount(coupan, promoAmount);
+    }
+  };
+  getPromoCodeAmount = coupan => {
+    let { subTotal, totalAmount, delivery } = this.state;
+
+    if (Number(subTotal) >= Number(item.minimum_order)) {
+      if (
+        this.props.navigation.state.params &&
+        this.props.navigation.state.params.applyPromoCode
+      ) {
+        this.checkPromoCode(item.coupan_code);
+      }
+    } else {
+    }
+  };
+  addButtonPress = title => {
+    if (title == "Add Promo code") {
+      let { subTotal, totalAmount, delivery } = this.state;
+
+      this.props.navigation.navigate("Promotions", {
+        headerTitle: "Apply Promotions",
+        bagTotal: subTotal,
+        applyPromoCode: coupan_code => this.applyPromoCode(coupan_code)
+      });
+    }
+  };
+  selectedPaymentType = item => {
+    this.setState({
+      options: this.state.options.map((res, i) => {
+        if (res.title == item.title) {
+          return {
+            ...res,
+            icon: true
+          };
+        } else {
+          return {
+            ...res,
+            icon: false
+          };
+        }
+      })
+    });
+  };
+
   /***********************************APi Call  *********************************************/
   render() {
     let { carts } = this.props.screenProps.product;
@@ -271,13 +352,11 @@ class Checkout extends Component {
   };
 
   renderCommentInput = () => {
-
-
     let textInputStyle = {
       ...styles.textInputStyle,
       fontSize: normalize(14),
       color: colors.primary,
-      height:95,
+      height: 95
     };
     return (
       <TextInputComponent
@@ -297,24 +376,26 @@ class Checkout extends Component {
         fromNotes
         viewTextStyle={[
           styles.viewcardTextStyle,
-          { backgroundColor: "#F0F2FA", height:100 ,paddingHorizontal:8,justifyContent:'flex-start'}
+          {
+            backgroundColor: "#F0F2FA",
+            height: 100,
+            paddingHorizontal: 8,
+            justifyContent: "flex-start"
+          }
         ]}
         value={this.state.notes}
         underlineColorAndroid="transparent"
         isFocused={this.state.confirmAccountFieldFocus}
         onFocus={() => this.setState({ confirmAccountFieldFocus: true })}
         onBlur={() => this.setState({ confirmAccountFieldFocus: false })}
-        onChangeText={notes =>
-          this.setState({ notes })
-        }
+        onChangeText={notes => this.setState({ notes })}
         onSubmitEditing={event => {
           // Keyboard.dismiss()
         }}
-        textInputStyle={textInputStyle}
+        textInputStyle={[textInputStyle, { paddingTop: 8 }]}
         bankAccount
       />
-
-    )
+    );
   };
   renderPaymentSelectSection = (item, index) => {
     return (
@@ -334,11 +415,7 @@ class Checkout extends Component {
               style={{ flexDirection: "row", paddingVertical: 8 }}
             >
               <TouchableOpacity
-                onPress={() =>
-                  this.setState({
-                    selectPaymentMethod: !this.state.selectPaymentMethod
-                  })
-                }
+                onPress={() => this.selectedPaymentType(option)}
                 style={{
                   flex: 0.1,
                   paddingLeft: 0,
@@ -391,10 +468,7 @@ class Checkout extends Component {
       </View>
     );
   };
-  addButtonPress = title => {
-    if (title == "Add Promo Code") {
-    }
-  };
+
   addButton = title => {
     return (
       <TouchableOpacity
@@ -449,7 +523,7 @@ class Checkout extends Component {
     } else {
       this.props.navigation.navigate("AddNewAddress", {
         from: "checkout",
-        getDefaultAddress:() => this.getDefaultAddress(),
+        getDefaultAddress: () => this.getDefaultAddress(),
         updateDefaultAddress: (address, id) =>
           this.updateDefaultAddress(address, id)
       });
@@ -501,19 +575,17 @@ class Checkout extends Component {
     );
   };
   renderOrderInvoiceInfo = () => {
-    let { subTotal, totalAmount, delivery } = this.state;
+    let { subTotal, totalAmount, delivery ,promoCode,promoAmount} = this.state;
     let order = {
-      delivery_charge:delivery,
-      order_amount:totalAmount,
-      net_paid:0,
-    }
+      delivery_charge: delivery,
+      amount: totalAmount,
+      net_paid: 0
+    };
     return (
       <View>
-        <InvoiceInfo
-          fromCheckout={true}
-          order={order}
-          subTotal={subTotal}
-
+        <InvoiceInfo fromCheckout={true} order={order} subTotal={subTotal} 
+         promoAmount={promoAmount}
+         promoCode={promoCode}
         />
         <View style={{ height: 10 }} />
         <View style={{ paddingHorizontal: 24 }}>
@@ -526,7 +598,7 @@ class Checkout extends Component {
   renderBotttomButton = () => {
     return (
       <TouchableOpacity
-        onPress={() => this.saveOrderApi() }
+        onPress={() => this.saveOrderApi()}
         style={{
           flex: 0.12,
           justifyContent: "flex-end",
@@ -586,3 +658,4 @@ class Checkout extends Component {
   };
 }
 export default Checkout;
+export const cartStyle = StyleSheet.create({});

@@ -4,6 +4,8 @@ import {
   Alert,
   Platform
 } from 'react-native'
+import moment from 'moment'
+
 export const setAllFalseValue = (array,type) =>{
   if(type == 'wishlist'){
     return  array.map(x => {
@@ -117,3 +119,17 @@ export const sizeStatus = (status) =>{
     }
   }
 }
+
+// Group by date
+export const getGroups = (data) => {
+  debugger
+ return data.reduce((groups, game) => {
+  const date = moment(game.created_at).format('DD-MM-YYYY');
+  if (!groups[date]) {
+    groups[date] = [];
+  }
+  groups[date].push(game);
+  return groups;
+}, {});
+}
+

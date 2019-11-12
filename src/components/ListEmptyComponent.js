@@ -8,14 +8,14 @@ const {height,width} = Dimensions.get('window');
 
 export const ListEmptyComponent = (props) => {
     return (
-      <View style={{
+      <View style={[{
         flex: 1,
         paddingVertical: 20,
         paddingHorizontal: 16,
         justifyContent: 'center',
         backgroundColor:'white',
-        alignItems: 'center'
-      }}>
+        alignItems: 'center',
+      },props.style]}>
         <Text p style={{
           fontSize: normalize(14), lineHeight: 24,
           alignSelf: props.textAlign ? props.textAlign : 'center',
