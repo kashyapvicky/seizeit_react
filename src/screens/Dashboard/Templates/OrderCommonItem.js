@@ -44,7 +44,7 @@ export default OrderCommonItem = ({ item }) => {
               fontWeight: "600"
             }}
           >
-            {item.product_detail.brand ? item.product_detail.brand.name : ""}
+            {item.product_detail && item.product_detail.brand ? item.product_detail.brand.name : ""}
           </Text>
         </View>
         <View>

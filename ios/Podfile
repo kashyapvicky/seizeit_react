@@ -35,6 +35,16 @@ target 'seize_it' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'BIObjCHelpers'
+  pod 'IQKeyboardManager', '~> 4.0.2'
+  pod 'AFNetworking'
+  pod 'Mantle'
+  pod 'Reachability'
+  pod 'Lockbox'
+  pod 'SBJson'
+  pod 'PINCache'
+  pod 'MBProgressHUD', '~> 1.1.0'
+
   target 'seize_itTests' do
     inherit! :search_paths
     # Pods for testing

@@ -89,6 +89,8 @@
 	<string>$(PRODUCT_NAME) wants you to allow access your Photo Gallary for profile picture.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>recognize speech</string>
+
+	
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

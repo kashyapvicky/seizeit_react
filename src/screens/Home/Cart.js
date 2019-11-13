@@ -7,10 +7,12 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  NativeModules,
   TextInput
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
+
 
 //local imports
 import Button from "../../components/Button";
@@ -32,7 +34,6 @@ import {
 } from "../../utilities/method";
 
 import CartItem from "./Templates/CartItem";
-
 class Cart extends Component {
   constructor(props) {
     super(props);
@@ -48,7 +49,9 @@ class Cart extends Component {
       cartItems: carts
     });
   }
-  pressButton = () => {
+  pressButton = async (data) => {
+    
+    
     let {user} = this.props.screenProps.user
     if(user){
       this.props.navigation.navigate("Checkout");

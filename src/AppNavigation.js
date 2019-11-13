@@ -69,12 +69,12 @@ class AppNavigation extends React.Component {
 
     BackHandler.addEventListener("hardwareBackPress", this._backhandle);
 
-    // RNLocalize.addEventListener("change", this.handleLocalizationChange);
+     RNLocalize.addEventListener("change", this.handleLocalizationChange);
   }
   componentWillUnmount() {
     this.unsubscribe();
     BackHandler.removeEventListener("hardwareBackPress", this._backhandle);
-    // RNLocalize.removeEventListener("change", this.handleLocalizationChange);
+    RNLocalize.removeEventListener("change", this.handleLocalizationChange);
   }
 
   setI18nConfigReload = async () => {

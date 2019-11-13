@@ -8,20 +8,7 @@ module.exports = {
     "Accept": "application/json",
     //"Content-Type": "multipart/form-data",
   },
+  PAYTAB_MARCHANT_EMAIL:'vicky@codebrewinnovations.com',
+  PAYTAB_MARCHANT_SECRET_KEY:'fBkYj9yx6tsrPDyN9hbeVUVBFN5QdiQsUardkZKqtdSiQq60IhfDcafRYkIcDyFxI6L25wtyJlRAMYBufQ8r1niZH0clzRShXEk3'
 }
           
-// if (value.email.match(".*[a-zA-Z]+.*")) {
-//   if (!value.email.match(this.emailPattern)) {
-//     this.loginForm.controls['email'].setErrors({ 'pattern': true });
-//   }
-//   this.emailType = 'email';
-// }
-// else {
-//   var reg = /^[0-9]*$/;
-//   // var phoneReg=/^[2-9]\d{2}-\d{3}-\d{4}$/
-//   if (!value.email.match(reg) || value.email.length > 15) {
-//     this.loginForm.controls['email'].setErrors({ 'pattern': true });
-//   }
-//   this.emailType = 'PhoneNumber'
-//   fd.append('countryCode', this.countryCode);
-// }

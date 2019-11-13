@@ -43,12 +43,12 @@ class Returns extends Component {
   }
   /******************** Api Function  *****************/
   getReturnOrders = status => {
-    getRequest(`order/vendor_order_detail?status=${status}`)
+    getRequest(`order/order_detail?status=${status}`)
       .then(res => {
         debugger;
-        if (res && res.data && res.data.length > 0) {
+        if (res && res.products && res.products.length > 0) {
           this.setState({
-            orders: res.data,
+            orders: res.products,
             isRefreshing: false
           });
         } else {

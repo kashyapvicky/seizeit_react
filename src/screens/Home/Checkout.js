@@ -9,11 +9,12 @@ import {
   FlatList,
   StyleSheet,
   Dimensions,
-  TextInput
+  TextInput,
+  NativeModules
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
-
+const { PayTabs: PayTabsNativeSDK } = NativeModules;
 //local imports
 import { postRequest, getRequest } from "../../redux/request/Service";
 import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
@@ -33,7 +34,7 @@ import InvoiceInfo from "../Settings/Templates/InvoiceInfo";
 import TextInputComponent from "../../components/TextInput";
 import CartItem from "./Templates/CartItem";
 const { width, height } = Dimensions.get("window");
-
+import CONFIG from '../../utilities/config'
 class Checkout extends Component {
   constructor(props) {
     super(props);
@@ -46,10 +47,10 @@ class Checkout extends Component {
         },
         {
           title: "Cash on delivery"
-        },
-        {
-          title: "Bank transfer"
         }
+        // {
+        //   title: "Bank transfer"
+        // }
       ],
       options: [
         {
@@ -64,21 +65,21 @@ class Checkout extends Component {
             "Please keep exact change handy to help you serve us better",
           icon: false,
           title: "COD"
-        },
-        {
-          name: "Bank transfer",
-          description: string("youCreditsAmount"),
-          icon: false,
-          title: "BANK"
         }
+        // {
+        //   name: "Bank transfer",
+        //   description: string("youCreditsAmount"),
+        //   icon: false,
+        //   title: "BANK"
+        // }
       ],
       cartItems: [],
 
       user: {},
       delivery: 0,
       totalAmount: 0,
-      promoAmount:0,
-      promoCode:null,
+      promoAmount: 0,
+      promoCode: null,
       address: ""
     };
     this.loaderComponent = new Promise(resolve => {
@@ -111,6 +112,98 @@ class Checkout extends Component {
   };
 
   /*************************************APi Call  *********************************************/
+ //Verify payment request
+ verifyPayment=(transactionDetails, data)=> {
+  const PAYTAB_URL = 'https://www.paytabs.com/apiv2';
+  var paytabPayload = {
+      merchant_email: transactionDetails.merchant_email,
+      secret_key: transactionDetails.secret_key,
+      transaction_id: transactionDetails.payment_reference
+  };
+  var formData = new FormData();
+  for (var k in paytabPayload) {
+      formData.append(k, paytabPayload[k]);
+  }
+  const fetchOptions = {
+      method: 'POST',
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data; charset=UTF-8'
+      },
+      body: formData
+  };
+  fetch(PAYTAB_URL + '/verify_payment_transaction', fetchOptions)
+      .then((response) => response.json())
+      .then((json) => {
+          this.successCallBack(json);
+      })
+      .catch((error) => {
+          this.successCallBack({ response_code: 0 });
+      })
+};
+// Success call back 
+successCallBack = async (json) => { 
+  debugger
+if(json.response_code == 100){
+  let {transaction_id} = json
+  this.saveSuccessOrder(transaction_id,2)
+}
+
+}
+// Create Order Payment By Paytab
+creatOrderPayment = async () => {
+    let { toastRef } = this.props.screenProps;
+    let { setToastMessage } = this.props.screenProps.actions;
+    try {
+      let { user, lang } = this.props.screenProps.user;
+      let data = {};
+      data["MERCHANT_EMAIL"] = CONFIG.PAYTAB_MARCHANT_EMAIL;
+      data["SECRET_KEY"] = CONFIG.PAYTAB_MARCHANT_SECRET_KEY;
+      data["TRANSACTION_TITLE"] = "SeizIt transection title";
+      data["AMOUNT"] = 5.0;
+      data["CURRENCY_CODE"] = "AED";
+      data["CUSTOMER_PHONE_NUMBER"] = user.phone.toString();
+      data["CUSTOMER_EMAIL"] = user.email;
+      data["ORDER_ID"] = (new Date().getTime() + Math.trunc(365 * Math.random()).toString());
+      let productName = this.state.cartItems.map(x => {
+        return x.product_title;
+      });
+      data["PRODUCT_NAME"] = productName.join(",");
+      let { address } = this.state;
+      // Billing Address
+      data["ADDRESS_BILLING"] = address.description;
+      data["CITY_BILLING"] = address.city;
+      data["STATE_BILLING"] = address.state;
+      data["COUNTRY_BILLING"] = 'ARE';
+      data["POSTAL_CODE_BILLING"] = "91";
+      // Shipping Address
+      data["ADDRESS_SHIPPING"] = address.description;
+      data["CITY_SHIPPING"] = address.city;
+      data["STATE_SHIPPING"] = address.state;
+      data["COUNTRY_SHIPPING"] = address.country_name;
+      data["POSTAL_CODE_SHIPPING"] = "91";
+      data["PAY_BUTTON_COLOR"] = colors.primary;
+      data["LANGUAGE"] = lang;
+      debugger
+      const response = await PayTabsNativeSDK.createOrder(data);
+      debugger
+      if (response && response.RESPONSE_CODE == "100") {
+        let transactionDetails = {};
+        transactionDetails["merchant_email"] = CONFIG.PAYTAB_MARCHANT_EMAIL;
+        transactionDetails["secret_key"] = CONFIG.PAYTAB_MARCHANT_SECRET_KEY;
+        transactionDetails["payment_reference"] = response.TRANSACTION_ID;
+        this.verifyPayment(transactionDetails)
+      } else {
+        setToastMessage(true, colors.danger);
+        toastRef.show(response.RESULT_MESSAGE);
+      }
+    } catch (error) {
+      setToastMessage(true, colors.danger);
+      toastRef.show(error.message);
+    }
+  };
+
+  //Save order Api
   saveOrderApi = () => {
     let { setIndicator, setToastMessage } = this.props.screenProps.actions;
     let { removeCartSuccess } = this.props.screenProps.productActions;
@@ -123,38 +216,54 @@ class Checkout extends Component {
       setToastMessage(true, colors.danger);
       return toastRef.show("Please select payment type");
     } else {
-      let data = {};
-      data["address_id"] = this.state.address_id;
-      data["net_paid"] = this.state.totalAmount;
-      data["order_amount"] = this.state.totalAmount;
-      data["payment_mode"] = 1;
-      data["notes"] = this.state.notes;
-      data["no_of_itmes"] = this.state.cartItems.length;
-      data["transaction_id"] = "COD";
-      let carts = this.state.cartItems.map(x => {
-        return {
-          product_id: x.id,
-          amount: x.price,
-          vendor_id: x.vendor_id,
-          quantity: 1
-        };
-      });
-      data["product_detail"] = carts;
-      postRequest(`order/save_order`, data)
-        .then(res => {
-          if (res && res.success) {
-            setToastMessage(true, colors.green1);
-            toastRef.show(res.success);
-            removeCartSuccess();
-            this.props.navigation.navigate("OrderSuccessFull", {
-              orderArrivedDate: res.data.date
-            });
-          }
-          setIndicator(false);
-        })
-        .catch(err => {});
+      debugger
+      let payType = selectedPaymentType[0]
+      debugger
+      if(payType && payType.title == 'CARDS'){
+        this.creatOrderPayment()
+      }else{
+        this.saveSuccessOrder(payType.title,1)
+      }
     }
   };
+
+  // Save Success order
+  saveSuccessOrder = (transaction_id,payment_mode) =>{
+    let { toastRef } = this.props.screenProps;
+    let { setToastMessage,setIndicator } = this.props.screenProps.actions;
+    let { removeCartSuccess } = this.props.screenProps.productActions;
+    let data = {};
+    data["address_id"] = this.state.address_id;
+    data["net_paid"] = this.state.totalAmount;
+    data["order_amount"] = this.state.totalAmount;
+    data["payment_mode"] = payment_mode;
+    data["notes"] = this.state.notes;
+    data["no_of_itmes"] = this.state.cartItems.length;
+    data["transaction_id"] =transaction_id;
+    let carts = this.state.cartItems.map(x => {
+      return {
+        product_id: x.id,
+        amount: x.price,
+        vendor_id: x.vendor_id,
+        quantity: 1
+      };
+    });
+    data["product_detail"] = carts;
+    postRequest(`order/save_order`, data)
+    .then(res => {
+      debugger
+      if (res && res.data && res.data.order_id) {
+        setToastMessage(true, colors.green1);
+        toastRef.show(res.success);
+        removeCartSuccess();
+       this.props.navigation.navigate("OrderSuccessFull", {
+          orderArrivedDate: res.data.date
+        })
+      }
+      setIndicator(false);
+    })
+    .catch(err => {});
+  }
   // Get Cart Total
   getCartTotal = carts => {
     if (carts && carts.length > 0) {
@@ -166,6 +275,7 @@ class Checkout extends Component {
       return 0;
     }
   };
+
   getDefaultAddress = () => {
     let { setIndicator } = this.props.screenProps.actions;
     getRequest("customer/defaultAddress")
@@ -175,14 +285,15 @@ class Checkout extends Component {
           debugger;
           let addArray = res.success.map(x => {
             return {
+              ...x,
               title: x.full_address,
               id: x.address_id,
               is_active: x.is_active,
-              address: `${x.flat},${x.city},${x.landmark}.${x.state} ${x.country_name} ${x.pincode}`
+              description: `${x.flat},${x.city},${x.landmark}.${x.state} ${x.country_name} ${x.pincode}`
             };
           })[0];
           this.setState({
-            address: addArray.address,
+            address: addArray,
             address_id: addArray.id
           });
         } else {
@@ -196,15 +307,16 @@ class Checkout extends Component {
       .catch(err => {});
   };
 
-  updateDefaultAddress = (address, address_id) => {
+  updateDefaultAddress = address => {
     this.setState({
       address: address,
-      address_id: address_id
+      address_id: address.id
     });
   };
+
+  // Set promo amount
   setPromoAmount = (coupan, amount) => {
     let { carts } = this.props.screenProps.product;
-
     this.setState(
       {
         promoCode: coupan,
@@ -213,18 +325,22 @@ class Checkout extends Component {
       () => {
         if (Number(amount) >= Number(coupan.max_discount)) {
           this.setState({
-            promoAmount : Number(coupan.max_discount),
-            totalAmount: (this.getCartTotal(carts) + this.state.delivery)-Number(coupan.max_discount) 
-
-          })
-        }else{
+            promoAmount: Number(coupan.max_discount),
+            totalAmount:
+              this.getCartTotal(carts) +
+              this.state.delivery -
+              Number(coupan.max_discount)
+          });
+        } else {
           this.setState({
-            totalAmount: (this.getCartTotal(carts) + this.state.delivery)-Number(amount) 
-          })
+            totalAmount:
+              this.getCartTotal(carts) + this.state.delivery - Number(amount)
+          });
         }
       }
     );
   };
+  //Apply promo amount
   applyPromoCode = coupan => {
     let { subTotal, totalAmount, delivery } = this.state;
     if (coupan && coupan.discount_type == 1) {
@@ -247,6 +363,7 @@ class Checkout extends Component {
     } else {
     }
   };
+  // add Button Presss
   addButtonPress = title => {
     if (title == "Add Promo code") {
       let { subTotal, totalAmount, delivery } = this.state;
@@ -515,8 +632,7 @@ class Checkout extends Component {
   onPressChange = () => {
     if (this.state.address_id) {
       this.props.navigation.navigate("Address", {
-        updateDefaultAddress: (address, id) =>
-          this.updateDefaultAddress(address, id),
+        updateDefaultAddress: address => this.updateDefaultAddress(address),
         address_id: this.state.address_id,
         fromCheckout: true
       });
@@ -524,8 +640,7 @@ class Checkout extends Component {
       this.props.navigation.navigate("AddNewAddress", {
         from: "checkout",
         getDefaultAddress: () => this.getDefaultAddress(),
-        updateDefaultAddress: (address, id) =>
-          this.updateDefaultAddress(address, id)
+        updateDefaultAddress: address => this.updateDefaultAddress(address)
       });
     }
   };
@@ -546,7 +661,7 @@ class Checkout extends Component {
             </Text>
           ) : (
             <Text p style={[styles.subLable]}>
-              {this.state.address}
+              {this.state.address ? this.state.address.description : ""}
             </Text>
           )}
         </View>
@@ -575,7 +690,13 @@ class Checkout extends Component {
     );
   };
   renderOrderInvoiceInfo = () => {
-    let { subTotal, totalAmount, delivery ,promoCode,promoAmount} = this.state;
+    let {
+      subTotal,
+      totalAmount,
+      delivery,
+      promoCode,
+      promoAmount
+    } = this.state;
     let order = {
       delivery_charge: delivery,
       amount: totalAmount,
@@ -583,9 +704,12 @@ class Checkout extends Component {
     };
     return (
       <View>
-        <InvoiceInfo fromCheckout={true} order={order} subTotal={subTotal} 
-         promoAmount={promoAmount}
-         promoCode={promoCode}
+        <InvoiceInfo
+          fromCheckout={true}
+          order={order}
+          subTotal={subTotal}
+          promoAmount={promoAmount}
+          promoCode={promoCode}
         />
         <View style={{ height: 10 }} />
         <View style={{ paddingHorizontal: 24 }}>

@@ -97,15 +97,13 @@ class Address extends Component {
                     x => x.is_active
                   )[0];
                   params.updateDefaultAddress(
-                    is_activeAddress.description,
-                    is_activeAddress.id
+                    is_activeAddress
                   );
                
                 } else {
                   let is_activeAddress = this.state.addresses[0];
                   params.updateDefaultAddress(
-                    is_activeAddress.description,
-                    is_activeAddress.id
+                    is_activeAddress
                   );
                
                 }
@@ -168,7 +166,7 @@ class Address extends Component {
             setToastMessage(true, colors.green1);
             toastRef.show(res.success);
             if (params && params.updateDefaultAddress) {
-              params.updateDefaultAddress(item.description);
+              params.updateDefaultAddress(item);
               this.props.navigation.goBack();
             }
             this.updateAddressState(item)
