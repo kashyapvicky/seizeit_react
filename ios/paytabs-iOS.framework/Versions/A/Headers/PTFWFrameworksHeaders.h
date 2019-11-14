@@ -15,14 +15,20 @@
 #import <UIKit/UIKit.h>
 #import <CoreGraphics/CoreGraphics.h>
 #import <QuartzCore/QuartzCore.h>
-#import <CoreText/CoreText.h>
 
 #import <Mantle/Mantle.h>
 #import <Lockbox/Lockbox.h>
 #import <BIObjCHelpers/BIObjCHelpers.h>
 
+//#import <SDWebImage/UIImageView+WebCache.h>
+
+#import <DGActivityIndicatorView/DGActivityIndicatorView.h>
+
 #import <SBJson/SBJson5.h>
 
 #import <PINCache/PINCache.h>
+
+#import "YLImageView.h"
+#import "YLGIFImage.h"
 
 #endif /* PTFWFrameworksHeaders_h */

@@ -49,7 +49,7 @@ export default OrderCommonItem = ({ item }) => {
         </View>
         <View>
           <Text p style={{ color: "#000000" }}>
-            {item.product_detail.product_title}
+            {item && item.product_detail ? item.product_detail.product_title : ''}
           </Text>
         </View>
         <View
@@ -60,7 +60,7 @@ export default OrderCommonItem = ({ item }) => {
           }}
         >
           <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-            ${item.product_detail.price}
+            ${item && item.product_detail ?  item.product_detail.price : ''}
           </Text>
           {item.status == 6 && (
             <View
@@ -82,7 +82,7 @@ export default OrderCommonItem = ({ item }) => {
                   { color: "#96C50F", fontSize: normalize(11) }
                 ]}
               >
-                REFUND APPROVED
+               {item.stausMessage}
               </Text>
             </View>
           )}

@@ -33,7 +33,9 @@ class Orders extends Component {
     super(props);
     this.state = {
       visible2: false,
+      tabPage:0,
       cartItems: [],
+      allOrders:[],
       tabs: [
         {
           title: "Active Orders"
@@ -46,7 +48,7 @@ class Orders extends Component {
     };
   }
   componentDidMount(){
-    this.getOrders(2)
+     this.getOrders(0)
   }
   /******************** Api Function  *****************/
   buttonStatus = value => {
@@ -86,7 +88,7 @@ class Orders extends Component {
         if (res && res.success) {
           setToastMessage(true, colors.primary);
           toastRef.show(res.success);
-          this.getOrders(1)
+          this.getOrders(0)
           //let filterorders = this.state.orders.filter(x => x.id != orderId);
          // this.setState({ orders: filterorders });
         }
@@ -95,46 +97,83 @@ class Orders extends Component {
       })
       .catch(err => {});
   };
+
+  filterActiveandPastOrder = (orders,tabPage) =>{
+    debugger
+    let activeOrder = orders.filter((e,i)=> {
+      return e.status > 0 && e.status <= 4 ;
+   });
+   let pastOrder = orders.filter((pastOd,k)=> {
+    return pastOd.status > 4 ;
+   });
+   debugger
+   let groupsActiveOrder =getGroups(activeOrder)
+   let groupsPastOrder =getGroups(pastOrder)
+   this.groupOrderArray(groupsActiveOrder,groupsPastOrder,tabPage)
+          // Grouping Array
+  }
+  groupOrderArray = (groupsActive,groupsPastOrder,tabPage)=>{
+    debugger
+    if(groupsActive && tabPage == 0){
+    let groupArrays = Object.keys(groupsActive).map((date) => {
+        return {
+          date,
+          orders:groupsActive[date]
+        };
+      });
+      debugger
+      this.setState({
+        orders: groupArrays,
+        isRefreshing: false
+      });
+    }
+    if(groupsPastOrder && tabPage == 1){
+      let groupPastArrays = Object.keys(groupsPastOrder).map((date) => {
+        return {
+          date,
+          orders:groupsPastOrder[date]
+        };
+      });
+      this.setState({
+        orders: groupPastArrays,
+      });
+    } 
+  }
   getOrders = status => {
     getRequest(`order/vendor_order_detail?status=${status}`)
       .then(res => {
-        debugger
         if (res && res.data && res.data.length > 0) {
-          let groups =getGroups(res.data)
-          // Grouping Array
-          const groupArrays = Object.keys(groups).map((date) => {
-            return {
-              date,
-              orders:groups[date]
-            };
-          });
+          this.filterActiveandPastOrder(res.data,0)
           this.setState({
-            orders: groupArrays,
+            allOrders: res.data,
             isRefreshing: false
           });
         } else {
           this.setState({
             isRefreshing: false,
-            orders: []
+            orders: [],
+            allOrders:0
           });
         }
         setIndicator(false);
       })
       .catch(err => {});
   };
+
   setStateForTabChange = event => {
     if (event) {
        if(event.i == 0){
-       this.getOrders(2);
+        this.filterActiveandPastOrder(this.state.allOrders,event.i);
        }
        else if(event.i == 1){
-        this.getOrders(7);
+        this.filterActiveandPastOrder(this.state.allOrders,event.i);
         this.setState({
           tabPage: event.i
         });
       }
     }
   };
+
   renderButton = (title, transparent,order) => {
     return (
       <Button
@@ -320,6 +359,7 @@ class Orders extends Component {
     });
   };
   renderProductsList = (item, index) => {
+    console.log(this.state.orders,"this.state.orders")
     return (
       <View skey={index} tabLabel={item.title} style={{ paddingVertical: 16 }}>
         <FlatList

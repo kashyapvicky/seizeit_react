@@ -1,14 +1,15 @@
-//
-//  PayTabs.m
-//  seize_it
-//
-//  Created by Apple on 13/11/19.
-//  Copyright © 2019 Facebook. All rights reserved.
-//
 
-#import <Foundation/Foundation.h>
+
+//
+//  HelloManager.m
+//  paytab
+//
+//  Created by Mohamed Ibrahim on 9/23/17.
+//  Copyright © 2017 Facebook. All rights reserved.
+//
 
 #import <React/RCTLog.h>
+
 #import "PayTabs.h"
 #import <paytabs-iOS/paytabs_iOS.h>
 
@@ -43,48 +44,39 @@ RCT_EXPORT_METHOD(createOrder:(NSDictionary *)jsonObj
 }
 
 - (IBAction)checking:(NSDictionary*)jsonObj {
-  
 #if TARGET_IPHONE_SIMULATOR
   return;
 #endif
-    PTFWInitialSetupViewController *paytabsVC;
-  //  paytabsVC  = [self->paytabsVC]
-  //  @property (nonatomic) float amount;
-  // amount = jsonObj[@"pt_amount"];
-  //
-  //   @property (nonatomic) float taxAmount;
-  //  taxAmount = jsonObj[@"pt_tax_amount"];
-  
+  PTFWInitialSetupViewController *paytabsVC;
   NSBundle *bundle = [NSBundle bundleWithURL:[[NSBundle mainBundle] URLForResource:@"Resources" withExtension:@"bundle"]];
-PTFWInitialSetupViewController *view = [[PTFWInitialSetupViewController alloc]                                                     andWithViewFrame:self.accessibilityFrame
-                                                        andWithAmount:[jsonObj[@"pt_amount"] floatValue]
-                                                 andWithCustomerTitle:jsonObj[@"pt_transaction_title"]
-                                                  andWithCurrencyCode:jsonObj[@"pt_currency_code"]
-                                                     andWithTaxAmount:[jsonObj[@"pt_tax_amount"] floatValue]
-                                                   andWithSDKLanguage:jsonObj[@"locale"]
-                                               andWithShippingAddress:jsonObj[@"pt_address_shipping"]
-                                                  andWithShippingCity:jsonObj[@"pt_city_shipping"]
-                                               andWithShippingCountry:jsonObj[@"pt_country_shipping"]
-                                                 andWithShippingState:jsonObj[@"pt_state_shipping"]
-                                               andWithShippingZIPCode:jsonObj[@"pt_postal_code_shipping"]
+  paytabsVC = [[PTFWInitialSetupViewController alloc] initWithNibName:@"PTFWInitialSetupView" bundle:bundle
+                                                     andWithViewFrame:self.accessibilityFrame
+                                                        andWithAmount:[jsonObj[@"AMOUNT"] floatValue]
+                                                 andWithCustomerTitle:jsonObj[@"TRANSACTION_TITLE"]
+                                                  andWithCurrencyCode:jsonObj[@"CURRENCY_CODE"]
+                                                     andWithTaxAmount:[jsonObj[@"TAX"] floatValue]
+                                                   andWithSDKLanguage:jsonObj[@"LANGUAGE"]
+                                               andWithShippingAddress:jsonObj[@"ADDRESS_SHIPPING"]
+                                                  andWithShippingCity:jsonObj[@"CITY_SHIPPING"]
+                                               andWithShippingCountry:jsonObj[@"COUNTRY_SHIPPING"]
+                                                 andWithShippingState:jsonObj[@"STATE_SHIPPING"]
+                                               andWithShippingZIPCode:jsonObj[@"POSTAL_CODE_SHIPPING"]
                
-                                                andWithBillingAddress:jsonObj[@"pt_address_billing"]
-                                                   andWithBillingCity:jsonObj[@"pt_city_billing"]
-                                                andWithBillingCountry:jsonObj[@"pt_country_billing"]
-                                                  andWithBillingState:jsonObj[@"pt_state_billing"]
-                                                andWithBillingZIPCode:jsonObj[@"pt_postal_code_billing"]
+                                                andWithBillingAddress:jsonObj[@"ADDRESS_BILLING"]
+                                                   andWithBillingCity:jsonObj[@"CITY_BILLING"]
+                                                andWithBillingCountry:jsonObj[@"COUNTRY_BILLING"]
+                                                  andWithBillingState:jsonObj[@"STATE_BILLING"]
+                                                andWithBillingZIPCode:jsonObj[@"POSTAL_CODE_BILLING"]
                
-                                                       andWithOrderID:jsonObj[@"pt_order_id"]
-                                                   andWithPhoneNumber:jsonObj[@"pt_customer_phone_number"]
-                                                 andWithCustomerEmail:jsonObj[@"pt_customer_email"]
+                                                       andWithOrderID:jsonObj[@"ORDER_ID"]
+                                                   andWithPhoneNumber:jsonObj[@"CUSTOMER_PHONE_NUMBER"]
+                                                 andWithCustomerEmail:jsonObj[@"CUSTOMER_EMAIL"]
                                                     andIsTokenization:false
-                                                 andWithMerchantEmail:jsonObj[@"pt_merchant_email"]
-                                             andWithMerchantSecretKey:jsonObj[@"pt_secret_key"]
+                                                 andWithMerchantEmail:jsonObj[@"MERCHANT_EMAIL"]
+                                             andWithMerchantSecretKey:jsonObj[@"SECRET_KEY"]
                                                   andWithAssigneeCode:@"SDK"
                                                     andWithThemeColor:[UIColor colorWithRed:225.0/255.0 green:225.0/255.0 blue:225.0/255.0 alpha:1.0]
                                                  andIsThemeColorLight:true];
-  __weak typeof(self) weakSelf = self;
-  
   
   UIViewController *rootViewController = [[[[UIApplication sharedApplication]delegate] window] rootViewController];
   [rootViewController presentViewController:paytabsVC animated:true completion:nil];
@@ -93,31 +85,30 @@ PTFWInitialSetupViewController *view = [[PTFWInitialSetupViewController alloc]  
   paytabsVC.didReceiveBackButtonCallback = ^{
     [paytabsVC dismissViewControllerAnimated:true completion:nil];
   };
-  
+
   paytabsVC.didReceiveFinishTransactionCallback = ^(int responseCode, NSString * _Nonnull result, int transactionID, NSString * _Nonnull tokenizedCustomerEmail, NSString * _Nonnull tokenizedCustomerPassword, NSString * _Nonnull token, BOOL transactionState) {
-    
     NSLog(@"transaction Id %@",  [[NSUserDefaults standardUserDefaults] objectForKey:@"transactionID"]);
     NSLog(@"Response Code %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"responseCode"]);
     NSLog(@"Description %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"result"]);
     
     NSMutableDictionary* json = [NSMutableDictionary new];
-    json[@"transactionID"] =@(transactionID);
-    json[@"responseCode"] =@(responseCode);
+    json[@"TRANSACTION_ID"] =@(transactionID);
+    json[@"RESPONSE_CODE"] =@(responseCode);
     json[@"result"] =@"result";
     self.resolveObj(json);
-    //      [self dismissViewControllerAnimated:false completion:nil];
     [paytabsVC dismissViewControllerAnimated:true completion:nil];
+    [self->paytabsVC willMoveToParentViewController:self];
+    [self->paytabsVC removeFromParentViewController];
+   // [self dismissViewControllerAnimated:false completion:nil];
     
   };
-  //  [self->paytabsVC.view addSubview:paytabsVC.view];
-  //  [self->paytabsVC addChildViewController:paytabsVC];
-  //  [paytabsVC didMoveToParentViewController:self];
+
 }
-//- (void) closePayTabsView {
+- (void) closePayTabsView {
 //  [self->paytabsVC willMoveToParentViewController:self];
 //  [self->paytabsVC.view removeFromSuperview];
 //  [self->paytabsVC removeFromParentViewController];
-//}
+}
 
 //-(id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
 ////
@@ -133,3 +124,4 @@ PTFWInitialSetupViewController *view = [[PTFWInitialSetupViewController alloc]  
 ////   return  [self->paytabsVC ];
 //}
 @end
+

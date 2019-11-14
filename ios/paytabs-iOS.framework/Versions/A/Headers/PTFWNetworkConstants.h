@@ -28,21 +28,15 @@ typedef NS_ENUM(NSInteger, PTFWStatusCodes) {
     PTFWValidSecretKey                                                 = 4000,
     PTFWInvalidSecretKey                                               = 4002,
     // Transactions
-    PTFWSuccessfulTransaction                                          = 100,
-    PTFWSuccessfulAutorization                                         = 111,
-    PTFWNon3DsAmexTransaction                                          = 474,
+    PTFWSuccesfulTransaction                                           = 100,
     PTFWForceAcceptTransaction                                         = 475,
     PTFWRejectedTransaction                                            = 481,
     PTFWPaytabsRequestError1                                           = 700,
     PTFWPaytabsRequestError2                                           = 800,
-    PTFWPaytabsRetryTransaction                                        = 150,
     PTFWInvalidCurrencyTransaction                                     = 804,
     PTFWRejectedCardTransaction                                        = 810,
     PTFWVISATransaction                                                = 900,
-    PTFWMPGSTransaction                                                = 910,
-    PTFWMIGSTransaction                                                = 909,
-    PTFWNoPermissionTransaction                                        = 4404,
-    PTFWPreAuthNotEnabledTransaction                                   = 4047
+    PTFWMIGSTransaction                                                = 909
 };
 
 FOUNDATION_EXTERN NSString *__nonnull const kPTFWNetworkAPIBaseURL;
@@ -54,7 +48,6 @@ extern const struct PTFWNetworkUserCalls {
     __unsafe_unretained NSString * __nonnull validateSecretKey;
     __unsafe_unretained NSString * __nonnull getMerchantInfo;
     __unsafe_unretained NSString * __nonnull prepareTransaction;
-    __unsafe_unretained NSString * __nonnull prepareTransactionApplePay;
     __unsafe_unretained NSString * __nonnull payerAuthComplete;
  } PTFWNetworkUserCalls;
 

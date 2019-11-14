@@ -18,4 +18,7 @@
 #pragma mark - Webview Handler
 #import "PTFWWebViewHandler.h"
 
+#pragma mark - Finish Transaction
+#import "PTFWFinishTransactionViewHandler.h"
+
 #endif /* PTFWHandlerHeaders_h */

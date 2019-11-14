@@ -162,7 +162,7 @@ creatOrderPayment = async () => {
       data["TRANSACTION_TITLE"] = "SeizIt transection title";
       data["AMOUNT"] = 5.0;
       data["CURRENCY_CODE"] = "AED";
-      data["CUSTOMER_PHONE_NUMBER"] = user.phone.toString();
+      data["CUSTOMER_PHONE_NUMBER"] = "0097135532915";
       data["CUSTOMER_EMAIL"] = user.email;
       data["ORDER_ID"] = (new Date().getTime() + Math.trunc(365 * Math.random()).toString());
       let productName = this.state.cartItems.map(x => {
@@ -180,8 +180,10 @@ creatOrderPayment = async () => {
       data["ADDRESS_SHIPPING"] = address.description;
       data["CITY_SHIPPING"] = address.city;
       data["STATE_SHIPPING"] = address.state;
-      data["COUNTRY_SHIPPING"] = address.country_name;
+      data["COUNTRY_SHIPPING"] = 'ARE'
       data["POSTAL_CODE_SHIPPING"] = "91";
+      data["TAX"] = 0.0;
+
       data["PAY_BUTTON_COLOR"] = colors.primary;
       data["LANGUAGE"] = lang;
       debugger

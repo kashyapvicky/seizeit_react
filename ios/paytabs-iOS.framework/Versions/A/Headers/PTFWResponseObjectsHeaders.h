@@ -18,7 +18,6 @@
 #pragma mark - Transaction
 #import "PTFWResponsePrepareTransaction.h"
 #import "PTFWResponseTransactionVISAAuth.h"
-#import "PTFWResponseTransactionMPGSAuth.h"
 #import "PTFWResponseTransactionMIGSAuth.h"
 #import "PTFWResponseTokenization.h"
 

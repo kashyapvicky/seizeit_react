@@ -15,6 +15,5 @@
 
 #pragma mark - Credit Card Details
 #import "PTFWOperationPrepareTransaction.h"
-#import "PTFWOperationPrepareTransactionApplePay.h"
 
 #endif /* PTFWOperationsHeaders_h */

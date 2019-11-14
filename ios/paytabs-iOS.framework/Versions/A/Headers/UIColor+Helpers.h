@@ -12,6 +12,5 @@
 
 + (UIColor*) customGreenColor;
 + (UIColor*) customRedColor;
-+ (UIColor*) customGreyTextColor;
 
 @end

@@ -3,6 +3,8 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 target 'seize_it' do
   # Pods for seize_it
+  #use_frameworks!
+
   pod 'React', :path => '../node_modules/react-native/'
   pod 'React-Core', :path => '../node_modules/react-native/React'
   pod 'React-DevSupport', :path => '../node_modules/react-native/React'
@@ -35,15 +37,20 @@ target 'seize_it' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
-  pod 'BIObjCHelpers'
-  pod 'IQKeyboardManager', '~> 4.0.2'
-  pod 'AFNetworking'
-  pod 'Mantle'
-  pod 'Reachability'
-  pod 'Lockbox'
-  pod 'SBJson'
-  pod 'PINCache'
-  pod 'MBProgressHUD', '~> 1.1.0'
+
+ # use_frameworks!
+ pod 'BIObjCHelpers'
+ pod 'AFNetworking'
+ pod 'Mantle'
+ pod 'Reachability'
+ # pod 'SDWebImage'
+ pod 'DGActivityIndicatorView'
+ pod 'Lockbox'
+ pod 'YLGIFImage'
+ pod 'SBJson'
+ pod 'PINCache'
+
+ # pod 'IQKeyboardManager'
 
   target 'seize_itTests' do
     inherit! :search_paths

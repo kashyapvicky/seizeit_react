@@ -14,9 +14,9 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		180BAACB237C432B00AEA09D /* paytabs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 180BAACA237C432B00AEA09D /* paytabs-iOS.framework */; };
-		180BAACD237C435700AEA09D /* Resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 180BAACC237C435700AEA09D /* Resources.bundle */; };
 		180BAAD0237C442500AEA09D /* PayTabs.m in Sources */ = {isa = PBXBuildFile; fileRef = 180BAACF237C442500AEA09D /* PayTabs.m */; };
+		182359FE237D60FB003496D9 /* paytabs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 182359FD237D60FB003496D9 /* paytabs-iOS.framework */; };
+		18235A00237D6104003496D9 /* Resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 182359FF237D6104003496D9 /* Resources.bundle */; };
 		186F95DE2330EBDE00BA18A0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */; };
 		1B794D262F1541A6B565692F /* SourceSansPro-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E61AE19F07334A4BADFFD452 /* SourceSansPro-Semibold.ttf */; };
 		2134D425231B467DBB285A84 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 673F393107F1438093DBB018 /* Fontisto.ttf */; };
@@ -90,10 +90,10 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = seize_it/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = seize_it/main.m; sourceTree = "<group>"; };
 		14699DD39C254F32AC9B832A /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
-		180BAACA237C432B00AEA09D /* paytabs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "paytabs-iOS.framework"; sourceTree = "<group>"; };
-		180BAACC237C435700AEA09D /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
-		180BAACF237C442500AEA09D /* PayTabs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PayTabs.m; sourceTree = "<group>"; };
+		180BAACF237C442500AEA09D /* PayTabs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PayTabs.m; sourceTree = SOURCE_ROOT; };
 		180BAAD1237C460F00AEA09D /* PayTabs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayTabs.h; sourceTree = "<group>"; };
+		182359FD237D60FB003496D9 /* paytabs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "paytabs-iOS.framework"; sourceTree = "<group>"; };
+		182359FF237D6104003496D9 /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
 		186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C3C9440217C4BA1B69BF9CA /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2673E6BC5CB1485999EC8CA4 /* SourceSansPro-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-BlackItalic.ttf"; path = "../src/assets/fonts/SourceSansPro-BlackItalic.ttf"; sourceTree = "<group>"; };
@@ -148,7 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E29B8F2F2E0BF415772E6A5C /* libPods-seize_it.a in Frameworks */,
-				180BAACB237C432B00AEA09D /* paytabs-iOS.framework in Frameworks */,
+				182359FE237D60FB003496D9 /* paytabs-iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,8 +207,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				180BAACC237C435700AEA09D /* Resources.bundle */,
-				180BAACA237C432B00AEA09D /* paytabs-iOS.framework */,
+				182359FD237D60FB003496D9 /* paytabs-iOS.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				302C474F499CFAB03CEF990B /* libPods-seize_it.a */,
@@ -237,6 +236,7 @@
 		52BDB6584C144A64AA162E8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				182359FF237D6104003496D9 /* Resources.bundle */,
 				50D2EC5DD1DE4849B68782E7 /* AntDesign.ttf */,
 				8F3C538340EE44C8B8962027 /* Entypo.ttf */,
 				2E09DAD3D6A7412F90635B17 /* EvilIcons.ttf */,
@@ -467,7 +467,7 @@
 				C131D9BA045C44A385310019 /* Octicons.ttf in Resources */,
 				AB336C7247CE433693375B65 /* SimpleLineIcons.ttf in Resources */,
 				DD5205C775064083A2DCAD2B /* Zocial.ttf in Resources */,
-				180BAACD237C435700AEA09D /* Resources.bundle in Resources */,
+				18235A00237D6104003496D9 /* Resources.bundle in Resources */,
 				12B5D2D67B9F49159C3FD33F /* SourceSansPro-Black.ttf in Resources */,
 				B9F9820943EA4FF9B6D9AFD5 /* SourceSansPro-BlackItalic.ttf in Resources */,
 				A07A07DFD53D4A2B87B7F158 /* SourceSansPro-Bold.ttf in Resources */,
@@ -513,7 +513,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -540,7 +540,6 @@
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_ROOT}/GooglePlaces/Frameworks/GooglePlaces.framework/Resources/GooglePlaces.bundle",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-				"${PODS_ROOT}/IQKeyboardManager/IQKeyboardManager/Resources/IQKeyboardManager.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
@@ -566,7 +565,6 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlaces.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/IQKeyboardManager.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
@@ -814,20 +812,25 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = SWT8MR75GH;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
+					"$(inherited)/**",
 					"$(PROJECT_DIR)",
 				);
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)/** $(PROJECT_DIR) /Users/apple/Documents/ios_sdk-v4.0.1-lite/**";
 				INFOPLIST_FILE = seize_it/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.seizeit;
 				PRODUCT_NAME = seize_it;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -841,20 +844,24 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SWT8MR75GH;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = seize_it/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
+					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.seizeit;
 				PRODUCT_NAME = seize_it;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				USER_HEADER_SEARCH_PATHS = "\"${PODS_ROOT}/";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

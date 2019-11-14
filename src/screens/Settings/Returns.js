@@ -43,12 +43,19 @@ class Returns extends Component {
   }
   /******************** Api Function  *****************/
   getReturnOrders = status => {
-    getRequest(`order/order_detail?status=${status}`)
+    let {user} = this.props.screenProps.user
+    let apiName;
+    if(user && user.user_type =='vendor'){
+      apiName=`order/vendor_order_detail?status=${status}`;
+    }else {
+      apiName=`order/customer_return_product?status=${status}`;
+    }
+    getRequest(apiName)
       .then(res => {
         debugger;
-        if (res && res.products && res.products.length > 0) {
+        if (res && res.data && res.data.length > 0) {
           this.setState({
-            orders: res.products,
+            orders: res.data,
             isRefreshing: false
           });
         } else {
@@ -82,7 +89,7 @@ class Returns extends Component {
   renderItems = ({ item, index }) => {
     return (
       <TouchableOpacity
-        onPress={() => this.props.navigation.navigate("ReturnDetail")}
+        // onPress={() => this.props.navigation.navigate("ReturnDetail")}
         activeOpacity={9}
         index={index}
         style={[

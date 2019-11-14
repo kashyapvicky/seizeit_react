@@ -21,13 +21,10 @@
 #pragma mark - Remote
 - (void)doSendSecretKeyValidationRequestWithSecretKey:(nonnull NSString *)secretKey andWithMerchantEmail:(nonnull NSString *)merchantEmail;
 - (void)doSendFetchMerchantInfoRequestWithSecretKey:(nonnull NSString *)secretKey andWithMerchantEmail:(nonnull NSString *)merchantEmail andWithCurrencyCode:(nonnull NSString *)currencyCode andWithAmount:(float)amount andIsTokenization:(BOOL)isTokenization andIsExistingCustomer:(BOOL)isExistingCustomer andWithPayTabsToken:(nonnull NSString *)paytabsToken andWithCustomerEmail:(nonnull NSString *)customerEmail andWithCustomerPassword:(nonnull NSString *)customerPassword;
-- (void)doSendApplePayRequestWithSecretKey:(nonnull NSString *)secretKey andWithMerchantEmail:(nonnull NSString *)merchantEmail andWithCurrencyCode:(nonnull NSString *)currencyCode andWithAmount:(float)amount andMerchantTitle:(nonnull NSString *) merchantTitle andWithOrderID:(nonnull NSString *) orderID andWithProductName:(nonnull NSString*) productName andTransactionExchangeRate:(float) transactionExchangeRate  andIsTokenization:(BOOL)isTokenization andApplePayData:(PKPayment *_Nonnull) applePaymentData;
 
 #pragma mark - Callbacks
 @property (nonatomic, copy, nullable) void(^didFinishSecretKeyValidationSuccessfullyCallback)(PTFWResponseSecretKeyValidation *__nonnull responseObject);
-@property (nonatomic, copy, nullable) void(^didFinishApplePaySuccessfullyCallback)(PTFWResponsePrepareTransaction *__nonnull responseObject);
 @property (nonatomic, copy, nullable) void(^didFinishMerchantInfoSuccessfullyCallback)(PTFWResponseFetchMerchantInfo *__nonnull responseObject);
 @property (nonatomic, copy, nullable) void(^didFinishWithErrorCallback)(NSError *__nonnull error);
-@property (nonatomic, copy, nullable) void(^didFinishApplePayErrorCallback)(NSError *__nonnull error);
 
 @end
