@@ -242,6 +242,7 @@ creatOrderPayment = async () => {
     data["notes"] = this.state.notes;
     data["no_of_itmes"] = this.state.cartItems.length;
     data["transaction_id"] =transaction_id;
+    data['coupon_applied'] = this.state.promoCode ? this.state.promoCode.id : null
     let carts = this.state.cartItems.map(x => {
       return {
         product_id: x.id,
@@ -318,6 +319,7 @@ creatOrderPayment = async () => {
 
   // Set promo amount
   setPromoAmount = (coupan, amount) => {
+    debugger
     let { carts } = this.props.screenProps.product;
     this.setState(
       {
@@ -325,7 +327,8 @@ creatOrderPayment = async () => {
         promoAmount: amount
       },
       () => {
-        if (Number(amount) >= Number(coupan.max_discount)) {
+        if (coupan.max_discount && Number(amount) >= Number(coupan.max_discount)) {
+          debugger
           this.setState({
             promoAmount: Number(coupan.max_discount),
             totalAmount:
@@ -354,7 +357,7 @@ creatOrderPayment = async () => {
   };
   getPromoCodeAmount = coupan => {
     let { subTotal, totalAmount, delivery } = this.state;
-
+    debugger
     if (Number(subTotal) >= Number(item.minimum_order)) {
       if (
         this.props.navigation.state.params &&

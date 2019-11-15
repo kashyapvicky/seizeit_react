@@ -41,17 +41,31 @@ export default OrderCommonItem = ({ item }) => {
               color: "#233138",
               letterSpacing: 0.5,
               fontSize: normalize(12),
-              fontWeight: "600"
+              fontWeight: "600",
             }}
           >
-            {item.product_detail && item.product_detail.brand ? item.product_detail.brand.name : ""}
+            {item.product_detail && item.product_detail.brand
+              ? item.product_detail.brand.name
+              : ""}
           </Text>
         </View>
         <View>
           <Text p style={{ color: "#000000" }}>
-            {item && item.product_detail ? item.product_detail.product_title : ''}
+            {item && item.product_detail
+              ? item.product_detail.product_title
+              : ""}
+          </Text>
+          <Text
+            p
+            style={{
+              color: "rgba(0,0,0,0.56)",
+              fontSize: normalize(13)
+            }}
+          >
+            by {item && item.vendor && item.vendor.name ? item.vendor.name : ""}
           </Text>
         </View>
+
         <View
           style={{
             flexDirection: "row",
@@ -60,15 +74,16 @@ export default OrderCommonItem = ({ item }) => {
           }}
         >
           <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-            ${item && item.product_detail ?  item.product_detail.price : ''}
+            ${item && item.product_detail ? item.product_detail.price : ""}
           </Text>
           {item.status == 6 && (
             <View
               style={{
                 width: "auto",
-                alignItems: "center",
+                justifyContent: "center",
                 paddingHorizontal: 6,
-                height: 16,
+                height: 18,
+                marginTop: 8,
                 // justifyContent:'center',
                 // flexDirection:'row',
                 backgroundColor: "rgba(150,197,15,0.12)",
@@ -79,10 +94,10 @@ export default OrderCommonItem = ({ item }) => {
                 textAlign
                 style={[
                   styles.text,
-                  { color: "#96C50F", fontSize: normalize(11) }
+                  { color: "#96C50F", fontSize: normalize(10) }
                 ]}
               >
-               {item.stausMessage}
+                {item.stausMessage}
               </Text>
             </View>
           )}

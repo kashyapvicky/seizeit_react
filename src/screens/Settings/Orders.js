@@ -194,8 +194,8 @@ class Orders extends Component {
   };
   renderOrders = ({ item, index }) => {
     return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate("OrderDetails")}
+      <View
+      
         style={{ flex: 1, paddingHorizontal: 16, marginTop: 16 }}
       >
         <Text
@@ -210,13 +210,17 @@ class Orders extends Component {
         <View style={{ flex: 1, marginTop: 16 }}>
           {this.renderItems(item.orders,index,item)}
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
   renderItems = (orders, index) => {
     return orders.map((order, i) => {
       return (
-        <View key={i + "order"} style={{ flexDirection: "row",flex:1}}>
+        <TouchableOpacity
+        onPress={() => this.props.navigation.navigate("OrderDetails",{
+          order :order
+        })}
+         key={i + "order"} style={{ flexDirection: "row",flex:1}}>
           <View style={{flex:0.1,marginTop: i == 0 ? 8 : 0,}}>
           {i == 0 && (
             <View
@@ -316,14 +320,23 @@ class Orders extends Component {
                     paddingTop: 6
                   }}
                 >
-                  {this.renderButton(
+                  {order.status < 4 ?
+                    this.renderButton(
                       this.buttonStatus(order.status),
                       false,
                       order
-                  )}
+                  ): <Text
+                  textAlign
+                  style={[
+                    styles.text,
+                    { color: "#96C50F", fontSize: normalize(10) }
+                  ]}
+                >
+                {order.stausMessage}
+                </Text> }
                 </View>
               </View>
-              <View
+            <View
                 style={{
                   width: "auto",
                   height: 16,
@@ -354,7 +367,7 @@ class Orders extends Component {
               </View>
             )}
           </View>
-        </View>
+        </TouchableOpacity>
       );
     });
   };

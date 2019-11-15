@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
+import { postRequest, getRequest } from "../../redux/request/Service";
 
 //local imports
 import Button from "../../components/Button";
@@ -42,6 +43,32 @@ class Earnings extends Component {
       ]
     };
   }
+  componentDidMount(){
+    this.getEarnings(0)
+  }
+
+/******************** Api Function  *****************/
+    getEarnings = status => {
+      getRequest(`vendor/vendor_earnings?status=${status}`)
+        .then(res => {
+          debugger;
+          if (res && res.data && res.data.length > 0) {
+            this.setState({
+              earnings: res.data,
+              isRefreshing: false
+            });
+          } else {
+            this.setState({
+              isRefreshing: false,
+              earnings: []
+            });
+          }
+          setIndicator(false);
+        })
+        .catch(err => {});
+    };
+/******************** Api Function  *****************/
+
   pressButton = ()=>{
     return null
   }

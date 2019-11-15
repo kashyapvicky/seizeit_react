@@ -33,6 +33,7 @@ class OrderDetails extends Component {
   }
   componentDidMount() {
     let { params } = this.props.navigation.state;
+    debugger
     if (params && params.order && params.from == "order-placed") {
       this.setState({
         order: params.order

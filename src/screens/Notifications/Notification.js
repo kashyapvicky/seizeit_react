@@ -186,6 +186,7 @@ style={[{ flex: 1 }]}
         renderItem={this.notificationsList}
         ListEmptyComponent={<NotificationPlaceholder  
           array={[1, 2, 3, 4,5,6]}
+          message='No notification found'
           loader={this.loaderComponent}
         />}
       />

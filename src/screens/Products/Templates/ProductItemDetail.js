@@ -7,54 +7,61 @@ import { styles } from "../../../styles";
 import Text from "../../../components/Text";
 import { Images } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
+import Rating from "./Rating";
 
- const ProductItemDetail = ({product}) => {
-  return  <View style={{ flex: 1, paddingTop: 8, }}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text
-              p
-              style={{
-                color: "#96C50F",
-                letterSpacing: 0.5,
-                fontSize: normalize(16)
-                // fontWeight: "600"
-              }}
-            >
-             {product.brand ? product.brand.name :''}
-            </Text>
-          </View>
-          <View  style={{
-              paddingTop:8
-            }}>
-            <Text
-              p
-              style={{
-                color: "#000000",
-                fontSize: normalize(20),
-                fontWeight: "normal",
-                lineHeight:30
-              }}
-            >
-            {product.product_title}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingTop: 18
-            }}
-          >
-            <Text h5 style={{ color: "#000000", fontSize: normalize(24) }}>
+const ProductItemDetail = ({ product }) => {
+  return (
+    <View style={{ flex: 1, paddingTop: 8 }}>
+     
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text
+          p
+          style={{
+            color: "#96C50F",
+            letterSpacing: 0.5,
+            fontSize: normalize(16),
+            lineHeight: 20
+            // fontWeight: "600"
+          }}
+        >
+          {product.brand ? product.brand.name : ""}
+        </Text>
+      </View>
+      <View
+        style={{
+          paddingTop: 8
+        }}
+      >
+        <Text
+          p
+          style={{
+            color: "#000000",
+            fontSize: normalize(20),
+            fontWeight: "normal",
+            lineHeight: 30
+          }}
+        >
+          {product.product_title}
+        </Text>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          paddingTop: 14
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <Text h5 style={{ color: "#000000", fontSize: normalize(24) }}>
             ${product.price}
-            </Text>
-          </View>
-          <View  style={{
-              
+          </Text>
+        </View>
+      </View>
+      {/* <View  style={{
               paddingTop: 8
             }}>
+           <Rating />
+
           <Text
               p
               style={{
@@ -65,7 +72,8 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
             >
              Free delivery by Thursday
             </Text>
-          </View>
-      </View>
+          </View> */}
+    </View>
+  );
 };
-export default ProductItemDetail
+export default ProductItemDetail;

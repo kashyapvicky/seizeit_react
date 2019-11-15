@@ -28,6 +28,7 @@ export default  SearchInput = (props) =>{
     style={{
       flex: 0.9,
       flexDirection: "row",
+      paddingLeft:4,
       justifyContent: "space-between"
     }} onPress={()=> props.onPress ? props.onPress() : null}>
     <TextInput

@@ -29,6 +29,9 @@ import styles from "../../styles";
 import Text from "../../components/Text";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import { screenDimensions } from "../../utilities/contsants";
+import { NotificationPlaceholder } from "../Notifications/Templates/NotoficationPlaceholder";
+import Rating from "./Templates/Rating";
+
 import {
   updateProductCartValue,
   updateCartSuccess,
@@ -58,7 +61,6 @@ export default class ProductDetail extends Component {
   }
   componentDidMount() {
     let { params } = this.props.navigation.state;
-    debugger;
     if (params && params.productId) {
       debugger;
       this.getProductDetail(params.productId);
@@ -198,12 +200,11 @@ export default class ProductDetail extends Component {
   renderItems = (item, index, imageHeight) => {
     return (
       <Listitems
-        onPress={() =>{
+        onPress={() => {
           this.props.navigation.push("ProductDetails", {
             productId: item.id
-          })
-        }
-        }
+          });
+        }}
         item={item}
         index={index}
         imageHeight={imageHeight}
@@ -216,34 +217,54 @@ export default class ProductDetail extends Component {
 
   renderVendorProfile = () => {
     let { product } = this.state;
+    let { user } = this.props.screenProps.user;
+
     return (
-      <TouchableOpacity
-        style={{ flexDirection: "row" }}
+      <View
+        style={{  flex: 1 }}
+      >
+        <TouchableOpacity 
         onPress={() =>
           this.props.navigation.navigate("VendorProduct", {
             vendor: product
           })
         }
-      >
-        {product.vendor && product.vendor.pic ? (
-          <Image
-            source={{ uri: product.vendor.pic }}
-            style={{ width: 32, height: 32, borderRadius: 32 / 2 }}
-          />
-        ) : null}
+        style={{flexDirection: "row",flex:1}}>
+          {product.vendor && product.vendor.pic ? (
+            <View>
+              <Image
+                source={{ uri: product.vendor.pic }}
+                style={{ width: 48, height: 48, borderRadius: 48 / 2 }}
+              />
+            </View>
+          ) : null}
 
-        <View style={{ justifyContent: "center", paddingLeft: 16 }}>
-          <Text p style={{ fontSize: normalize(18), color: "#000000" }}>
-            {" "}
-            {`${product.vendor && product.vendor.name ?product.vendor.name : ''}`}
-          </Text>
-        </View>
-      </TouchableOpacity>
+          <View
+            style={{ justifyContent: "center", paddingLeft: 12, flex: 0.8 }}
+          >
+            <Text p style={{ fontSize: normalize(18), color: "#000000" }}>
+              {" "}
+              {`${
+                product.vendor && product.vendor.name ? product.vendor.name : ""
+              }`}
+            </Text>
+            <View
+              style={{
+                paddingTop: 8
+              }}
+            >
+              <Rating readOnly={true} showRating/>
+            </View>
+          </View>
+        </TouchableOpacity>
+        {((user && user.user_type == "customer") || !user) &&
+          this._renderReviesList([], "Reviews", 168)}
+      </View>
     );
   };
   renderProductsList = (array, label, imageHeight) => {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingHorizontal: 24 }}>
         {this.renderLabel(label)}
         <View style={{ height: 10 }} />
         <FlatList
@@ -269,48 +290,82 @@ export default class ProductDetail extends Component {
       </View>
     );
   };
-
+  _renderReviesList = (array, label) => {
+    return (
+      <View style={{ flex: 1, }}>
+        {/* {this.renderLabel(label)} */}
+        <FlatList
+          bounces={true}
+          // horizontal={true}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          data={array}
+          keyExtractor={(item, index) => index + "product"}
+          renderItem={({ item, index }) =>
+            this.renderItems(item, index, imageHeight)
+          }
+          ListEmptyComponent={
+            <NotificationPlaceholder
+              array={[1]}
+              message={this.props.screenProps.loader ? "" : "No review found"}
+              loader={this.loaderComponent}
+            />
+          }
+        />
+      </View>
+    );
+  };
+  renderSpaceBorder = () => {
+    let { user } = this.props.screenProps.user;
+    return (
+      ((user && user.user_type == "customer") || !user) && (
+        <View
+          style={[
+            styles.borderSalesReport,
+            {
+              marginRight: screenDimensions.width / screenDimensions.width - 24,
+              width: screenDimensions.width
+            }
+          ]}
+        />
+      )
+    );
+  };
   _renderScrollViewContent() {
     const data = Array.from({ length: 30 });
     let { user } = this.props.screenProps.user;
     return (
       <View style={detailStyles.scrollViewContent}>
-        <View style={{ flex: 1, paddingHorizontal: 24, paddingVertical: 16 }}>
-          <ProductItemDetail product={this.state.product} />
-          <View style={{ height: 16 }} />
-          {this.renderLabel("Product Details")}
-          <View style={{ height: 16 }} />
-          {this.renderDescription()}
+        <View style={{ flex: 1, paddingVertical: 16 }}>
+          <View style={{ paddingHorizontal: 24 }}>
+            <ProductItemDetail product={this.state.product} />
+          </View>
+          <View style={{ paddingHorizontal: 24 }}>
+            <View style={{ height: 16 }} />
+            {this.renderLabel("Product Details")}
+            <View style={{ height: 16 }} />
+            {this.renderDescription()}
+            <View style={{ height: 24 }} />
+            <Features product={this.state.product} />
+          </View>
           <View style={{ height: 24 }} />
-          <Features product={this.state.product} />
-          <View style={{ height: 24 }} />
-          {(user &&
-            user.user_type == "customer" || !user)  && <FeatureLabel title={"Posted by"} />}
-          <View style={{ height: 16 }} />
-          {(user && user.user_type == "customer" || !user ) && (
-            <View style={{ flex: 1 }}>{this.renderVendorProfile()}</View>
+          {((user && user.user_type == "customer") || !user) && (
+            <View style={{ paddingHorizontal: 24 }}>
+              <FeatureLabel title={"Posted by"} />
+            </View>
           )}
-          <View style={{ height: 24 }} />
-          {(user && user.user_type == "customer" || !user)  && (
-            <View
-              style={[
-                styles.borderSalesReport,
-                {
-                  marginRight:
-                    screenDimensions.width / screenDimensions.width - 24,
-                  width: screenDimensions.width
-                }
-              ]}
-            />
+          <View style={{ height: 16 }} />
+          {((user && user.user_type == "customer") || !user) && (
+            <View style={{ flex: 1, paddingHorizontal: 24 }}>
+              {this.renderVendorProfile()}
+            </View>
           )}
+          <View style={{ height: 16 }} />
+
+          {this.renderSpaceBorder()}
           <View style={{ height: 8 }} />
-          {(user &&
-            user.user_type == "customer" || !user) &&
-            this.renderProductsList(
-              this.state.similarProducts,
-              "Similar Products",
-              168
-            )}
+          {((user && user.user_type == "customer") || !user) &&
+            this.renderProductsList([], "Similar Products", 168)}
           <View style={{ height: 24 }} />
         </View>
       </View>
@@ -386,7 +441,7 @@ export default class ProductDetail extends Component {
   };
   render() {
     let { carts } = this.props.screenProps.product;
-    let {user} = this.props.screenProps.user
+    let { user } = this.props.screenProps.user;
     let { params } = this.props.navigation.state;
     let title = "Add to Cart";
     if (
@@ -436,60 +491,60 @@ export default class ProductDetail extends Component {
     });
 
     return (
-      <LazyHOC> 
-      <View style={detailStyles.fill}>
-        <Animated.ScrollView
-          style={detailStyles.fill}
-          scrollEventThrottle={1}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
-            {
-              listener: event => {
-                this.handleScroll(event);
-              }
-            },
-            { useNativeDriver: true }
-          )}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={() => {
-                this.setState({ refreshing: true });
-                setTimeout(() => this.setState({ refreshing: false }), 1000);
-              }}
-              // Android offset for RefreshControl
-              progressViewOffset={HEADER_MAX_HEIGHT}
-            />
-          }
-          // iOS offset for RefreshControl
-          contentInset={{
-            top: HEADER_MAX_HEIGHT
-          }}
-          contentOffset={{
-            y: -HEADER_MAX_HEIGHT
-          }}
-        >
-          {this._renderScrollViewContent()}
-        </Animated.ScrollView>
-        <Animated.View
-          style={[
-            detailStyles.header,
-            { transform: [{ translateY: headerTranslate }] }
-          ]}
-        >
+      <LazyHOC>
+        <View style={detailStyles.fill}>
+          <Animated.ScrollView
+            style={detailStyles.fill}
+            scrollEventThrottle={1}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+              {
+                listener: event => {
+                  this.handleScroll(event);
+                }
+              },
+              { useNativeDriver: true }
+            )}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={() => {
+                  this.setState({ refreshing: true });
+                  setTimeout(() => this.setState({ refreshing: false }), 1000);
+                }}
+                // Android offset for RefreshControl
+                progressViewOffset={HEADER_MAX_HEIGHT}
+              />
+            }
+            // iOS offset for RefreshControl
+            contentInset={{
+              top: HEADER_MAX_HEIGHT
+            }}
+            contentOffset={{
+              y: -HEADER_MAX_HEIGHT
+            }}
+          >
+            {this._renderScrollViewContent()}
+          </Animated.ScrollView>
           <Animated.View
             style={[
-              detailStyles.backgroundImage,
-              {
-                opacity: imageOpacity,
-                transform: [{ translateY: imageTranslate }]
-              }
+              detailStyles.header,
+              { transform: [{ translateY: headerTranslate }] }
             ]}
           >
-            <ProductSlider banners={this.state.banners} />
-          </Animated.View>
+            <Animated.View
+              style={[
+                detailStyles.backgroundImage,
+                {
+                  opacity: imageOpacity,
+                  transform: [{ translateY: imageTranslate }]
+                }
+              ]}
+            >
+              <ProductSlider banners={this.state.banners} />
+            </Animated.View>
 
-          {/* <Animated.Image
+            {/* <Animated.Image
             style={[
               detailStyles.backgroundImage,
               {
@@ -503,64 +558,67 @@ export default class ProductDetail extends Component {
                 : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
             }}
           /> */}
-          <TouchableOpacity
-            style={{
-              flex: 0.2,
-              zIndex: 10,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingHorizontal: 16
-            }}
-          >
             <TouchableOpacity
-              style={{ alignSelf: "center", zIndex: 1000 }}
-              onPress={() => this.props.navigation.goBack()}
+              style={{
+                flex: 0.2,
+                zIndex: 10,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                paddingHorizontal: 16
+              }}
             >
-              <Image source={require("../../assets/images/ic_back.png")} />
-            </TouchableOpacity>
-           {(user &&
-            user.user_type == "customer" || !user) && <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Cart")}
-              style={{ alignSelf: "center" }}
-            >
-              <Image source={require("../../assets/images/ic_cart.png")} />
-              {this.renderCartCount(carts)}
-            </TouchableOpacity>}
-          </TouchableOpacity>
-        </Animated.View>
-        {this.state.isbarShow ? (
-          <Animated.View
-            style={[
-              detailStyles.bar,
-              {
-                zIndex: 0,
-                opacity: titleOpacity,
-                paddingHorizontal: 24
-                // transform: [{ scale: titleScale }, { translateY: titleTranslate }]
-              }
-            ]}
-          >
-            <TouchableOpacity
-              style={{ alignSelf: "center", zIndex: 1000 }}
-              onPress={() => this.props.navigation.goBack()}
-            >
-              <Image source={require("../../assets/images/ic_back.png")} />
-            </TouchableOpacity>
-            <View>
-              <Text style={detailStyles.title}>{product.brand ? product.brand.name :''}</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Cart")}
-              style={{ alignSelf: "center" }}
-            >
-              <Image source={require("../../assets/images/ic_cart.png")} />
-              {this.renderCartCount(carts)}
+              <TouchableOpacity
+                style={{ alignSelf: "center", zIndex: 1000 }}
+                onPress={() => this.props.navigation.goBack()}
+              >
+                <Image source={require("../../assets/images/ic_back.png")} />
+              </TouchableOpacity>
+              {((user && user.user_type == "customer") || !user) && (
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate("Cart")}
+                  style={{ alignSelf: "center" }}
+                >
+                  <Image source={require("../../assets/images/ic_cart.png")} />
+                  {this.renderCartCount(carts)}
+                </TouchableOpacity>
+              )}
             </TouchableOpacity>
           </Animated.View>
-        ) : null}
-        {(user &&
-            user.user_type == "customer" || !user)  && this.renderButton(title)}
-      </View>
+          {this.state.isbarShow ? (
+            <Animated.View
+              style={[
+                detailStyles.bar,
+                {
+                  zIndex: 0,
+                  opacity: titleOpacity,
+                  paddingHorizontal: 24
+                  // transform: [{ scale: titleScale }, { translateY: titleTranslate }]
+                }
+              ]}
+            >
+              <TouchableOpacity
+                style={{ alignSelf: "center", zIndex: 1000 }}
+                onPress={() => this.props.navigation.goBack()}
+              >
+                <Image source={require("../../assets/images/ic_back.png")} />
+              </TouchableOpacity>
+              <View>
+                <Text style={detailStyles.title}>
+                  {product.brand ? product.brand.name : ""}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Cart")}
+                style={{ alignSelf: "center" }}
+              >
+                <Image source={require("../../assets/images/ic_cart.png")} />
+                {this.renderCartCount(carts)}
+              </TouchableOpacity>
+            </Animated.View>
+          ) : null}
+          {((user && user.user_type == "customer") || !user) &&
+            this.renderButton(title)}
+        </View>
       </LazyHOC>
     );
   }

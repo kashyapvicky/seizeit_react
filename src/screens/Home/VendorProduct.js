@@ -29,6 +29,7 @@ import { ProductPlaceholder } from "./Templates/PlaceHolderProduct";
 import { updateProductCartValue } from "../../utilities/method";
 import ListFooterComponent from "../Home/Templates/ListFooterComponent";
 import LazyHOC from "../../LazyLoadScreen";
+import Rating from "../Products/Templates/Rating";
 
 class VendorProduct extends Component {
   constructor(props) {
@@ -384,7 +385,17 @@ class VendorProduct extends Component {
           //   hideLeftIcon={true}
           title={this.state.name}
           backPress={() => this.props.navigation.goBack()}
-        />
+        >
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('AllReviews')}
+              style={{
+                paddingTop: 8,
+                flex:0.5
+              }}
+            >
+             <Rating readOnly={true} showRating={false}/>
+        </TouchableOpacity>
+      </Header>
         {this.renderScrollableTab()}
         <FilterButton
          filters={this.props.screenProps.product}
@@ -395,7 +406,7 @@ class VendorProduct extends Component {
           }
         />
       </View>
-            </LazyHOC>
+      </LazyHOC>
 
     );
   }

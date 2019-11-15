@@ -139,6 +139,24 @@ export default container = StyleSheet.create({
     letterSpacing: 0.5,
     fontWeight: "600"
   },
+  labelRetunInfo: {
+    color: "#96C50F",
+    lineHeight: 24,
+    fontSize: normalize(14),
+    letterSpacing: 0.5,
+    fontWeight: "bold"
+  },
+  labelRetunInfoText: {
+    color: "#000000",
+    lineHeight: 24,
+    fontSize: normalize(14),
+    // letterSpacing: 0.5,
+  },
+  returnCard:{
+    flex: 1,backgroundColor:'rgba(71,146,33,0.12)',
+        paddingVertical:16,borderRadius:8,borderWidth:1,borderColor:'#57850F',
+        paddingHorizontal:16 
+  },
   totalProduct: { color: "#6B7580", fontSize: normalize(14) },
   searchView: {
     flexDirection: "row",

@@ -1,8 +1,9 @@
 import React from "react";
-import { ScrollView, View,StyleSheet,Image } from "react-native";
+import { ScrollView, View,StyleSheet,Image,TouchableOpacity } from "react-native";
 
 import { LineChart } from "react-native-chart-kit";
 import Feather from "react-native-vector-icons/Feather";
+import Communications from "react-native-communications";
 
 // Component
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -13,6 +14,7 @@ import { string } from "../../../utilities/languages/i18n";
 import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import { Images } from "../../../utilities/contsants";
+// import { TouchableOpacity } from "react-native-gesture-handler";
 
 
 export default CustomerInfo = ({user,address,customer_info}) => {
@@ -78,7 +80,10 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
     </View>
   </View>
   {
-     (user && user.user_type == 'vendor' ) &&  <View
+     (user && user.user_type == 'vendor' ) &&  <TouchableOpacity
+     onPress={() =>
+      Communications.phonecall(user.phone, true)
+    }
      style={{
         flex: 0.135,
        height:40,
@@ -101,7 +106,7 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
        color={"#96C50F"}
        style={{ alignSelf: "center" }}
      /> */}
-   </View>
+   </TouchableOpacity>
     } 
  
 </View>

@@ -89,7 +89,9 @@ class Returns extends Component {
   renderItems = ({ item, index }) => {
     return (
       <TouchableOpacity
-        // onPress={() => this.props.navigation.navigate("ReturnDetail")}
+        onPress={() => this.props.navigation.navigate("ReturnDetail",{
+          order: item,
+        })}
         activeOpacity={9}
         index={index}
         style={[
@@ -151,8 +153,8 @@ class Returns extends Component {
           title={"Returns"}
           backPress={() => this.props.navigation.goBack()}
         />
-
         {this.renderProductsList()}
+
       </View>
     );
   }

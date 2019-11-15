@@ -14,7 +14,6 @@ import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
 export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmount }) => {
-  debugger;
   let { net_paid, amount, delivery_charge, payment_mode, } = order;
   return (
     <View style={{ marginTop: 10, paddingHorizontal: 24 }}>
