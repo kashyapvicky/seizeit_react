@@ -25,6 +25,7 @@ import EditProfile from "../Settings/EditProfile";
 import Countries from "../Settings/Countries";
 import Promotions from "./PromoCode";
 import AllReviews from "./AllReview";
+import AddReview from "./AddReview";
 
 
 const CardStack =  createStackNavigator({
@@ -62,7 +63,9 @@ const CardStack =  createStackNavigator({
     Countries:Countries,
     EditProfile:EditProfile,
     Promotions:Promotions,
-    AllReviews:AllReviews
+    AllReviews:AllReviews,
+    AddReview:AddReview
+
 },
 {
   initialRouteName: 'Home',

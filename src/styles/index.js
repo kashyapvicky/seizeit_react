@@ -541,6 +541,9 @@ export default container = StyleSheet.create({
     color: "#000000",
     fontSize: normalize(16)
   },
+  ratingHeading:{
+    fontSize: normalize(16)
+  },
   productPrice: {
     color: colors.titleColor,
     fontFamily: fonts.sourcesanspro,

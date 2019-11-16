@@ -2,27 +2,29 @@ import React, { Component } from 'react';
 import { 
   Text, View, ScrollView, SafeAreaView, Platform, StyleSheet
 } from 'react-native';
-import { Rating } from 'react-native-ratings';
+import { Rating ,AirbnbRating} from 'react-native-ratings';
 import colors from '../../../utilities/config/colors';
 
 
 class SwipeRatingScreen extends React.Component {
-  ratingCompleted( rating ) {
-    console.log( `Rating is: ${rating}` );
+  ratingCompleted =(rating)=> {
+    if(this.props.onRatingPress){
+      this.props.onRatingPress(rating)
+    }
   }
   render() {
-      let {showRating,readOnly} =this.props
+      let {showRating,readOnly,imageSize,defaultRating} =this.props
     return (
           <View  style={styles.card}>
-            <Rating 
-              showRating={showRating} 
-              fractions={2} 
+            <AirbnbRating 
+              showRating={false} 
+              defaultRating={defaultRating}
               ratingColor={colors.primary}
-              imageSize={22}
-              readonly={readOnly}
+              size={imageSize ? imageSize : 20}
+              isDisabled={readOnly}
               ratingTextColor={colors.yellow} 
               style={{flexDirection:'row',justifyContent:'flex-start',flex:1,alignItems:'flex-start'}}
-              onStartRating={() => console.log("started rating")}
+              onFinishRating={(rating) => this.ratingCompleted(rating)}
             />
           </View>
        

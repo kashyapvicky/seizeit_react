@@ -31,7 +31,7 @@ import { normalize } from "../../utilities/helpers/normalizeText";
 import { screenDimensions } from "../../utilities/contsants";
 import { NotificationPlaceholder } from "../Notifications/Templates/NotoficationPlaceholder";
 import Rating from "./Templates/Rating";
-
+import { ReviewItem } from "../Home/Templates/ReviewItem";
 import {
   updateProductCartValue,
   updateCartSuccess,
@@ -185,6 +185,8 @@ export default class ProductDetail extends Component {
       this.addToCart(product);
     } else if (title == "View Cart") {
       this.props.navigation.navigate("Cart");
+    } else if (title == "View All Reviews") {
+      this.props.navigation.navigate("AllReviews");
     }
   };
   renderDescription = () => {
@@ -214,22 +216,23 @@ export default class ProductDetail extends Component {
       />
     );
   };
-
+  _renderReviewItem = (item, index) => {
+    return <ReviewItem item={item} index={index} />;
+  };
   renderVendorProfile = () => {
     let { product } = this.state;
     let { user } = this.props.screenProps.user;
 
     return (
-      <View
-        style={{  flex: 1 }}
-      >
-        <TouchableOpacity 
-        onPress={() =>
-          this.props.navigation.navigate("VendorProduct", {
-            vendor: product
-          })
-        }
-        style={{flexDirection: "row",flex:1}}>
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate("VendorProduct", {
+              vendor: product
+            })
+          }
+          style={{ flexDirection: "row", flex: 1 }}
+        >
           {product.vendor && product.vendor.pic ? (
             <View>
               <Image
@@ -253,12 +256,36 @@ export default class ProductDetail extends Component {
                 paddingTop: 8
               }}
             >
-              <Rating readOnly={true} showRating/>
+              <Rating readOnly={true} showRating />
             </View>
           </View>
+          {product.vendor_rating && product.vendor_rating.length > 0 && (
+            <TouchableOpacity
+              style={{ flex: 0.5, alignItems: "center" }}
+              onPress={() =>
+                this.props.navigation.navigate("AddReview", {
+                  vendor_id: product.vendor.id
+                })
+              }
+            >
+              <Text h5 style={{ color: colors.primary }}>
+                Add review
+              </Text>
+            </TouchableOpacity>
+          )}
         </TouchableOpacity>
-        {((user && user.user_type == "customer") || !user) &&
-          this._renderReviesList([], "Reviews", 168)}
+        {product.vendor_rating &&
+        product.vendor_rating.length > 0 &&
+        ((user && user.user_type == "customer") || !user)
+          ? this._renderReviesList(product.vendor_rating, "Reviews", 168)
+          : null}
+        {product.vendor_rating &&
+        product.vendor_rating.length > 1 &&
+        ((user && user.user_type == "customer") || !user) ? (
+          <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+            {this.renderButton("View All Reviews")}
+          </View>
+        ) : null}
       </View>
     );
   };
@@ -292,18 +319,16 @@ export default class ProductDetail extends Component {
   };
   _renderReviesList = (array, label) => {
     return (
-      <View style={{ flex: 1, }}>
+      <View style={{ flex: 1 }}>
         {/* {this.renderLabel(label)} */}
         <FlatList
           bounces={true}
           // horizontal={true}
-          numColumns={2}
+
           showsVerticalScrollIndicator={false}
           data={array}
           keyExtractor={(item, index) => index + "product"}
-          renderItem={({ item, index }) =>
-            this.renderItems(item, index, imageHeight)
-          }
+          renderItem={({ item, index }) => this._renderReviewItem(item, index)}
           ListEmptyComponent={
             <NotificationPlaceholder
               array={[1]}
