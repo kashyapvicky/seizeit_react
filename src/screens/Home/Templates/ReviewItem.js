@@ -6,6 +6,8 @@ import { normalize } from "../../../utilities/helpers/normalizeText";
 import Text from "../../../components/Text";
 import Rating from "../../Products/Templates/Rating";
 import styles from "../../../styles";
+import { Images } from "../../../utilities/contsants";
+import moment from "moment";
 
 export const  ReviewItem = ({item,index}) => {
 return <View style={[styles.shadow,{ flex: 1, marginTop: 8 ,
@@ -17,10 +19,9 @@ return <View style={[styles.shadow,{ flex: 1, marginTop: 8 ,
       <View style={{ flex: 0.2 }}>
           <View>
             <Image
-              source={{
-                uri:
-                  "https://www.seizeit-me.com/categories/94c8f26313f797911edada31ec1cdf0aRaT1oqa3Gf73A81FkCoaJuYGockq.jpg"
-              }}
+              source={item && item.users ?{
+                uri:item.users.pic
+              }:Images.no_image}
               style={{ width: 48, height: 48, borderRadius:48 / 2 }}
             />
           </View>
@@ -28,15 +29,15 @@ return <View style={[styles.shadow,{ flex: 1, marginTop: 8 ,
       <View style={{ flex: 0.8 }}>
         <View style={{ justifyContent: "flex-start", flex: 0.8 }}>
           <Text p style={{ fontSize: normalize(12), color: "#000000" }}>
-            {`${"Mangal Singh"}`}
+            {`${item && item.users ?item.users.name :''}`}
           </Text>
           <Text p style={{ fontSize: normalize(12), color: "#000000" }}>
-            {`${"January 29,2019"}`}
+            {`${item && item.created_at ? moment(item.created_at).format('LL'):''}`}
           </Text>
         </View>
         <View style={{ paddingTop: 2 }}>
         <Rating readOnly
-           defaultRating={item && item.rating ? item.rating:0}
+           defaultRating={item && item.rating ? Number(item.rating):0}
         />
         </View>
         <View style={{ paddingTop: 4 }}>

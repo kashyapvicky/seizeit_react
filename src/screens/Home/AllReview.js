@@ -11,6 +11,8 @@ import {
 } from "react-native";
 // import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { postRequest, getRequest } from "../../redux/request/Service";
+
 //local imports
 import Button from "../../components/Button";
 import Text from "../../components/Text";
@@ -28,7 +30,9 @@ import {ReviewItem} from './Templates/ReviewItem'
     super(props);
     this.state = {
       visible2: false,
-      reviews: [1, 1, 1]
+      reviews: [],
+      is_purchase:null,
+      avarageRating:0,
     };
     this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
@@ -36,6 +40,45 @@ import {ReviewItem} from './Templates/ReviewItem'
       }, 1000);
     });
   }
+  componentDidMount(){
+    let {params} = this.props.navigation.state
+    if(params && params.vendorId){
+      this.setState({
+        vendorId:params.vendorId,
+        vendorAverage:params.vendorAverage
+      })
+    }
+    
+    this.getAllReviews()
+  }
+   /******************** Api Function  *****************/
+   getAllReviews = () => {
+     let {params} = this.props.navigation.state
+     if(params && params.vendorId){
+      getRequest(`user/view_rate_and_review?vendor_id=${params.vendorId}`)
+      .then(res => {
+        debugger;
+        if (res && res.data && res.data.length > 0) {
+          this.setState({
+            reviews: res.data,
+            isRefreshing: false,
+            avarageRating:res.average,
+            is_purchase:res.is_purchase
+          });
+        } else {
+          this.setState({
+            isRefreshing: false,
+            reviews: [],
+            avarageRating:0,
+            is_purchase:null
+
+          });
+        }
+        setIndicator(false);
+      })
+      .catch(err => {});
+     }
+  };
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -57,7 +100,11 @@ import {ReviewItem} from './Templates/ReviewItem'
     // this.props.navigation.navigate("AddNewBankAccount");
   };
   rightPress = () =>{
-     this.props.navigation.navigate("AddReview");
+    
+     this.props.navigation.navigate("AddReview",{
+       getAllReviews:()=>  this.getAllReviews(),
+       vendorId:this.state.vendorId
+     });
 
   }
   renderItems = ({ item, index }) => {
@@ -97,7 +144,7 @@ import {ReviewItem} from './Templates/ReviewItem'
           ]}
 
           title={"All Review"}
-          isRightText={"Add"}
+          isRightText={this.state.is_purchase == 1 ? "Add" :false}
           onRightPress={() => {
             this.rightPress();
           }}

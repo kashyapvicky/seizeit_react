@@ -69,7 +69,6 @@ class Home extends Component {
     this.getOrders(1);
   }
   buttonStatus = value => {
-    debugger;
     switch (value) {
       case 1:
         return "Confirm Order";

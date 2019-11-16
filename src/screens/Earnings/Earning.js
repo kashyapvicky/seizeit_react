@@ -23,13 +23,16 @@ import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import ScrollableTabView from "../../components/ScrollableTab";
+import moment from "moment";
 
 class Earnings extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible2: false,
+      walletAmount:0,
       cartItems: [],
+      earnings:[],
       tabs: [
         {
           title: "All Transactions"
@@ -55,12 +58,14 @@ class Earnings extends Component {
           if (res && res.data && res.data.length > 0) {
             this.setState({
               earnings: res.data,
+              walletAmount:res.wallet_amount,
               isRefreshing: false
             });
           } else {
             this.setState({
               isRefreshing: false,
-              earnings: []
+              earnings: [],
+              walletAmount:res.wallet_amount,
             });
           }
           setIndicator(false);
@@ -72,6 +77,14 @@ class Earnings extends Component {
   pressButton = ()=>{
     return null
   }
+  setStateForTabChange = event => {
+    if (event) {
+      this.getEarnings(event.i);
+      this.setState({
+        tabPage: event.i
+      });
+    }
+  };
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -120,12 +133,12 @@ class Earnings extends Component {
                   // fontWeight: "600"
                 }}
               >
-                Received
+                {item.type == 1 ? 'Recevied' : 'Paid Comission'}
               </Text>
             </View>
             <View>
               <Text p style={{ color: "#000000", fontSize: normalize(16) }}>
-                Transaction Id:MI743274
+                {`Transaction Id:MI${item.id}`}
               </Text>
             </View>
             <View
@@ -139,7 +152,7 @@ class Earnings extends Component {
                 p
                 style={{ color: "rgba(0,0,0,0.5)", fontSize: normalize(13) }}
               >
-                Tue · Aug 21 2018
+               {moment(item.createdAt).format('lll')}
               </Text>
               <View
                 style={{
@@ -152,10 +165,10 @@ class Earnings extends Component {
             </View>
           </View>
           <View style={{ flex: 0.3, paddingRight: 8, alignItems: "flex-end" }}>
-            <Text p style={{ color: "#96C50F", fontSize: normalize(18) }}>
-              {`+$500 `}
+            <Text p style={{ color: item.type == 1 ? colors.primary :colors.danger, fontSize: normalize(18) }}>
+              {`${item.type == 1 ? '+' : '-'}$${item.vendor_amount} `}
             </Text>
-            <Ionicons name={"chevron-right"} size={28} color={"#96C50F"} />
+            <Ionicons name={"chevron-right"} size={28} color={item.type == 1 ? colors.primary :colors.danger} />
           </View>
         </View>
       </TouchableOpacity>
@@ -196,7 +209,7 @@ class Earnings extends Component {
           // extraData={this.state}
           // pagingEnabled={true}
           showsVerticalScrollIndicator={false}
-          data={[1, 2, 3, 4, 5]}
+          data={this.state.earnings}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
           // refreshing={this.state.isRefreshing}
@@ -253,7 +266,7 @@ class Earnings extends Component {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            ${`4,500`}
+            ${this.state.walletAmount}
           </Text>
         </View>
         <View style={{ flex: 0.7, alignSelf: "center" }}>
@@ -266,6 +279,9 @@ class Earnings extends Component {
     return (
       <ScrollableTabView
         tabs={this.state.tabs}
+        onChangeTab={event => {
+          this.setStateForTabChange(event);
+        }}
         renderListTabs={(item, index) => this.renderProductsList(item, index)}
       />
     );

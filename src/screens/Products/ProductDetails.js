@@ -62,6 +62,9 @@ export default class ProductDetail extends Component {
   componentDidMount() {
     let { params } = this.props.navigation.state;
     if (params && params.productId) {
+      this.setState({
+        productId:params.productId
+      })
       debugger;
       this.getProductDetail(params.productId);
       this.getSimilarProduct(params.productId);
@@ -179,14 +182,19 @@ export default class ProductDetail extends Component {
       />
     );
   };
-  pressButton = title => {
+  pressButton = (title) => {
+    let { product } = this.state;
+
     if (title == "Add to Cart") {
       let { product } = this.state;
       this.addToCart(product);
     } else if (title == "View Cart") {
       this.props.navigation.navigate("Cart");
     } else if (title == "View All Reviews") {
-      this.props.navigation.navigate("AllReviews");
+      this.props.navigation.navigate("AllReviews",{
+        vendorId:product.vendor.id,
+        vendorAverage:product.vendorAverage
+      });
     }
   };
   renderDescription = () => {
@@ -256,23 +264,23 @@ export default class ProductDetail extends Component {
                 paddingTop: 8
               }}
             >
-              <Rating readOnly={true} showRating />
+              <Rating readOnly={true} showRating defaultRating={product.vendorAverage} />
             </View>
           </View>
-          {product.vendor_rating && product.vendor_rating.length > 0 && (
-            <TouchableOpacity
+          {(product && product.isRated == 1) ? <TouchableOpacity
               style={{ flex: 0.5, alignItems: "center" }}
               onPress={() =>
                 this.props.navigation.navigate("AddReview", {
-                  vendor_id: product.vendor.id
+                  vendorId: product.vendor.id,
+                  getProductDetail:() => this.getProductDetail(this.state.productId)
                 })
               }
             >
               <Text h5 style={{ color: colors.primary }}>
                 Add review
               </Text>
-            </TouchableOpacity>
-          )}
+            </TouchableOpacity>:null
+          }
         </TouchableOpacity>
         {product.vendor_rating &&
         product.vendor_rating.length > 0 &&
@@ -324,7 +332,6 @@ export default class ProductDetail extends Component {
         <FlatList
           bounces={true}
           // horizontal={true}
-
           showsVerticalScrollIndicator={false}
           data={array}
           keyExtractor={(item, index) => index + "product"}

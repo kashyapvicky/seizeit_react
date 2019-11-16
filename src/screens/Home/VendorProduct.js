@@ -49,7 +49,8 @@ class VendorProduct extends Component {
       usage_filter: "",
       last_page: 0,
       fetchingStatus: false,
-      refreshing: false
+      refreshing: false,
+      vendorAverage:0
     };
     this.current_page = 1;
 
@@ -62,13 +63,15 @@ class VendorProduct extends Component {
   componentDidMount() {
     let { params } = this.props.navigation.state;
     if (params && params.vendor) {
-      let { vendor, category_id } = params.vendor;
+      let { vendor, category_id,vendorAverage } = params.vendor;
       debugger;
       this.setState(
         {
           name: vendor.name,
           vendorId: vendor.id,
-          category_id: category_id
+          category_id: category_id,
+          vendorAverage:vendorAverage
+
         },
         () => {}
       );
@@ -387,13 +390,16 @@ class VendorProduct extends Component {
           backPress={() => this.props.navigation.goBack()}
         >
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('AllReviews')}
+              onPress={() => this.props.navigation.navigate('AllReviews',{
+                vendorId:this.state.vendorId
+              })}
               style={{
                 paddingTop: 8,
                 flex:0.5
               }}
             >
-             <Rating readOnly={true} showRating={false}/>
+             <Rating readOnly={true} showRating={false} 
+             defaultRating={this.state.vendorAverage}/>
         </TouchableOpacity>
       </Header>
         {this.renderScrollableTab()}

@@ -71,15 +71,18 @@ class AddReview extends Component {
         let { params } = this.props.navigation.state;
         debugger
         let data = {}
-        data['vendor_id'] =params.vendor_id
+        data['vendor_id'] =params.vendorId
         data['rating'] =rating
         data['feedback'] =comment
         debugger
         postRequest(`user/rate_vendor`, data).then(res => {
             if (res && res.success) {
-               if (params && params.getReviews) {
-                 params.getReviews();
+               if (params && params.getAllReviews) {
+                 params.getAllReviews();
                }
+               if (params && params.getProductDetail) {
+                params.getProductDetail();
+              }
               }
               setToastMessage(true, colors.green1);
               toastRef.show(res.success);
