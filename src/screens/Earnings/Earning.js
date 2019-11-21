@@ -12,6 +12,7 @@ import {
 import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
 import { postRequest, getRequest } from "../../redux/request/Service";
+import { ListEmptyComponent } from "../../components/ListEmptyComponent";
 
 //local imports
 import Button from "../../components/Button";
@@ -177,6 +178,8 @@ class Earnings extends Component {
   renderProductsList = (item, index) => {
     return (
       <View skey={index} tabLabel={item.title} style={{  }}>
+               {
+            this.state.earnings && this.state.earnings.length >0?  
         <View
           style={[
             styles.shadow,
@@ -191,7 +194,7 @@ class Earnings extends Component {
             }
           ]}
         >
-          <Text
+    <Text
             p
             style={[
               styles.totalProduct,
@@ -200,10 +203,14 @@ class Earnings extends Component {
           >
             Last 30 Days
           </Text>
+       
           <TouchableOpacity>
             <Image source={Images.dropGreen} style={{alignSelf:'center'}} />
           </TouchableOpacity>
+        
         </View>
+          :null
+        }
         <FlatList
           bounces={true}
           // extraData={this.state}
@@ -212,6 +219,11 @@ class Earnings extends Component {
           data={this.state.earnings}
           keyExtractor={(item, index) => index + "product"}
           renderItem={this.renderItems}
+          ListEmptyComponent={() =>
+            !this.props.screenProps.loader ? (
+              <ListEmptyComponent message={"No Earning found"} />
+            ) : null
+          }
           // refreshing={this.state.isRefreshing}
           // onRefresh={this.handleRefresh}
           // onEndReached={this.handleLoadMore}

@@ -49,7 +49,8 @@ target 'seize_it' do
  pod 'YLGIFImage'
  pod 'SBJson'
  pod 'PINCache'
-
+ pod 'Firebase/Core'
+ pod 'Firebase/Messaging'
  # pod 'IQKeyboardManager'
 
   target 'seize_itTests' do

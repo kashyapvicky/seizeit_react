@@ -9,8 +9,6 @@ import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackVi
 
 import Dashboard from "./Dashboard";
 import OrdeDetail from "../Settings/OrdeDetail";
-
-
 export const DashboardNavigator = createStackNavigator(
     {
       Dashboard:Dashboard,

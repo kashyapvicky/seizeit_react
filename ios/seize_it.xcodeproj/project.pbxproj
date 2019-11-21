@@ -94,6 +94,7 @@
 		180BAAD1237C460F00AEA09D /* PayTabs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayTabs.h; sourceTree = "<group>"; };
 		182359FD237D60FB003496D9 /* paytabs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "paytabs-iOS.framework"; sourceTree = "<group>"; };
 		182359FF237D6104003496D9 /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
+		182F311B23869F0A00FD5042 /* seize_it.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = seize_it.entitlements; path = seize_it/seize_it.entitlements; sourceTree = "<group>"; };
 		186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C3C9440217C4BA1B69BF9CA /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2673E6BC5CB1485999EC8CA4 /* SourceSansPro-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-BlackItalic.ttf"; path = "../src/assets/fonts/SourceSansPro-BlackItalic.ttf"; sourceTree = "<group>"; };
@@ -191,6 +192,7 @@
 		13B07FAE1A68108700A75B9A /* seize_it */ = {
 			isa = PBXGroup;
 			children = (
+				182F311B23869F0A00FD5042 /* seize_it.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -420,6 +422,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -807,6 +810,7 @@
 			baseConfigurationReference = E2662AA39FDCB0E71A4B1E42 /* Pods-seize_it.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = seize_it/seize_it.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -817,7 +821,11 @@
 					"$(inherited)/**",
 					"$(PROJECT_DIR)",
 				);
-				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)/** $(PROJECT_DIR) /Users/apple/Documents/ios_sdk-v4.0.1-lite/**";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)/**",
+					"$(PROJECT_DIR)",
+					"/Users/apple/Documents/ios_sdk-v4.0.1-lite/**",
+				);
 				INFOPLIST_FILE = seize_it/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
@@ -840,6 +848,7 @@
 			baseConfigurationReference = 9A4869D961FB8C9B01CF4406 /* Pods-seize_it.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = seize_it/seize_it.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

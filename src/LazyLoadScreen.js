@@ -12,7 +12,6 @@ export default class LazyHOC extends PureComponent {
       this.setState({ hidden: false });
     });    
   }
-
   render() {
     if(this.state.hidden) {
       return null;
