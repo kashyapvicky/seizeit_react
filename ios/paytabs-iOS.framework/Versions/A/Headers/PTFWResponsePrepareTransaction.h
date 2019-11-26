@@ -10,6 +10,7 @@
 
 @class PTFWResponseTransactionVISAAuth;
 @class PTFWResponseTransactionMIGSAuth;
+@class PTFWResponseTransactionMPGSAuth;
 @class PTFWResponseTokenization;
 
 FOUNDATION_EXTERN const struct PTFWResponsePrepareTransactionKeys {
@@ -36,6 +37,10 @@ FOUNDATION_EXTERN const struct PTFWResponsePrepareTransactionKeys {
     __unsafe_unretained NSString * __nonnull migsIsExpress;
     __unsafe_unretained NSString * __nonnull migsAuthReply;
     
+    // MPGS Keys
+    __unsafe_unretained NSString * __nonnull mpgsIsExpress;
+    __unsafe_unretained NSString * __nonnull mpgsResponseData3D;
+
     // Tokenization
     __unsafe_unretained NSString * __nonnull tokenization;
 } PTFWResponsePrepareTransactionKeys;
@@ -43,7 +48,7 @@ FOUNDATION_EXTERN const struct PTFWResponsePrepareTransactionKeys {
 @interface PTFWResponsePrepareTransaction : MTLModel<MTLJSONSerializing>
 
 // Common Properties
-@property (nonatomic, copy, nullable, readonly) NSString *result;
+@property (nonatomic, copy, nullable, readwrite) NSString *result;
 @property (nonatomic, copy, nullable, readonly) NSNumber *responseCode;
 @property (nonatomic, copy, nullable, readonly) NSNumber *transactionID;
 @property (nonatomic, copy, nullable, readonly) NSString *merchantID;
@@ -64,6 +69,10 @@ FOUNDATION_EXTERN const struct PTFWResponsePrepareTransactionKeys {
 @property (nonatomic, copy, nullable, readonly) NSString *migsSecureHash;
 @property (nonatomic, copy, nullable, readonly) NSNumber *migsIsExpress;
 @property (nonatomic, copy, nullable, readonly) PTFWResponseTransactionMIGSAuth *migsAuthReply;
+
+// MOGS Properties
+@property (nonatomic, copy, nullable, readonly) NSNumber *mpgsIsExpress;
+@property (nonatomic, copy, nullable, readonly) PTFWResponseTransactionMPGSAuth *mpgsResponseData3D;
 
 // Tokenization
 @property (nonatomic, copy, nullable, readonly) PTFWResponseTokenization *tokenization;

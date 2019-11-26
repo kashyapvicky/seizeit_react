@@ -15,8 +15,8 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		180BAAD0237C442500AEA09D /* PayTabs.m in Sources */ = {isa = PBXBuildFile; fileRef = 180BAACF237C442500AEA09D /* PayTabs.m */; };
-		182359FE237D60FB003496D9 /* paytabs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 182359FD237D60FB003496D9 /* paytabs-iOS.framework */; };
-		18235A00237D6104003496D9 /* Resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 182359FF237D6104003496D9 /* Resources.bundle */; };
+		1831897D238BFF4A007FFB7A /* paytabs-iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1831897C238BFF4A007FFB7A /* paytabs-iOS.framework */; };
+		1831897F238BFF59007FFB7A /* Resources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 1831897E238BFF59007FFB7A /* Resources.bundle */; };
 		186F95DE2330EBDE00BA18A0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */; };
 		1B794D262F1541A6B565692F /* SourceSansPro-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E61AE19F07334A4BADFFD452 /* SourceSansPro-Semibold.ttf */; };
 		2134D425231B467DBB285A84 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 673F393107F1438093DBB018 /* Fontisto.ttf */; };
@@ -92,9 +92,9 @@
 		14699DD39C254F32AC9B832A /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		180BAACF237C442500AEA09D /* PayTabs.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PayTabs.m; sourceTree = SOURCE_ROOT; };
 		180BAAD1237C460F00AEA09D /* PayTabs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PayTabs.h; sourceTree = "<group>"; };
-		182359FD237D60FB003496D9 /* paytabs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = "paytabs-iOS.framework"; sourceTree = "<group>"; };
-		182359FF237D6104003496D9 /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
 		182F311B23869F0A00FD5042 /* seize_it.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = seize_it.entitlements; path = seize_it/seize_it.entitlements; sourceTree = "<group>"; };
+		1831897C238BFF4A007FFB7A /* paytabs-iOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "paytabs-iOS.framework"; path = "/Users/apple/Desktop/Projects/seize_it_react/ios/paytabs-iOS.framework"; sourceTree = "<absolute>"; };
+		1831897E238BFF59007FFB7A /* Resources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Resources.bundle; sourceTree = "<group>"; };
 		186F95DD2330EBDE00BA18A0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1C3C9440217C4BA1B69BF9CA /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		2673E6BC5CB1485999EC8CA4 /* SourceSansPro-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-BlackItalic.ttf"; path = "../src/assets/fonts/SourceSansPro-BlackItalic.ttf"; sourceTree = "<group>"; };
@@ -149,7 +149,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E29B8F2F2E0BF415772E6A5C /* libPods-seize_it.a in Frameworks */,
-				182359FE237D60FB003496D9 /* paytabs-iOS.framework in Frameworks */,
+				1831897D238BFF4A007FFB7A /* paytabs-iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,7 +209,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				182359FD237D60FB003496D9 /* paytabs-iOS.framework */,
+				1831897C238BFF4A007FFB7A /* paytabs-iOS.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
 				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
 				302C474F499CFAB03CEF990B /* libPods-seize_it.a */,
@@ -238,7 +238,7 @@
 		52BDB6584C144A64AA162E8E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				182359FF237D6104003496D9 /* Resources.bundle */,
+				1831897E238BFF59007FFB7A /* Resources.bundle */,
 				50D2EC5DD1DE4849B68782E7 /* AntDesign.ttf */,
 				8F3C538340EE44C8B8962027 /* Entypo.ttf */,
 				2E09DAD3D6A7412F90635B17 /* EvilIcons.ttf */,
@@ -470,7 +470,7 @@
 				C131D9BA045C44A385310019 /* Octicons.ttf in Resources */,
 				AB336C7247CE433693375B65 /* SimpleLineIcons.ttf in Resources */,
 				DD5205C775064083A2DCAD2B /* Zocial.ttf in Resources */,
-				18235A00237D6104003496D9 /* Resources.bundle in Resources */,
+				1831897F238BFF59007FFB7A /* Resources.bundle in Resources */,
 				12B5D2D67B9F49159C3FD33F /* SourceSansPro-Black.ttf in Resources */,
 				B9F9820943EA4FF9B6D9AFD5 /* SourceSansPro-BlackItalic.ttf in Resources */,
 				A07A07DFD53D4A2B87B7F158 /* SourceSansPro-Bold.ttf in Resources */,
@@ -811,7 +811,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = seize_it/seize_it.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -849,7 +849,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = seize_it/seize_it.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SWT8MR75GH;

@@ -9,7 +9,7 @@ import { string } from "../../../utilities/languages/i18n";
 import {Images} from '../../../utilities/contsants'
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
-export default (AddressListItem = ({item,index,onPress,descriptionSize,deleteAddress,updateDefaultAddress,from}) => {
+export default (AddressListItem = ({item,index,onPress,fromSetting,descriptionSize,deleteAddress,updateDefaultAddress,from}) => {
 return <TouchableOpacity
 onPress={()=>(onPress && from == 'Address') ? onPress() : null}
 activeOpacity={9}
@@ -25,7 +25,7 @@ style={[
 ]}
 >
 <View style={{ flexDirection: "row", paddingBottom: 8 }}>
-  <TouchableOpacity 
+  {!fromSetting ? <TouchableOpacity 
   onPress={()=> updateDefaultAddress ? updateDefaultAddress() : null}
   style={{ flex: 0.1, paddingLeft: 0,paddingTop:6,paddingRight:8 }}>
     {
@@ -33,8 +33,9 @@ style={[
       <Image source={Images.check} style={{alignSelf:'center'}}/>
       :  <Image source={Images.round} style={{alignSelf:'center'}}/>
     }
-  </TouchableOpacity>
-  <View style={{ flex: 0.9 }}>
+    </TouchableOpacity>:<View style={{paddingLeft:8}} />
+}
+  <View style={{ flex:!fromSetting ? 0.9 :1 }}>
     <View style={{ flexDirection: "row" }}>
       <Text
         h5
@@ -61,11 +62,14 @@ style={[
       >
        {  item.subTitle }
       </Text>
-      <TouchableOpacity 
+      
+        <TouchableOpacity 
+        onPress={() => deleteAddress ? deleteAddress() : null}
       style={{ flex: 0.2, alignItems: "center" }}>
         <Image source={Images.delete} />
         {/* <Ionicons name={"ios-trash"} size={28} color={"#D8D8D8"} /> */}
       </TouchableOpacity>
+      
     </View> :null}
     <View
       style={{ flexDirection: "row", justifyContent: "space-between" }}

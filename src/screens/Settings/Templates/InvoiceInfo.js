@@ -14,7 +14,7 @@ import { screenDimensions } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 
 export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmount }) => {
-  let { net_paid, amount, delivery_charge, payment_mode, } = order;
+  let { net_paid, amount, delivery_charge, payment_mode,vat,tax } = order;
   return (
     <View style={{ marginTop: 10, paddingHorizontal: 24 }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
@@ -67,6 +67,64 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
           ]}
         >
           ${delivery_charge ? delivery_charge : 0}
+        </Text>
+      </View>
+      {/* <View
+        style={{
+          marginTop: 2,
+          paddingBottom: 5,
+          justifyContent: "space-between",
+          flexDirection: "row"
+        }}
+      >
+        <Text
+          style={[
+            styles.profileLabel,
+            {
+              color: "#000000",
+              fontWeight: "normal",
+              fontSize: normalize(16)
+            }
+          ]}
+        >
+          {"Tax Charges"}
+        </Text>
+        <Text
+          style={[
+            styles.amountMoney,
+            { color: "#000000", fontSize: normalize(16) }
+          ]}
+        >
+          ${tax ? tax : 0}
+        </Text>
+      </View> */}
+      <View
+        style={{
+          marginTop: 2,
+          paddingBottom: 5,
+          justifyContent: "space-between",
+          flexDirection: "row"
+        }}
+      >
+        <Text
+          style={[
+            styles.profileLabel,
+            {
+              color: "#000000",
+              fontWeight: "normal",
+              fontSize: normalize(16)
+            }
+          ]}
+        >
+          {"Vat Charges"}
+        </Text>
+        <Text
+          style={[
+            styles.amountMoney,
+            { color: "#000000", fontSize: normalize(16) }
+          ]}
+        >
+          ${vat ? vat : 0}
         </Text>
       </View>
       {

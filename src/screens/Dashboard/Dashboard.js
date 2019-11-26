@@ -24,6 +24,7 @@ import { string } from "../../utilities/languages/i18n";
 import colors from "../../utilities/config/colors";
 import { Images } from "../../utilities/contsants";
 import OrderCommonItem from "./Templates/OrderCommonItem";
+import moment from "moment";
 
 const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
@@ -33,6 +34,9 @@ class Home extends Component {
     this.state = {
       visible2: false,
       orders: [],
+      labels:[],
+      total_sale:0,
+      data:[],
       tabs: [
         {
           title: "Order Recieved"
@@ -66,6 +70,9 @@ class Home extends Component {
     this.props.screenProps.actions.setIndicator(false);
   }
   componentDidMount() {
+    let  startMonth= moment().subtract(3, 'months');
+    let endMonth = moment();
+    this.getGraphData(startMonth,endMonth)
     this.getOrders(1);
   }
   buttonStatus = value => {
@@ -83,6 +90,37 @@ class Home extends Component {
     }
   };
   /******************** Api Function  *****************/
+  getStartEndDate = (start_date,end_date) =>{
+    this.getGraphData(start_date,end_date)
+
+  }
+  getGraphData= (dat1,dat2) => {
+    let start_date = moment(dat1).format('YYYY-MM-DD')
+    let end_date = moment(dat2).format('YYYY-MM-DD')
+
+    getRequest(`vendor/get_graph_data?start_date=${start_date}&end_date=${end_date}`)
+      .then(res => {
+        debugger
+        if(res && res.data && res.data.length > 0){
+          this.setState({
+            labels:[...this.state.labels,...res.data.map(x=> x.Month)],
+            data:[...this.state.data,...res.data.map(x=> Number(x.sale))],
+            total_sale:res.total_sale
+          },()=>{
+          }) 
+        }else{
+          this.setState({
+            total_sale:res.total_sale,
+            // labels:[],
+            // data:[]
+          })
+        }
+        debugger;
+        setIndicator(false);
+      })
+      .catch(err => {});
+  };
+  
   getOrders = status => {
     getRequest(`order/vendor_order_detail?status=${status}`)
       .then(res => {
@@ -181,7 +219,11 @@ class Home extends Component {
           {this.renderAllItem()}
           <View style={styles.borderSalesReport} />
 
-          <LineChartComponet />
+          <LineChartComponet 
+          {...this.state}
+          getStartEndDate = {(start_date,end_date) => this.getStartEndDate(start_date,end_date)}
+
+          />
         </ScrollView>
       </View>
     );

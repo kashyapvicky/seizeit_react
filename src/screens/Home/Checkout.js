@@ -45,9 +45,9 @@ class Checkout extends Component {
         {
           title: "Debit/Credit"
         },
-        {
-          title: "Cash on delivery"
-        }
+        // {
+        //   title: "Cash on delivery"
+        // }
         // {
         //   title: "Bank transfer"
         // }
@@ -80,7 +80,9 @@ class Checkout extends Component {
       totalAmount: 0,
       promoAmount: 0,
       promoCode: null,
-      address: ""
+      address: "",
+      vat: 0,
+      tax:0
     };
     this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
@@ -100,10 +102,12 @@ class Checkout extends Component {
         },
         cartItems: carts,
         subTotal: this.getCartTotal(carts),
-        totalAmount: this.getCartTotal(carts) + this.state.delivery
+        totalAmount: this.getCartTotal(carts)
       });
     }
     this.getDefaultAddress();
+    this.getCharges()
+
   }
   updatePersonalDetail = user => {
     this.setState({
@@ -112,55 +116,84 @@ class Checkout extends Component {
   };
 
   /*************************************APi Call  *********************************************/
- //Verify payment request
- verifyPayment=(transactionDetails, data)=> {
-  const PAYTAB_URL = 'https://www.paytabs.com/apiv2';
-  var paytabPayload = {
+  
+    /*******************************APi Call  ***************************/
+
+    getCharges = () => {
+      let { setToastMessage,setIndicator } = this.props.screenProps.actions;
+     let {user} = this.props.screenProps.user
+     if(user && user.token){
+      getRequest("user/get_charges")
+      .then(res => {
+        if(res && res.data){
+          this.setState({
+            // tax: res.data.sales_tax,
+           delivery: res.data.shipping_charges,
+           vat: res.data.vat,
+          })
+        }
+    
+        setIndicator(false);
+      })
+      .catch(err => {});
+     }
+     
+    };
+  //Verify payment request
+  verifyPayment = (transactionDetails, data) => {
+    const PAYTAB_URL = 'https://www.paytabs.com/apiv2';
+    var paytabPayload = {
       merchant_email: transactionDetails.merchant_email,
       secret_key: transactionDetails.secret_key,
       transaction_id: transactionDetails.payment_reference
-  };
-  var formData = new FormData();
-  for (var k in paytabPayload) {
+    };
+    var formData = new FormData();
+    for (var k in paytabPayload) {
       formData.append(k, paytabPayload[k]);
-  }
-  const fetchOptions = {
+    }
+    const fetchOptions = {
       method: 'POST',
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data; charset=UTF-8'
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data; charset=UTF-8'
       },
       body: formData
-  };
-  fetch(PAYTAB_URL + '/verify_payment_transaction', fetchOptions)
+    };
+    fetch(PAYTAB_URL + '/verify_payment_transaction', fetchOptions)
       .then((response) => response.json())
       .then((json) => {
-          this.successCallBack(json);
+        this.successCallBack(json);
       })
       .catch((error) => {
-          this.successCallBack({ response_code: 0 });
+        this.successCallBack({ response_code: 0 });
       })
-};
-// Success call back 
-successCallBack = async (json) => { 
-  debugger
-if(json.response_code == 100){
-  let {transaction_id} = json
-  this.saveSuccessOrder(transaction_id,2)
-}
+  };
+  // Success call back 
+  successCallBack = async (json) => {
+    debugger
+    if (json.response_code == 100) {
+      let { transaction_id } = json
+      this.saveSuccessOrder(transaction_id, 2)
+    }
 
-}
-// Create Order Payment By Paytab
-creatOrderPayment = async () => {
+  }
+  // Create Order Payment By Paytab
+  creatOrderPayment = async () => {
     let { toastRef } = this.props.screenProps;
     let { setToastMessage } = this.props.screenProps.actions;
+    let {subTotal,tax,vat,delivery,totalAmount} = this.state
+    let dlCharges = (subTotal*delivery/100).toFixed(2)
+    let taxCharges = (subTotal*tax/100).toFixed(2)
+    let vatCharges = (subTotal*vat/100).toFixed(2)
+    let totalAmountData = (Number(totalAmount)+Number(dlCharges)+Number(vatCharges)+Number(taxCharges)).toFixed(2)
+
     try {
       let { user, lang } = this.props.screenProps.user;
       let data = {};
       data["MERCHANT_EMAIL"] = CONFIG.PAYTAB_MARCHANT_EMAIL;
       data["SECRET_KEY"] = CONFIG.PAYTAB_MARCHANT_SECRET_KEY;
       data["TRANSACTION_TITLE"] = "SeizIt transection title";
-      data["AMOUNT"] = 5.0;
+      data["AMOUNT"] = Number(totalAmountData)
       data["CURRENCY_CODE"] = "AED";
       data["CUSTOMER_PHONE_NUMBER"] = "0097135532915";
       data["CUSTOMER_EMAIL"] = user.email;
@@ -174,16 +207,15 @@ creatOrderPayment = async () => {
       data["ADDRESS_BILLING"] = address.description;
       data["CITY_BILLING"] = address.city;
       data["STATE_BILLING"] = address.state;
-      data["COUNTRY_BILLING"] = 'ARE';
-      data["POSTAL_CODE_BILLING"] = "91";
+      data["COUNTRY_BILLING"] = address.iso3;
+      data["POSTAL_CODE_BILLING"] = address.pincode ? address.pincode : "91";
       // Shipping Address
       data["ADDRESS_SHIPPING"] = address.description;
       data["CITY_SHIPPING"] = address.city;
       data["STATE_SHIPPING"] = address.state;
-      data["COUNTRY_SHIPPING"] = 'ARE'
-      data["POSTAL_CODE_SHIPPING"] = "91";
+      data["COUNTRY_SHIPPING"] = address.iso3;
+      data["POSTAL_CODE_SHIPPING"] = address.pincode ? address.pincode : "91";
       data["TAX"] = 0.0;
-
       data["PAY_BUTTON_COLOR"] = colors.primary;
       data["LANGUAGE"] = lang;
       debugger
@@ -221,27 +253,36 @@ creatOrderPayment = async () => {
       debugger
       let payType = selectedPaymentType[0]
       debugger
-      if(payType && payType.title == 'CARDS'){
+      if (payType && payType.title == 'CARDS') {
         this.creatOrderPayment()
-      }else{
-        this.saveSuccessOrder(payType.title,1)
+      } else {
+        this.saveSuccessOrder(payType.title, 1)
       }
     }
   };
 
   // Save Success order
-  saveSuccessOrder = (transaction_id,payment_mode) =>{
+  saveSuccessOrder = (transaction_id, payment_mode) => {
     let { toastRef } = this.props.screenProps;
-    let { setToastMessage,setIndicator } = this.props.screenProps.actions;
+    let { setToastMessage, setIndicator } = this.props.screenProps.actions;
     let { removeCartSuccess } = this.props.screenProps.productActions;
+    let {subTotal,tax,vat,delivery,totalAmount} = this.state
+    let dlCharges = (subTotal*delivery/100).toFixed(2)
+    let taxCharges = (subTotal*tax/100).toFixed(2)
+    let vatCharges = (subTotal*vat/100).toFixed(2)
+    let totalAmountData = (Number(totalAmount)+Number(dlCharges)+Number(vatCharges)+Number(taxCharges))
+
     let data = {};
     data["address_id"] = this.state.address_id;
-    data["net_paid"] = this.state.totalAmount;
-    data["order_amount"] = this.state.totalAmount;
+    data["net_paid"] = Number(totalAmountData).toFixed(2)-Number(this.state.promoAmount);
+    // data["sales_tax"] = taxCharges;
+    data["vat"] = vatCharges;
+    data["delivery_charge"] = dlCharges;
+    data["order_amount"] =totalAmountData;
     data["payment_mode"] = payment_mode;
     data["notes"] = this.state.notes;
     data["no_of_itmes"] = this.state.cartItems.length;
-    data["transaction_id"] =transaction_id;
+    data["transaction_id"] = transaction_id;
     data['coupon_applied'] = this.state.promoCode ? this.state.promoCode.id : null
     let carts = this.state.cartItems.map(x => {
       return {
@@ -253,19 +294,19 @@ creatOrderPayment = async () => {
     });
     data["product_detail"] = carts;
     postRequest(`order/save_order`, data)
-    .then(res => {
-      debugger
-      if (res && res.data && res.data.order_id) {
-        setToastMessage(true, colors.green1);
-        toastRef.show(res.success);
-        removeCartSuccess();
-       this.props.navigation.navigate("OrderSuccessFull", {
-          orderArrivedDate: res.data.date
-        })
-      }
-      setIndicator(false);
-    })
-    .catch(err => {});
+      .then(res => {
+        debugger
+        if (res && res.data && res.data.order_id) {
+          setToastMessage(true, colors.green1);
+          toastRef.show(res.success);
+          removeCartSuccess();
+          this.props.navigation.navigate("OrderSuccessFull", {
+            orderArrivedDate: res.data.date
+          })
+        }
+        setIndicator(false);
+      })
+      .catch(err => { });
   }
   // Get Cart Total
   getCartTotal = carts => {
@@ -307,7 +348,7 @@ creatOrderPayment = async () => {
         }
         // setIndicator(false);
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   updateDefaultAddress = address => {
@@ -319,7 +360,6 @@ creatOrderPayment = async () => {
 
   // Set promo amount
   setPromoAmount = (coupan, amount) => {
-    debugger
     let { carts } = this.props.screenProps.product;
     this.setState(
       {
@@ -332,14 +372,12 @@ creatOrderPayment = async () => {
           this.setState({
             promoAmount: Number(coupan.max_discount),
             totalAmount:
-              this.getCartTotal(carts) +
-              this.state.delivery -
-              Number(coupan.max_discount)
+              (this.getCartTotal(carts)-Number(coupan.max_discount))
           });
         } else {
           this.setState({
             totalAmount:
-              this.getCartTotal(carts) + this.state.delivery - Number(amount)
+            (this.getCartTotal(carts)-Number(amount))
           });
         }
       }
@@ -433,28 +471,28 @@ creatOrderPayment = async () => {
             <View style={{ height: 48 }} />
           </ScrollView>
         ) : (
-          <View
-            style={{
-              flex: 0.5,
-              paddingHorizontal: 16,
-              justifyContent: "center"
-            }}
-          >
-            <ProductPlaceholder
-              array={[1, 2]}
-              message={
-                this.props.screenProps.loader ? "" : "Your cart is Empty "
-              }
-              loader={this.loaderComponent}
-            />
-          </View>
-        )}
+            <View
+              style={{
+                flex: 0.5,
+                paddingHorizontal: 16,
+                justifyContent: "center"
+              }}
+            >
+              <ProductPlaceholder
+                array={[1, 2]}
+                message={
+                  this.props.screenProps.loader ? "" : "Your cart is Empty "
+                }
+                loader={this.loaderComponent}
+              />
+            </View>
+          )}
 
         {carts && carts.length > 0 && this.renderBotttomButton()}
       </View>
     );
   }
-  pressButton = () => {};
+  pressButton = () => { };
   renderButton = (title, transparent) => {
     return (
       <Button
@@ -551,11 +589,11 @@ creatOrderPayment = async () => {
                     style={{ alignSelf: "center", height: 18, width: 18 }}
                   />
                 ) : (
-                  <Image
-                    source={Images.round}
-                    style={{ alignSelf: "center", height: 18, width: 18 }}
-                  />
-                )}
+                    <Image
+                      source={Images.round}
+                      style={{ alignSelf: "center", height: 18, width: 18 }}
+                    />
+                  )}
               </TouchableOpacity>
               <View style={{ flexDirection: "row" }}>
                 <Text
@@ -665,10 +703,10 @@ creatOrderPayment = async () => {
               {"No default address found ."}
             </Text>
           ) : (
-            <Text p style={[styles.subLable]}>
-              {this.state.address ? this.state.address.description : ""}
-            </Text>
-          )}
+              <Text p style={[styles.subLable]}>
+                {this.state.address ? this.state.address.description : ""}
+              </Text>
+            )}
         </View>
       </View>
     );
@@ -699,14 +737,24 @@ creatOrderPayment = async () => {
       subTotal,
       totalAmount,
       delivery,
+      vat,
+      tax,
       promoCode,
       promoAmount
     } = this.state;
+    let dlCharges = (subTotal*delivery/100).toFixed(2)
+    let taxCharges = (subTotal*tax/100).toFixed(2)
+    let vatCharges = (subTotal*vat/100).toFixed(2)
+    let totalAmountData = (Number(totalAmount)+Number(dlCharges)+Number(vatCharges)+Number(taxCharges)).toFixed(2)
+
     let order = {
-      delivery_charge: delivery,
-      amount: totalAmount,
+      delivery_charge: dlCharges,
+      amount:totalAmountData,
+      tax:taxCharges,
+      vat:vatCharges,
       net_paid: 0
     };
+
     return (
       <View>
         <InvoiceInfo
@@ -725,6 +773,19 @@ creatOrderPayment = async () => {
     );
   };
   renderBotttomButton = () => {
+    let {
+      subTotal,
+      totalAmount,
+      delivery,
+      vat,
+      tax,
+      promoCode,
+      promoAmount
+    } = this.state;
+    let dlCharges = (subTotal*delivery/100).toFixed(2)
+    let taxCharges = (subTotal*tax/100).toFixed(2)
+    let vatCharges = (subTotal*vat/100).toFixed(2)
+    let totalAmountData = (Number(totalAmount)+Number(dlCharges)+Number(vatCharges)+Number(taxCharges)).toFixed(2)
     return (
       <TouchableOpacity
         onPress={() => this.saveOrderApi()}
@@ -751,7 +812,7 @@ creatOrderPayment = async () => {
               color: "white"
             }}
           >
-            {`$${this.state.totalAmount.toFixed(2)}`}
+            {`$${(totalAmountData)}`}
           </Text>
         </View>
         <View

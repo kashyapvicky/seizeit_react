@@ -8,11 +8,14 @@ import {
   ScrollView,
   FlatList,
   Keyboard,
-  TextInput
+  TextInput,
+  Platform,
+  KeyboardAvoidingView,
 
 } from 'react-native';
 // import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import {getRequest, postRequest} from '../../redux/request/Service'
 
 //local imports
 import Button from '../../components/Button'
@@ -31,15 +34,111 @@ class AddNewBankAccount extends Component {
     this.state = {
         accountNumber: "",
         confirmAccountNumber: "",
+        bankAccount:{},
+        lists:[{
+          name:'ICICI Bank',
+          id:1,
+        },{
+          name:'Punjab National Bank', id:2
+        },{
+          name:'HDFC Bank',
+          id:3
+        },{
+          name:'State Bank Of India',
+          id:4,
+        }],
         ifscNumber: '',
-        name: '',
+        accountHolderName: '',
         loader: false,
         securePassword: true,
         visible: false,
         refreshToken: null
       };
   }
-
+ /******************************  Api Call  **************************/
+  addNewBankAccount = () => {
+    let { setToastMessage ,setIndicator} = this.props.screenProps.actions;
+    let { toastRef } = this.props.screenProps;
+    let {
+      accountHolderName,
+      bankAccount,
+      ifscNumber,
+      accountNumber,
+      confirmAccountNumber
+    } = this.state;
+    let validation = Validation.validate(this.ValidationRules());
+    if (validation.length != 0) {
+      setToastMessage(true, colors.danger);
+      return toastRef.show(validation[0].message);
+    } else if (accountNumber != confirmAccountNumber) {
+      setToastMessage(true, colors.danger);
+      return toastRef.show('The confirm account number and account number must match.');
+    }else {
+      let data = {};
+      data["bank_name"] =bankAccount.name;
+      data["account_number"] = accountNumber;
+      data["ifsc_code"] = ifscNumber;
+  
+      let apiName = `vendor/add_bank`;
+      postRequest(apiName, data).then(res => {
+        if (res && res.success) {
+          let { params } = this.props.navigation.state;
+          if (params && params.getBankList) {
+            params.getBankList();
+          } 
+          setToastMessage(true, colors.green1);
+          toastRef.show(res.success);
+          this.props.navigation.goBack();
+        }
+      });
+    }
+  };
+  pressButton = () =>{
+    this.addNewBankAccount()
+  }
+ /*****************  Validation  *************/
+ ValidationRules = () => {
+  let {
+    accountNumber,
+    ifscNumber,
+    bankAccount,
+    accountHolderName,
+    confirmAccountNumber
+  } = this.state;
+  let { lang } = this.props.screenProps.user;
+  return [
+    {
+      field: bankAccount.name,
+      name: "Bank name",
+      rules: "required",
+      lang: lang
+    },
+    {
+      field: accountNumber,
+      name: "IBAN number",
+      rules: "required|numeric|max:16",
+      lang: lang
+    },
+    {
+      field: confirmAccountNumber,
+      name: "Confirm IBAN number",
+      rules: "required|numeric|max:16",
+      lang: lang
+    },
+    {
+      field: ifscNumber,
+      name: "Swift Code",
+      rules: "required|no_space",
+      lang: lang
+    },
+    {
+      field: accountHolderName,
+      name: "Account holder name",
+      rules: "required|no_space",
+      lang: accountHolderName
+    },
+  ];
+};
   renderButton = (title,transparent) => {
     return (
       <Button
@@ -57,6 +156,7 @@ class AddNewBankAccount extends Component {
       />
     );
   };
+  
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -67,13 +167,24 @@ class AddNewBankAccount extends Component {
             {
               backgroundColor: "#FFFFFF",
               shadowRadius: 0.1,
-
+              height: 48,
+              
             }
           ]}
         title={"Add new Bank Account"}
         backPress={() => this.props.navigation.goBack()}
       />
-       <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
+        <KeyboardAvoidingView
+          enabled={Platform.OS == "ios" ? true : false}
+          behavior={Platform.OS == "ios" ? "height" : false}
+          showsVerticalScrollIndicator={false}
+          style={{ flex: 1 ,}}
+        >
+       <ScrollView showsVerticalScrollIndicator={false} 
+       style={{flex: 1 }}
+
+       
+       >
           <View  style={{ marginTop: 25,paddingHorizontal:16 }}>
           <TextInputComponent
                 user={this.props.user}
@@ -86,6 +197,7 @@ class AddNewBankAccount extends Component {
                     openDropDownBank: !this.state.openDropDownBank
                   })
                 }
+                lists={this.state.lists}
                 selectItem={(item)=> this.setState({
                   bankAccount:item,
                   openDropDownBank:false
@@ -101,7 +213,7 @@ class AddNewBankAccount extends Component {
                 autoCapitalize="none"
                 blurOnSubmit={false}
                 viewTextStyle={styles.viewcardTextStyle}
-                value={this.state.accountNumber}
+                value={this.state.bankAccount.name}
                 underlineColorAndroid="transparent"
                 isFocused={this.state.accountFieldFocus}
                 onFocus={() => this.setState({ accountFieldFocus: true })}
@@ -117,7 +229,7 @@ class AddNewBankAccount extends Component {
             <View style={{ height: 10 }} />
               <TextInputComponent
                 user={this.props.user}
-                label={'Enter Account Number'}
+                label={'Enter IBAN Number'}
                 inputMenthod={input => {
                   this.accountNumberRef = input;
                 }}
@@ -143,7 +255,7 @@ class AddNewBankAccount extends Component {
               />
             <View style={{ height: 10 }} />
             <TextInputComponent
-                label={'Re - Enter Account Number'}
+                label={'Re - Enter IBAN Number'}
                 inputMenthod={input => {
                   this.confirmAccountNumberRef = input;
                 }}
@@ -170,7 +282,7 @@ class AddNewBankAccount extends Component {
               />
                <View style={{ height: 10 }} />
             <TextInputComponent
-                label={'IFSC Code'}
+                label={'SWIFT Code'}
                 inputMenthod={input => {
                   this.ifscRef = input;
                 }}
@@ -212,12 +324,12 @@ class AddNewBankAccount extends Component {
                 textInputStyle={styles.textInputStyle}
                 blurOnSubmit={false}
                 viewTextStyle={styles.viewcardTextStyle}
-                value={this.state.name}
+                value={this.state.accountHolderName}
                 underlineColorAndroid="transparent"
                 isFocused={this.state.nameFieldFocus}
                 onFocus={() => this.setState({ nameFieldFocus: true })}
                 onBlur={() => this.setState({ nameFieldFocus: false })}
-                onChangeText={name => this.setState({ name })}
+                onChangeText={accountHolderName => this.setState({ accountHolderName })}
                 onSubmitEditing={event => {
                     Keyboard.dismiss()
                 }}
@@ -225,6 +337,7 @@ class AddNewBankAccount extends Component {
           </View>
          
         </ScrollView>
+        </KeyboardAvoidingView>
         <View style={{flex:0.15,paddingHorizontal: 16}}>
         {this.renderButton('Save new Bank Account')}
       </View>

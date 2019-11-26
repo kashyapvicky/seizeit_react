@@ -17,12 +17,16 @@ extern NSString * const kWebViewXIBName;
 extern NSString * const kFinishTransactionViewXIBName;
 
 #pragma mark - Interface filenames
-extern NSString * const kSuccessfulIconName;
-extern NSString * const kUnsuccessfulIconName;
-extern NSString * const kSuccessfulIpadIconName;
-extern NSString * const kUnsuccessfulIpadIconName;
-extern NSString * const kBlackBackIconName;
-extern NSString * const kBlackBackIconIpadName;
+extern NSString * const kEmptyCardIconName;
+extern NSString * const kErrorCardIconName;
+extern NSString * const kAmexCardIconName;
+extern NSString * const kVisaCardIconName;
+extern NSString * const kMastercardCardIconName;
+
+#pragma mark - Resources filenames
+extern NSString * const kMontserratBoldFontName;
+extern NSString * const kMontserratMediumFontName;
+extern NSString * const kMontserratLightFontName;
 
 #pragma mark - Local datasource filenames
 extern NSString * const kReasonCodePlistName;
@@ -88,6 +92,8 @@ extern NSString * const kInvalidShippingCountryCode;
 extern NSString * const kInvalidBillingCountryCode;
 extern NSString * const kInvalidCurrencyCode;
 extern NSString * const kInvalidSecretKey;
+extern NSString * const kInvalidCountryCode;
+extern NSString * const kInvalidMerchantApplePayIdentifier;
 
 extern NSString * const kEmptyCreditCardNumber;
 extern NSString * const kEmptyCreditCardHolderName;
@@ -100,9 +106,13 @@ extern NSString * const kInvalidCreditCardExpiryDate;
 
 #pragma mark - Arabic
 extern NSString * const kArabicPleaseWait;
+extern NSString * const kArabicCreditCardNameHeader;
+extern NSString * const kArabicCreditCardNumberHeader;
+extern NSString * const kArabicCreditCardExpiryDateHeader;
 extern NSString * const kArabicCreditCardNamePlaceholder;
 extern NSString * const kArabicCreditCardNumberPlaceholder;
-extern NSString * const kArabicCreditCardExpiryDatePlaceholder;
+extern NSString * const kArabicCreditCardExpiryMonthPlaceholder;
+extern NSString * const kArabicCreditCardExpiryYearPlaceholder;
 extern NSString * const kArabicCreditCardCVVPlaceholder;
 extern NSString * const kArabicPayNowButtonTitle;
 extern NSString * const kArabicContinueButtonTitle;
@@ -113,8 +123,15 @@ extern NSString * const kArabicTransactionIDHeaderText;
 #pragma mark - Keys
 extern NSString * const kSDKInitiateTimeKey;
 extern NSString * const kTotalTimeoutSecondsKey;
+extern NSString * const kPreAuthFlagKey;
+extern NSString * const kSDKLanguageKey;
 extern NSString * const kIsTimeoutOccured;
 extern NSString * const kThemeColor;
 extern NSString * const kThemeColorType;
+extern NSString * const kSDKFlagForMBMEKey;
+
+#pragma mark - MBME
+extern NSString * const kMBMEMerchantEmail;
+extern NSString * const kMBMEMerchantSecretKey;
 
 @end

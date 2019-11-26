@@ -7,14 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <PassKit/PassKit.h>
 
-@class PTFWInitialSetupView;
+@class PTFWInitialSetupViewController;
 
-@interface PTFWInitialSetupViewController : UIViewController
+@interface PTFWInitialSetupViewController : UIViewController<PKPaymentAuthorizationViewControllerDelegate>
 
 #pragma mark - Init methods
-- (nonnull instancetype)initWithNibName: (nonnull NSString *)nibNameOrNil
-                                 bundle: (NSBundle *_Nullable)nibBundleOrNil
+
+// Intialize Paytabs Payment Page
+- (nonnull instancetype)initWithBundle: (NSBundle *_Nullable)nibBundleOrNil
                        andWithViewFrame: (CGRect)viewFrame
                           andWithAmount: (float)amount
                    andWithCustomerTitle: (nonnull NSString *)customerTitle
@@ -35,6 +37,7 @@
                      andWithPhoneNumber: (nonnull NSString *)phoneNumber
                    andWithCustomerEmail: (nonnull NSString *)customerEmail
                       andIsTokenization: (BOOL)isTokenization
+                           andIsPreAuth: (BOOL)isPreAuth
                    andWithMerchantEmail: (nonnull NSString *)merchantEmail
                andWithMerchantSecretKey: (nonnull NSString *)merchantSecretKey
                     andWithAssigneeCode: (nonnull NSString *)assigneeCode
@@ -42,12 +45,30 @@
                    andIsThemeColorLight: (BOOL)isThemeLight;
 ;
 
-#pragma mark - IBOutlets
-@property (nonatomic, weak, nullable, readonly) IBOutlet PTFWInitialSetupView *initialSetupView;
+// Intialize Apple Pay bottomsheet
+- (nonnull instancetype)initApplePayWithBundle: (NSBundle *_Nullable)nibBundleOrNil
+                               andWithViewFrame: (CGRect)viewFrame
+                                  andWithAmount: (float)amount
+                           andWithCustomerTitle: (nonnull NSString *)customerTitle
+                            andWithCurrencyCode: (nonnull NSString *)currencyCode
+                             andWithCountryCode: (nonnull NSString *)countryCode
+                             andWithSDKLanguage: (nonnull NSString *)sdkLanguage
+                                 andWithOrderID: (nonnull NSString *)orderID
+                                   andIsPreAuth: (BOOL)isPreAuth
+                           andWithMerchantEmail: (nonnull NSString *)merchantEmail
+                       andWithMerchantSecretKey: (nonnull NSString *)merchantSecretKey
+              andWithMerchantApplePayIdentifier: (nonnull NSString *)merchantApplePayIdentifier
+                            andWithAssigneeCode: (nonnull NSString *)assigneeCode;
 
 #pragma mark - Callbacks
 @property (nonatomic, copy, nullable) void(^didReceiveBackButtonCallback)(void);
 @property (nonatomic, copy, nullable) void(^didReceiveFinishTransactionCallback)(int responseCode, NSString *__nonnull result, int transactionID, NSString *__nonnull tokenizedCustomerEmail, NSString *__nonnull tokenizedCustomerPassword, NSString *__nonnull token, BOOL transactionState);
+
+// Callback when starting prepare payment page ( Can be used for loader or analytics)
+@property (nonatomic, copy, nullable) void(^didStartPreparePaymentPage)(void);
+
+// Callback when payment page is ready or fail ( Can be used for loader or analytics)
+@property (nonatomic, copy, nullable) void(^didFinishPreparePaymentPage)(void);
 
 @end
 

@@ -30,10 +30,17 @@ export default class BlogDetail extends Component {
       ),
       isbarShow:false,
       refreshing: false,
-      item:{ id: 2,  blog_desc: 'El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que eEl ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.  El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.  n 2019 iniciará la construcción de una refinería en Tabasco.  El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco.' },
+      item:{},
     };
   }
-
+  componentDidMount(){
+    let {params} = this.props.navigation.state
+    if(params && params.blogItem){
+      this.setState({
+        item : params.blogItem
+      })
+    }
+  }
   _renderScrollViewContent() {
     return (
       <View style={detailStyles.scrollViewContent}>
@@ -180,8 +187,8 @@ export default class BlogDetail extends Component {
               }
             ]}
             source={{
-              uri:
-                "https://cdn.pixabay.com/photo/2014/05/02/21/50/home-office-336378_960_720.jpg"
+              uri:this.state.item.image
+              
             }}
           />
           <LinearGradient
@@ -227,7 +234,7 @@ export default class BlogDetail extends Component {
               ]}
             >
               <Text style={[styles.blog_title, { fontSize: normalize(24) }]}>
-                {"Understanding Pet Sitting Certifications"}
+                {this.state.item.title}
               </Text>
             </Animated.View>
         </LinearGradient>
@@ -255,7 +262,7 @@ export default class BlogDetail extends Component {
           <Image source={require("../../assets/images/ic_back_w.png")} />
           </TouchableOpacity>
           <View>
-            <Text style={[detailStyles.title,{color:'white',fontSize:normalize(16)}]}>Understanding Pet</Text>
+            <Text style={[detailStyles.title,{color:'white',fontSize:normalize(16)}]}>{this.state.item.title}</Text>
           </View>
 
           <TouchableOpacity

@@ -49,6 +49,8 @@ target 'seize_it' do
  pod 'YLGIFImage'
  pod 'SBJson'
  pod 'PINCache'
+ pod 'MBProgressHUD', '~> 1.1.0'
+
  pod 'Firebase/Core'
  pod 'Firebase/Messaging'
  # pod 'IQKeyboardManager'

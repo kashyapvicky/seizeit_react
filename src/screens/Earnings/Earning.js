@@ -53,6 +53,7 @@ class Earnings extends Component {
 
 /******************** Api Function  *****************/
     getEarnings = status => {
+      let { setToastMessage,setIndicator } = this.props.screenProps.actions;
       getRequest(`vendor/vendor_earnings?status=${status}`)
         .then(res => {
           debugger;
@@ -73,10 +74,28 @@ class Earnings extends Component {
         })
         .catch(err => {});
     };
+    requestTransferPayment = () => {
+      
+      let { setToastMessage,setIndicator } = this.props.screenProps.actions;
+      let { toastRef } = this.props.screenProps;
+  
+      if (this.state.walletAmount > 100) {
+        this.props.navigation.navigate('BankAccount',{
+         amount:this.state.walletAmount,
+         fromRequestTransfer:true
+    })
+      } else {
+        setToastMessage(true,colors.danger)
+        toastRef.show('Amount should be greator then 100')
+    }
+
+  }
 /******************** Api Function  *****************/
 
-  pressButton = ()=>{
-    return null
+  pressButton = (title)=>{
+    if(title == 'Request Transfer'){
+        this.requestTransferPayment()
+    }
   }
   setStateForTabChange = event => {
     if (event) {

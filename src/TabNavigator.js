@@ -28,6 +28,16 @@ const getActiveRouteState = route => {
   const childActiveRoute = route.routes[route.index];
   return getActiveRouteState(childActiveRoute);
 };
+EarningNavigatorStack.navigationOptions = ({ navigation }) => {
+  const activeRoute = getActiveRouteState(navigation.state);
+  let tabBarVisible = false;
+  if (activeRoute.routeName == "Earning") {
+    tabBarVisible = true;
+  }
+  return {
+    tabBarVisible
+  };
+};
 // Hide Tab Bar On Perticular screen
 HomeNavigatorStack.navigationOptions = ({ navigation }) => {
   const activeRoute = getActiveRouteState(navigation.state);

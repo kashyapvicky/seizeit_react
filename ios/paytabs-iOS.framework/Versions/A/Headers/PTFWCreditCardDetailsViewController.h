@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreText/CoreText.h>
 
 @class PTFWCreditCardDetailsView;
 @class PTFWResponseFetchMerchantInfo;
 
-@interface PTFWCreditCardDetailsViewController : UIViewController
+@interface PTFWCreditCardDetailsViewController : UIViewController<UITextFieldDelegate>
 
 #pragma mark - Init methods
 - (nonnull instancetype)initWithNibName: (nonnull NSString *)nibNameOrNil

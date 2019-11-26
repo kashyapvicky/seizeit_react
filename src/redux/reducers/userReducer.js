@@ -6,6 +6,7 @@ const initialState = {
   toastMessage: null,
   loader: false,
   lang: "en",
+  fcm_id:null,
   walkThrough:false,
   netStatus: true,
   currentLocation: null
@@ -57,13 +58,20 @@ const user = (state = initialState, action) => {
         //flexDirection: (action.lang =='ar') ? 'row-reverse':'row',
         //textAlign: action.lang=='en'?'left':'right'
       };
+      case type.NOTI_FCM_ID:
+        return {
+          ...state,
+          fcm_id: action.fcm_id
+      };
       case type.SET_WALK_THROUGH:
         return {
           ...state,
           walkThrough: action.payload
         };
     case type.LOGOUT_SUCCESS:
-      return {...initialState,walkThrough:state.walkThrough};
+      return {...initialState,
+        fcm_id:state.fcm_id,
+        walkThrough:state.walkThrough};
     default:
       return state;
   }

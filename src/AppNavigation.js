@@ -8,8 +8,11 @@ import {
   BackHandler,
   InteractionManager,
   StatusBar,
-  Platform
+  Platform,
+  Alert
 } from "react-native";
+import firebase from 'react-native-firebase';
+
 import NetInfo from "@react-native-community/netinfo";
 import * as RNLocalize from "react-native-localize";
 import RNRestart from "react-native-restart";
@@ -63,19 +66,107 @@ class AppNavigation extends React.Component {
     this._bootStrapApp();
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._getNetInfo();
+    this.checkPermission();
+    this.createNotificationListeners(); //add this line
     GoogleSignin.configure({})
-
     BackHandler.addEventListener("hardwareBackPress", this._backhandle);
 
      RNLocalize.addEventListener("change", this.handleLocalizationChange);
   }
+  
+
   componentWillUnmount() {
-    this.unsubscribe();
+    if(this.unsubscribe){
+      this.unsubscribe();
+    }
+  
+    this.notificationListener();
+    this.notificationOpenedListener();
     BackHandler.removeEventListener("hardwareBackPress", this._backhandle);
     RNLocalize.removeEventListener("change", this.handleLocalizationChange);
   }
+
+  /*********************************  Notification Listner  *********************************/
+  async createNotificationListeners() {
+    /*
+    * Triggered when a particular notification has been received in foreground
+    * */
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+        const { title, body } = notification;
+       // this.showAlert(title, body);
+    });
+  
+    /*
+    * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
+    * */
+    this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+        const { title, body } = notificationOpen.notification;
+        //this.showAlert(title, body);
+    });
+  
+    /*
+    * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
+    * */
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+    if (notificationOpen) {
+        const { title, body } = notificationOpen.notification;
+        //this.showAlert(title, body);
+    }
+    /*
+    * Triggered for data only payload in foreground
+    * */
+    this.messageListener = firebase.messaging().onMessage((message) => {
+      //process data message
+      console.log(JSON.stringify(message));
+    });
+  }
+  async checkPermission() {
+    debugger
+    const enabled = await firebase.messaging().hasPermission();
+    debugger
+    if (enabled) {
+        this.getToken();
+    } else {
+        this.requestPermission();
+    }
+  }
+    //3
+async getToken() {
+   let {fcm_id} = this.props.user
+    if (!fcm_id) {
+     let fcmToken = await firebase.messaging().getToken();
+     if (fcmToken) {
+       // user has a device token
+       console.log(this.props,"this.props")
+      this.props.actions.setFCM_ID(fcmToken)
+      }
+  }
+}
+
+  //2
+async requestPermission() {
+  try {
+      await firebase.messaging().requestPermission();
+      // User has authorised
+      this.getToken();
+  } catch (error) {
+      // User has rejected permissions
+      console.log('permission rejected');
+  }
+}
+  showAlert(title, body) {
+    Alert.alert(
+      title, body,
+      [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
+    );
+  }
+  
+/*********************************  Notification Listner  End *********************************/
 
   setI18nConfigReload = async () => {
     let { lang, isRTL } = this.props.user;
@@ -103,7 +194,7 @@ class AppNavigation extends React.Component {
         this.unsubscribe = NetInfo.addEventListener(state => {
           let value =
             state.isInternetReachable && state.isConnected ? true : false;
-          this.props.actions.checkInternet(value);
+           this.props.actions.checkInternet(value);
         });
       });
   };

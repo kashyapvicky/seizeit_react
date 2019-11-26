@@ -15,12 +15,14 @@ import ChooseType from "./ChooseType";
 import EnterMobile from "./EnterMobile";
 import Verify from "./Verify";
 import AppIntro from "./AppIntro";
+import EmailVerifiedScreen from "./EmailVerifiedScreen";
 
 // import EnterEmail from "./EnterEmail";
 
 const AuthStack = createStackNavigator(
   {
     StartupScreen:StartupScreen,
+    EmailVerifiedScreen:EmailVerifiedScreen,
     Signup: { screen: Signup},
     ChooseType: { screen: ChooseType},
     Login: { screen: Login},

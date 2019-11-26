@@ -11,7 +11,6 @@
 
 #pragma mark - Initial Setup View Controller
 #import "PTFWInitialSetupViewController.h"
-#import "PTFWInitialSetupView.h"
 
 #pragma mark - Credit Card Details View Controller
 #import "PTFWCreditCardDetailsViewController.h"
@@ -20,14 +19,5 @@
 #pragma mark - Web View Controller
 #import "PTFWWebViewController.h"
 #import "PTFWWebView.h"
-
-#pragma mark - Finish Transaction
-#import "PTFWFinishTransactionViewController.h"
-#import "PTFWFinishTransactionView.h"
-
-#pragma mark - Activity Indicator View Controller
-#import "PTFWActivityIndicatorViewController.h"
-#import "PTFWIndicatorView.h"
-
 
 #endif /* PTFWViewControllersHeaders_h */

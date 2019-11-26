@@ -4,7 +4,12 @@ import * as type from "../actionType";
 
 
 /********************** CHECK ACTION TYPE *****************************/
-
+export const setFCM_ID = fcm_id => {
+  return {
+    type: type.NOTI_FCM_ID,
+    fcm_id
+  };
+};
 export const checkInternet = (netStatus) => {
   return {
     type: type.CHECK_INTERNET_CONNECTION,

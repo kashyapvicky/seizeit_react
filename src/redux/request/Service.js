@@ -45,7 +45,7 @@ const postRequest = (apiName, data = {},hideLoader=false) => {
         }else if(res.status == 300){
           debugger
             NavigationService.showToastMessage(res.data.error)
-           return res.data
+           return {...res.data,statusCode : 300}
         }else if(res.status == 500){
           return NavigationService.showToastMessage(res.data.error || res.data.message)
          

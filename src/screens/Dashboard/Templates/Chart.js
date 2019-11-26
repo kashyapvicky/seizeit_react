@@ -9,8 +9,10 @@ import styles from "../../../styles";
 import Text from "../../../components/Text";
 import { string } from "../../../utilities/languages/i18n";
 import { screenDimensions } from "../../../utilities/contsants";
-
+import moment from 'moment';
+import CalendarStripComponent from './CalenderStripe';
 export default LineChartComponet = props => {
+  console.log(props.data ," props.data ")
   return (
     <View style={{flex:1,}}>
       <View style={styles.totalprofitView}>
@@ -18,9 +20,12 @@ export default LineChartComponet = props => {
           {'Sales report'}
         </Text>
       </View>
-      <View style={[{height:50,marginVertical:10,marginHorizontal:16,backgroundColor:'rgba(150,197,15,0.07)'}]}>
-       
-      </View>
+      <View style={[{marginVertical:10,marginHorizontal:16,backgroundColor:'rgba(150,197,15,0.07)'}]}>
+        <CalendarStripComponent 
+          {...props}
+        
+        />
+      </View> 
 
       <View style={[styles.totalProfitOverSales,{marginVertical:12}]}>
         <View>
@@ -31,7 +36,7 @@ export default LineChartComponet = props => {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            $00
+            ${props.total_sale}
           </Text>
           <Text style={[styles.totalProfitOverSale, { color: 'rgba(0,0,0,0.56)',fontSize:14 }]}>
             {'Total Sales'}
@@ -50,34 +55,29 @@ export default LineChartComponet = props => {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            $00
+            ${props.total_sale}
           </Text>
         </View>
       </View>
 
-      <View style={{ marginHorizontal: 20, marginTop: 40 }}>
+      <View style={{ marginHorizontal: 16, marginTop: 40 }}>
         <LineChart
           data={{
-            labels: ["January", "February", "March", "April"],
+            labels: props.labels,
             datasets: [
               {
-                data: [
-                 Math.random() * 100,
-                  // Math.random() * 100,
-                  // Math.random() * 100,
-                  // Math.random() * 100,
-                ]
+                data: props.data && props.data.length > 0 ? props.data : [0]
               }
             ]
           }}
-          width={screenDimensions.width - 40} // from react-native
+          width={screenDimensions.width - 20} // from react-native
           height={220}
           yAxisLabel={"$"}
           chartConfig={{
             backgroundColor: "#FFFFFF",
             backgroundGradientFrom: "#FFFFFF",
             backgroundGradientTo: "#FFFFFF",
-            decimalPlaces: 2, // optional, defaults to 2dp
+            decimalPlaces: 0, // optional, defaults to 2dp
             color: (opacity = 1) => `#96C50F`,
             style: {
               borderRadius: 16

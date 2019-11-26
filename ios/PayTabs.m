@@ -47,42 +47,45 @@ RCT_EXPORT_METHOD(createOrder:(NSDictionary *)jsonObj
 #if TARGET_IPHONE_SIMULATOR
   return;
 #endif
-  PTFWInitialSetupViewController *paytabsVC;
   NSBundle *bundle = [NSBundle bundleWithURL:[[NSBundle mainBundle] URLForResource:@"Resources" withExtension:@"bundle"]];
-  paytabsVC = [[PTFWInitialSetupViewController alloc] initWithNibName:@"PTFWInitialSetupView" bundle:bundle
-                                                     andWithViewFrame:self.accessibilityFrame
-                                                        andWithAmount:[jsonObj[@"AMOUNT"] floatValue]
-                                                 andWithCustomerTitle:jsonObj[@"TRANSACTION_TITLE"]
-                                                  andWithCurrencyCode:jsonObj[@"CURRENCY_CODE"]
-                                                     andWithTaxAmount:[jsonObj[@"TAX"] floatValue]
-                                                   andWithSDKLanguage:jsonObj[@"LANGUAGE"]
-                                               andWithShippingAddress:jsonObj[@"ADDRESS_SHIPPING"]
-                                                  andWithShippingCity:jsonObj[@"CITY_SHIPPING"]
-                                               andWithShippingCountry:jsonObj[@"COUNTRY_SHIPPING"]
-                                                 andWithShippingState:jsonObj[@"STATE_SHIPPING"]
-                                               andWithShippingZIPCode:jsonObj[@"POSTAL_CODE_SHIPPING"]
-               
-                                                andWithBillingAddress:jsonObj[@"ADDRESS_BILLING"]
-                                                   andWithBillingCity:jsonObj[@"CITY_BILLING"]
-                                                andWithBillingCountry:jsonObj[@"COUNTRY_BILLING"]
-                                                  andWithBillingState:jsonObj[@"STATE_BILLING"]
-                                                andWithBillingZIPCode:jsonObj[@"POSTAL_CODE_BILLING"]
-               
-                                                       andWithOrderID:jsonObj[@"ORDER_ID"]
-                                                   andWithPhoneNumber:jsonObj[@"CUSTOMER_PHONE_NUMBER"]
-                                                 andWithCustomerEmail:jsonObj[@"CUSTOMER_EMAIL"]
-                                                    andIsTokenization:false
-                                                 andWithMerchantEmail:jsonObj[@"MERCHANT_EMAIL"]
-                                             andWithMerchantSecretKey:jsonObj[@"SECRET_KEY"]
-                                                  andWithAssigneeCode:@"SDK"
-                                                    andWithThemeColor:[UIColor colorWithRed:225.0/255.0 green:225.0/255.0 blue:225.0/255.0 alpha:1.0]
-                                                 andIsThemeColorLight:true];
+   PTFWInitialSetupViewController *paytabsVC = [[PTFWInitialSetupViewController alloc]
+   initWithBundle:bundle
+   andWithViewFrame:self.accessibilityFrame
+   andWithAmount:[jsonObj[@"AMOUNT"] floatValue]
+   andWithCustomerTitle:jsonObj[@"TRANSACTION_TITLE"]
+   andWithCurrencyCode:jsonObj[@"CURRENCY_CODE"]
+   andWithTaxAmount:[jsonObj[@"TAX"] floatValue]
+   andWithSDKLanguage:jsonObj[@"LANGUAGE"]
+   andWithShippingAddress:jsonObj[@"ADDRESS_SHIPPING"]
+   andWithShippingCity:jsonObj[@"CITY_SHIPPING"]
+   andWithShippingCountry:jsonObj[@"COUNTRY_SHIPPING"]
+   andWithShippingState:jsonObj[@"STATE_SHIPPING"]
+   andWithShippingZIPCode:jsonObj[@"POSTAL_CODE_SHIPPING"]
+   andWithBillingAddress:jsonObj[@"ADDRESS_BILLING"]
+   andWithBillingCity:jsonObj[@"CITY_BILLING"]
+   andWithBillingCountry:jsonObj[@"COUNTRY_BILLING"]
+   andWithBillingState:jsonObj[@"STATE_BILLING"]
+   andWithBillingZIPCode:jsonObj[@"POSTAL_CODE_BILLING"]
+   andWithOrderID:jsonObj[@"ORDER_ID"]
+   andWithPhoneNumber:jsonObj[@"CUSTOMER_PHONE_NUMBER"]
+   andWithCustomerEmail:jsonObj[@"CUSTOMER_EMAIL"]
+   andIsTokenization:NO
+   andIsPreAuth:NO
+   andWithMerchantEmail:jsonObj[@"MERCHANT_EMAIL"]
+   andWithMerchantSecretKey:jsonObj[@"SECRET_KEY"]
+   andWithAssigneeCode:@"SDK"
+   andWithThemeColor: [UIColor colorWithRed:0.59 green:0.77 blue:0.06 alpha:1]
+                                                andIsThemeColorLight:YES];
+
   
+
   UIViewController *rootViewController = [[[[UIApplication sharedApplication]delegate] window] rootViewController];
-  [rootViewController presentViewController:paytabsVC animated:true completion:nil];
   paytabsVC.transitioningDelegate = self;
-  
+
+  [rootViewController presentViewController:paytabsVC animated:false completion:nil];
+
   paytabsVC.didReceiveBackButtonCallback = ^{
+  
     [paytabsVC dismissViewControllerAnimated:true completion:nil];
   };
 

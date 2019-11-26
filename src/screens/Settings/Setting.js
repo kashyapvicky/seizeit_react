@@ -58,7 +58,7 @@ class Settings extends Component {
       accountSettingArr: [
         {
           name: "Bank",
-          description: "2 Bank accounts added",
+          description: "Bank accounts added",
           routeName: "BankAccount"
         },
         {
@@ -209,7 +209,9 @@ closeModal() {
                 ]}
                 onPress={() =>{
                   if(account.name != 'Cards'){
-                    this.props.navigation.navigate(account.routeName)
+                    this.props.navigation.navigate(account.routeName,{
+                      fromSetting:true
+                    })
                   }else{
                     alert('In Progress')
                   }

@@ -21,6 +21,7 @@
 #pragma mark - Local
 - (NSMutableURLRequest *)getVISAMutableRequestWithTransactionObject:(PTFWResponsePrepareTransaction *)transactionObject;
 - (NSMutableURLRequest *)getMIGSMutableRequestWithTransactionObject:(PTFWResponsePrepareTransaction *)transactionObject;
+- (NSMutableURLRequest *)getMPGSMutableRequestWithTransactionObject:(PTFWResponsePrepareTransaction *)transactionObject;
 
 - (PTFWResponsePrepareTransaction *)get3DSecureCardVerificationFromWebResponse:(NSString *)htmlString;
 

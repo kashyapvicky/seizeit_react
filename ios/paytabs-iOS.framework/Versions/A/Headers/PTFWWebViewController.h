@@ -11,6 +11,12 @@
 @class PTFWWebView;
 @class PTFWResponsePrepareTransaction;
 
+typedef NS_ENUM(NSInteger, PTFWPaymentProcessor) {
+    MPGS,
+    MIGS,
+    Cybersource
+};
+
 @interface PTFWWebViewController : UIViewController
 
 #pragma mark - Init methods
@@ -19,7 +25,7 @@
                        andWithViewFrame: (CGRect)viewFrame
                      andWithTransaction: (nonnull PTFWResponsePrepareTransaction *)prepareTransactionObject
                     andWithMerchantInfo: (nonnull PTFWResponseFetchMerchantInfo *)merchantInfoObject
-                              andIsMIGS: (BOOL)isMIGS
+                    andPaymentProcessor: (PTFWPaymentProcessor)paymentProcessor
                          andSDKLanguage: (nonnull NSString *)language;
 
 #pragma mark - IBOutlets

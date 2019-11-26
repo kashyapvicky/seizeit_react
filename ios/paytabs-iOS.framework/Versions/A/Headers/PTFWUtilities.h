@@ -40,6 +40,14 @@
 - (void)setTotalTimeoutTimeWithSeconds: (int)seconds;
 - (int)getTotalTimeoutTime;
 
+#pragma mark - Pre Auth
+- (void)setPreAuthFlagWithFlag: (BOOL)isPreAuth;
+- (BOOL)getPreAuthFlag;
+
+#pragma mark - SDK Language
+- (void)setSDKLanguageWithLanguage: (NSString *)sdkLanguage;
+- (NSString *)getSDKLanguage;
+
 #pragma mark - Theme
 - (void)setThemeColor: (UIColor *)themeColor;
 - (UIColor *)getThemeColor;

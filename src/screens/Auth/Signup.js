@@ -117,11 +117,11 @@ class Signup extends Component {
         data["type"] = params.role == "Customer" ? 1 : 2;
         data["password"] = password.trim();
         data["device_id"] = DeviceInfo.getUniqueID();
-        data["device_token"] = "1234" + Math.random(10);
+        data["device_token"] =fcm_id
         postRequest("user/register", data)
           .then(res => {
             if (res) {
-              this.props.navigation.navigate("EnterMobile", {
+              this.props.navigation.navigate("EmailVerifiedScreen", {
                 user: res
               });
             }
@@ -141,7 +141,7 @@ class Signup extends Component {
     let { toastRef } = this.props.screenProps;
     let { setToastMessage, setIndicator } = this.props.screenProps.actions;
 
-    let { netStatus } = this.props.screenProps.user;
+    let { netStatus,fcm_id } = this.props.screenProps.user;
     if (!netStatus) {
       return toastRef.show(string("NetAlert"));
     } else {
@@ -160,7 +160,7 @@ class Signup extends Component {
           user.provider = "google";
           user["type"] = params.role == "Customer" ? 1 : 2;
           user.device_type = Platform.OS == "ios" ? "ios" : "android";
-          user.device_token = "1234" + Math.random(10);
+          user.device_token =fcm_id
           this.postSocialRequest(user);
         } else {
           toastRef.show("User info not getting");
@@ -280,6 +280,8 @@ class Signup extends Component {
     debugger;
     let { setToastMessage, setIndicator } = this.props.screenProps.actions;
     let { toastRef } = this.props.screenProps;
+    let { netStatus,fcm_id } = this.props.screenProps.user;
+
     fetch(
       "https://graph.facebook.com/v2.5/me?fields=email,name,picture.height(480)&access_token=" +
         token
@@ -296,7 +298,7 @@ class Signup extends Component {
         user["device_id"] = DeviceInfo.getUniqueID();
         user["type"] = params.role == "Customer" ? 1 : 2;
         user.device_type = Platform.OS == "ios" ? "ios" : "android";
-        user.device_token = "1234" + Math.random(10);
+        user.device_token = fcm_id;
         this.postSocialRequest(user);
       })
       .catch(err => {
@@ -355,6 +357,8 @@ class Signup extends Component {
   getInstagramUserInfo = token => {
     let { setToastMessage } = this.props.screenProps.actions;
     let { toastRef } = this.props.screenProps;
+    let { netStatus,fcm_id } = this.props.screenProps.user;
+
     fetch(`https://api.instagram.com/v1/users/self/?access_token=${token}`)
       .then(response => response.json())
       .then(json => {
@@ -366,7 +370,7 @@ class Signup extends Component {
         user.provider = "instagram";
         user["device_id"] = DeviceInfo.getUniqueID();
         user.device_type = Platform.OS == "ios" ? "ios" : "android";
-        user.device_token = "1234" + Math.random(10);
+        user.device_token =fcm_id
         this.postSocialRequest(user);
       })
       .catch(err => {

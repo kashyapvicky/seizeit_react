@@ -15,6 +15,7 @@ import {
 
 import backButton from '../../assets/images/ic_back.png'
 import Text from "../../components/Text";
+import {getRequest, postRequest} from '../../redux/request/Service'
 
 import styles from '../../styles';
 import { screenDimensions } from '../../utilities/contsants'
@@ -40,9 +41,7 @@ class Blogs extends Component {
             isModalVisible: false,
             isFlipped: true,
             allBlogs: [
-                { id: 1, blog_title: 'Lisa Gachet – Make My Lemonade', blog_date: '02-Feb-2018', blog_desc: 'El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. ' },
-               { id: 2,  blog_title: 'Pet Trainers are teaching your pet right?', blog_date: '02-Feb-2018', blog_desc: 'El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. ' },
-                { id: 3, blog_title: 'Understanding Pet Sitting Certifications', blog_date: '02-Feb-2018', blog_desc: 'El ganador de la elección presidencial anunció que en 2019 iniciará la construcción de una refinería en Tabasco. ' }
+               
 
             ],
             // allBlogs: [],
@@ -55,37 +54,28 @@ class Blogs extends Component {
     }
 
     componentDidMount() {
-        this.setState({
-            visible: true
-        }, () => {
-            //this.getBlogs()
-        })
-
-        // console.log('navigation', this.props.navigation, "datatofuntion", this.props.flip)
+        this.getBlogs()
     }
 
     getBlogs = () => {
-        debugger
-        // this.props.blogActions.getAllBlogs(this.props.user, this.state.pageno).then((res) => {
-        //     if (res && res.status == 200) {
-        //         if (res && res.data.status==200) {
-        //             this.setState({
-        //                 visible: false,
-        //                 isRefreshing: false,
-        //                 allBlogs: this.state.pageno == 1 ? res.data.data.data : [...this.state.allBlogs, ...res.data.data.data],
-        //                 dataExist: res.data.data.data.length ? true : false,
-        //             })
-        //         }
-        //         else {
-        //             this.setState({ visible: false, isRefreshing: false, })
-        //         }
-        //     }
-        //     else {
-        //         this.setState({ visible: false, isRefreshing: false, })
-        //     }
-        // }).catch((err) => {
-        //     this.setState({ visible: false, isRefreshing: false, })
-        // })
+        getRequest("user/blogs")
+            .then(res => {
+                if (res && res.data && res.data.length > 0) {
+                    let { params } = this.props.navigation.state;
+                    this.setState(
+                        {
+                            allBlogs: res.data,
+                            isRefreshing: false
+                        });
+                } else {
+                    this.setState({
+                        allBlogs: [],
+                        isRefreshing: false
+                    });
+                }
+                setIndicator(false);
+            })
+            .catch(err => { });
     }
 
     _flip = () => {
@@ -129,47 +119,55 @@ class Blogs extends Component {
     _allBlogs = ({ item, index }) => {
 
         return (
-            <TouchableOpacity 
-            style={[styles.shadow,{flex:1,
-                marginBottom:16,
-                shadow:{
-                    height:14,
-                    width:0
-                },
-                elevation:2,
-                borderRadius:8,
-                shadowRadius:4,backgroundColor:'#FFFFFF',shadowOpacity:0.12}]}
-              onPress={() => this.props.navigation.navigate('BlogDetail', { flip: this.props.flip, id: item.id })}>
-                   
-                    <View 
-                   style={[styles.listView,styles.shadow,
-                    { width: '100%', height: 150,
-                    borderTopRightRadius: 8,borderTopLeftRadius:8,
-                        shadowRadius:2,backgroundColor:'white',shadowOpacity:0.5,
-                    marginBottom: 10, alignItems: 'center' }]}>
-                        <ImageBackground
-                          imageStyle={{ borderTopRightRadius: 8,borderTopLeftRadius:8 }}
-                            source={{uri:'https://cdn.pixabay.com/photo/2014/05/02/21/50/home-office-336378_960_720.jpg'}}
-                             resizeMode={'cover'}
-                            style={{ width: '100%', height: 150, }}
-                        //style={{ width: screenDimensions.width, height: screenDimensions.height / 3 }}
-                        >
-                            <LinearGradient
-                             colors={['rgba(0,0,0,0.2)', 'rgba(0,0,0,0.1)','#000000']} style={[styles.linearGradient]} >
-                             <View style={[styles.listView, { flex: 1,
-                            paddingHorizontal:16,
-                            paddingBottom:8,
-                                justifyContent:'flex-end',}]}>
-                            <Text style={styles.blog_title}>{item.blog_title}</Text>
-                            </View>
-                            </LinearGradient>
+            <TouchableOpacity
+                style={[styles.shadow, {
+                    flex: 1,
+                    marginBottom: 16,
+                    shadow: {
+                        height: 14,
+                        width: 0
+                    },
+                    elevation: 2,
+                    borderRadius: 8,
+                    shadowRadius: 4, backgroundColor: '#FFFFFF', shadowOpacity: 0.12
+                }]}
+                onPress={() => this.props.navigation.navigate('BlogDetail', { flip: this.props.flip,
+                    blogItem: item })}>
 
-                        </ImageBackground>
-                        </View>
-                    {/* <View style={ { width: screenDimensions.width - 40, height: 184, borderRadius: 8, marginBottom: 10, alignItems: 'center' }}>
+                <View
+                    style={[styles.listView, styles.shadow,
+                    {
+                        width: '100%', height: 150,
+                        borderTopRightRadius: 8, borderTopLeftRadius: 8,
+                        shadowRadius: 2, backgroundColor: 'white', shadowOpacity: 0.5,
+                        marginBottom: 10, alignItems: 'center'
+                    }]}>
+                    <ImageBackground
+                        imageStyle={{ borderTopRightRadius: 8, borderTopLeftRadius: 8 }}
+                        source={{ uri:item.image
+                        }}
+                        resizeMode={'cover'}
+                        style={{ width: '100%', height: undefined,flex:1 }}
+                    //style={{ width: screenDimensions.width, height: screenDimensions.height / 3 }}
+                    >
+                        <LinearGradient
+                            colors={['rgba(0,0,0,0.2)', 'rgba(0,0,0,0.1)', '#000000']} style={[styles.linearGradient]} >
+                            <View style={[styles.listView, {
+                                flex: 1,
+                                paddingHorizontal: 16,
+                                paddingBottom: 8,
+                                justifyContent: 'flex-end',
+                            }]}>
+                                <Text style={styles.blog_title}>{item.title}</Text>
+                            </View>
+                        </LinearGradient>
+
+                    </ImageBackground>
+                </View>
+                {/* <View style={ { width: screenDimensions.width - 40, height: 184, borderRadius: 8, marginBottom: 10, alignItems: 'center' }}>
                         <Image source={item.blog_image} style={{ width: screenDimensions.width - 40, height: 184, borderRadius: 8 }} />
                     </View> */}
-                    <BlogItem item={item}/>
+                <BlogItem item={item} from={'mainBlog'} />
             </TouchableOpacity>
 
         )
@@ -220,43 +218,44 @@ class Blogs extends Component {
 
     }
     render() {
-    
+
         return (
             <View style={[{ flex: 1 }]}>
                 <Header
-          isRightIcon={false}
-          headerStyle={[
-            styles.shadow,
-            {
-              backgroundColor: "#FFFFFF",
-              shadowRadius: 0.1
-            }
-          ]}
-          title={"Blogs"}
-          backPress={() => this.goBack()}
-        />
-       
-                        <ScrollView style={{flex:1}}>
-                            <View style={{ paddingHorizontal: 24 ,paddingVertical:24}}>
-                                <FlatList
-                                    bounces={true}
-                                    extraData={this.state}
-                                    // pagingEnabled={true}
-                                    scrollEnabled={true}
-                                    showsVerticalScrollIndicator={false}
-                                    data={this.state.allBlogs}
-                                    refreshing={this.state.isRefreshing}
-                                    onRefresh={this.handleRefresh}
-                                    onEndReached={this.handleLoadMore}
-                                    onEndReachedThreshold={0.9}
-                                    ListFooterComponent={this.renderFooter}
-                                    // showsHorizontalScrollIndicator={false}
-                                    keyExtractor={this._keyExtractor2}
-                                    renderItem={this._allBlogs}
-                             
-                                />
-                            </View>
-                        </ScrollView>
+                    isRightIcon={false}
+                    headerStyle={[
+                        styles.shadow,
+                        {
+                            backgroundColor: "#FFFFFF",
+                            shadowRadius: 0.1
+                        }
+                    ]}
+                    title={"Blogs"}
+                    backPress={() => this.goBack()}
+                />
+
+                <ScrollView style={{ flex: 1 }}>
+                    <View style={{ paddingHorizontal: 24, paddingVertical: 24 }}>
+                        <FlatList
+                            bounces={true}
+                            extraData={this.state}
+                            // pagingEnabled={true}
+                            scrollEnabled={true}
+                            showsVerticalScrollIndicator={false}
+                            data={this.state.allBlogs}
+                            refreshing={this.state.isRefreshing}
+                            onRefresh={this.handleRefresh}
+                            //onEndReached={this.handleLoadMore}
+                            // onEndReachedThreshold={0.9}
+                            //  ListFooterComponent={this.renderFooter}
+                            // showsHorizontalScrollIndicator={false}
+                            keyExtractor={this._keyExtractor2}
+                            renderItem={this._allBlogs}
+                        // ListEmptyComponent={()=> <ListEmptyComponent />}
+
+                        />
+                    </View>
+                </ScrollView>
 
             </View>
         )

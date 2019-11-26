@@ -397,7 +397,7 @@ export default class ProductDetail extends Component {
           {this.renderSpaceBorder()}
           <View style={{ height: 8 }} />
           {((user && user.user_type == "customer") || !user) &&
-            this.renderProductsList([], "Similar Products", 168)}
+            this.renderProductsList(this.state.similarProducts, "Similar Products", 168)}
           <View style={{ height: 24 }} />
         </View>
       </View>
