@@ -221,7 +221,7 @@ class Address extends Component {
         .catch(err => {});
       }else{
         setToastMessage(true, colors.danger);
-        toastRef.show('Please select pickup address');
+        toastRef.show(string('Please select pickup address'));
       }
     }
   }
@@ -236,7 +236,7 @@ class Address extends Component {
       }
     );
   };
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -248,7 +248,7 @@ class Address extends Component {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
@@ -304,9 +304,11 @@ class Address extends Component {
     let title = 'Address'
     let buttonTitle='ADD NEW'
     let label = 'Saved Address'
+    let action = 'ADD NEW'
     if(params && params.from =='Return'){
       title = 'Select Address'
       buttonTitle='SUBMIT'
+      action="SUBMIT",
       label='Select address for pickup'
     }
     return (
@@ -320,16 +322,16 @@ class Address extends Component {
               shadowRadius: 0.1
             }
           ]}
-          title={title}
+          title={string(title)}
           backPress={() => this.props.navigation.goBack()}
         />
         <View style={{ paddingHorizontal: 24, marginBottom: 8, marginTop: 16 }}>
-          <RenderLabel label={label} />
+          <RenderLabel label={string(label)} />
         </View>
 
         {this.renderBankList()}
         <View style={{ flex: 0.2, paddingHorizontal: 16 }}>
-          {this.renderButton(buttonTitle)}
+          {this.renderButton(buttonTitle,false,action)}
         </View>
       </View>
     );

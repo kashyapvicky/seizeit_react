@@ -25,20 +25,6 @@ const initialState = {
   mobileNumber: "+91 902-319-4565",
   orderArrivedDate:'',
   allProduts: [],
-  addresses: [
-    {
-      id: 1,
-      name: "Leo Harmon",
-      address:
-        "3065 Kirlin Prairie Suite 200, Sector 29D,  oppo. Tribune colony Chandigarh 160030"
-    },
-    {
-      id: 2,
-      name: "Cody Ramos",
-      address:
-        "3065 Kirlin Prairie Suite 200, Sector 29D,  oppo. Tribune colony Chandigarh 160030"
-    }
-  ],
   refreshing: false,
   isModalVisible: false,
   qauntity: []
@@ -105,7 +91,7 @@ export default class OrderSuccessFull extends Component {
                 <View style={{ marginHorizontal: 10,}}>
 
                   <Text style={styles.requestSubmitedMessage}>
-                    {`Thanks for your order, You will receive it by ${this.state.orderArrivedDate}`}
+                    {`${string('Thanks for your order, You will receive it by')} ${this.state.orderArrivedDate}`}
                   </Text>
                 </View>
               </View>

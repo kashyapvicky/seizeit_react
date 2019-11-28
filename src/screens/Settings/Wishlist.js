@@ -98,7 +98,7 @@ class Wishlist extends Component {
             <ProductPlaceholder
               array={[1, 2, 3, 4, 5, 6]}
               loader={this.loaderComponent}
-              message={this.props.screenProps.loader ? "" : "No wishlist found"}
+              message={this.props.screenProps.loader ? "" : string("No wishlist found")}
 
 
             />
@@ -178,11 +178,11 @@ class Wishlist extends Component {
             }
           ]}
           hideLeftIcon={false}
-          title={"Wishlist"}
+          title={string("Wishlist")}
           backPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
-          style={{ flex: 1, paddingHorizontal: 16 }}
+          style={{ flex: 1, marginHorizontal: 16 }}
           showsVerticalScrollIndicator={false}
         >
           {this.renderProductsList()}

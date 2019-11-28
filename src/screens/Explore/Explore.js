@@ -243,7 +243,7 @@ class Explore extends Component {
           ListEmptyComponent={
             <ProductPlaceholder
               array={[1, 2, 3, 4, 5, 6]}
-              message={this.props.screenProps.loader ? "" : "No products found"}
+              message={this.props.screenProps.loader ? "" : string("nodatafound")}
               loader={this.loaderComponent}
             />
           }
@@ -274,7 +274,7 @@ class Explore extends Component {
         style={style && style}
         pointerEvents="none"
         onPress={() => this.props.navigation.navigate("SearchProduct")}
-        placeHolder={"What are you looking for?"}
+        placeHolder={string("What are you looking for?")}
       />
     );
   };
@@ -292,7 +292,7 @@ class Explore extends Component {
               }
             ]}
             hideLeftIcon={true}
-            title={"Explore"}
+            title={string("Explore")}
             //backPress={() => this.props.navigation.goBack()}
           />
           {/* {this.renderSearchInput()} */}

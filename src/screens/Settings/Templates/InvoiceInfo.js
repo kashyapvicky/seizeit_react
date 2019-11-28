@@ -19,7 +19,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
     <View style={{ marginTop: 10, paddingHorizontal: 24 }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
         <Text style={[styles.accountSetting, { fontSize: normalize(16) }]}>
-          {"Invoice"}
+          {string("Invoice")}
         </Text>
       </View>
       <View
@@ -29,7 +29,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
           flexDirection: "row"
         }}
       >
-        <Text style={styles.profileLabel}>{"Subtotal"}</Text>
+        <Text style={styles.profileLabel}>{string("Subtotal")}</Text>
         <Text
           style={[
             styles.amountMoney,
@@ -58,7 +58,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
             }
           ]}
         >
-          {"Delivery Charges"}
+          {string("Delivery Charges")}
         </Text>
         <Text
           style={[
@@ -116,7 +116,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
             }
           ]}
         >
-          {"Vat Charges"}
+          {string("Vat Charges")}
         </Text>
         <Text
           style={[
@@ -147,7 +147,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
             }
           ]}
         >
-          {`Promo -${promoCode.coupan_code}`}
+          {`${string("Promo")} ${promoCode.coupan_code}`}
         </Text>
         <Text
           style={[
@@ -171,7 +171,8 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
         style={{
           marginTop: 16,
           justifyContent: "space-between",
-          flexDirection: "row"
+          flexDirection: "row",
+          alignItems:'flex-start'
         }}
       >
         <Text style={styles.accountSetting}>{string("total")}</Text>
@@ -185,10 +186,10 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
         </Text>
       </View>
       {!fromCheckout && (
-        <View style={{ justifyContent: "space-between", marginVertical: 16 }}>
+        <View style={{ justifyContent: "space-between",alignItems:'flex-start', marginVertical: 16 }}>
           <Text style={[styles.accountSetting, { fontSize: normalize(16) }]}>
-            {`Mode of Payment: ${
-              payment_mode == 1 ? "Cash on delivery" : "Online"
+            {`${string('ModeofPayment')} ${
+              payment_mode == 1 ? string("Cash on delivery") :string("Online")
             }`}
           </Text>
         </View>

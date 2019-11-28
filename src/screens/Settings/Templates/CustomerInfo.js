@@ -26,11 +26,11 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
       { color: "rgba(0,0,0,0.56)", fontSize: normalize(16) }
     ]}
   >
-    {"Customer info"}
+    {string("Customer info")}
   </Text>
 </View>
 <View style={{ flexDirection: "row",paddingBottom:16 }}>
-  <View style={{ marginTop: 10, flex: 0.9 }}>
+  <View style={{ marginTop: 10, flex: 0.9 ,alignItems:'flex-start'}}>
     <Text
       style={[
         styles.profileLabel,
@@ -55,14 +55,14 @@ return <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
       :''}
     </Text>
 
-    <View style={{ marginTop: 10 }}>
+    <View style={{ marginTop: 10,alignItems:'flex-start' }}>
       <Text
         style={[
           styles.profileLabel,
           { color: "#000000", fontSize: normalize(16) }
         ]}
       >
-        {"Delivered on"}
+        {string("Delivered on")}
       </Text>
       <Text
         style={[

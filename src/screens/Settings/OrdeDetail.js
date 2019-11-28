@@ -135,7 +135,7 @@ class OrderDetails extends Component {
             }
           ]}
           hideLeftIcon={true}
-          title={"Order details"}
+          title={string("Order details")}
           onRightPress={() => this.props.navigation.goBack()}
         />
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
@@ -193,7 +193,7 @@ const ItemsProduct = ({ item }) => {
           </Text>
           {/* <Ionicons  name={'dots-vertical'} size={28} color={'#D8D8D8'} /> */}
         </View>
-        <View>
+        <View style={{alignItems:'flex-start',flex:1}}> 
           <Text p style={{ color: "#000000" }}>
             {item.product_title}
           </Text>

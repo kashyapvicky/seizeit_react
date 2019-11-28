@@ -8,6 +8,7 @@ import { screenDimensions } from "../../../utilities/contsants";
 import Text from "../../../components/Text";
 import {Gradient} from '../../../components/GradientPlaceholder'
 import styles from "../../../styles";
+import { string } from "../../../utilities/languages/i18n";
 
 export const BannerPlaceholderComp =({loader=Promise,array=[1,2]}) => {
     return (
@@ -27,7 +28,7 @@ export const BannerPlaceholderComp =({loader=Promise,array=[1,2]}) => {
         marginTop: 0,
          width: screenDimensions.width-16, height: 'auto' }]} />
          <View style={{alignSelf:'center',position:'absolute',top:'35%'}}>
-             <Text p>loading</Text>
+             <Text p>{string('loading')}</Text>
          </View>
      </PlaceholderContainer>
     );

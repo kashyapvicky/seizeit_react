@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Image } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { string } from "../../../utilities/languages/i18n";
 
 import colors from "../../../utilities/config/colors";
 import styles from "../../../styles";
@@ -30,7 +31,7 @@ export const FilterButton = props => {
         flexDirection:'row',
       }]}
     >
-    <Text p style={{color:'#455F6C',fontSize:normalize(18)}}>Filters</Text>
+    <Text p style={{color:'#455F6C',fontSize:normalize(18)}}>{string("Filters")}</Text>
     {
     !isEmpty(props.filters.filters) && <View style={{backgroundColor:'#96C50F',
     position: "absolute",top:5,right:104/7,

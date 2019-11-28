@@ -312,7 +312,7 @@ class Orders extends Component {
                       fontSize: normalize(13)
                     }}
                   >
-                    Order placed at 6:45 pm
+                   {`${string("Order placed at")}`} 6:45 pm
                   </Text>
                 </View>
                 <View
@@ -390,7 +390,7 @@ class Orders extends Component {
           // ListFooterComponent={this.renderFooter}
           ListEmptyComponent={() =>
             !this.props.screenProps.loader ? (
-              <ListEmptyComponent message={"No Orders found"} style={{marginTop:'15%'}}/>
+              <ListEmptyComponent message={string('nodatafound')} style={{marginTop:'15%'}}/>
             ) : null
           }
         />
@@ -415,7 +415,7 @@ class Orders extends Component {
               // lineHeight:16
               // borderBottomWidth: 1, borderBottomColor: isFocused ? '#75B152' : 'rgba(0,0,0,0.11)'
             }}
-            placeholder={"Search your products here"}
+            placeholder={string("Search your products here")}
             placeholderTextColor={"#96C50F"}
             // secureTextEntry={this.props.secureTextEntry?this.props.secureTextEntry:false}
           />
@@ -448,7 +448,7 @@ class Orders extends Component {
           //     }
           //   ]}
           //   hideLeftIcon={true}
-          title={"Orders"}
+          title={string("Orders")}
           backPress={() => this.props.navigation.goBack()}
         />
         {this.renderScrollableTab()}

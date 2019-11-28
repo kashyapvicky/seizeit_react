@@ -127,7 +127,7 @@ class Returns extends Component {
             <OrderPlaceholder
               array={[1, 2, 3, 4,]}
               message={
-                this.props.screenProps.loader ? "" : "No data found "
+                this.props.screenProps.loader ? "" : string('nodatafound')
               }
               loader={this.loaderComponent}
             />
@@ -150,7 +150,7 @@ class Returns extends Component {
             }
           ]}
           //   hideLeftIcon={true}
-          title={"Returns"}
+          title={string("Returns")}
           backPress={() => this.props.navigation.goBack()}
         />
         {this.renderProductsList()}

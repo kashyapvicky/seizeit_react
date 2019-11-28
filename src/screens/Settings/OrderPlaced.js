@@ -103,8 +103,8 @@ class CustomerOrders extends Component {
         }
         item={item}
         index={index}
-        renderButton={(title, transparent,item,orderItem) =>
-          this.renderButton(title, transparent,item,orderItem)
+        renderButton={(title, transparent,item,orderItem,action) =>
+          this.renderButton(title, transparent,item,orderItem,action)
         }
       />
     );
@@ -156,10 +156,11 @@ class CustomerOrders extends Component {
             }
           ]}
           //   hideLeftIcon={true}
-          title={"Orders"}
+          title={string("Orders")}
           backPress={() => this.props.navigation.goBack()}
         />
-        <ScrollView style={{ flex: 1 }}>{this.renderProductsList()}</ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}
+ style={{ flex: 1 }}>{this.renderProductsList()}</ScrollView>
       </View>
     );
   }

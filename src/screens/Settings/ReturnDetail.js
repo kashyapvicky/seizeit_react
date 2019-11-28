@@ -148,9 +148,9 @@ class ReturnDetail extends Component {
     return (
       <View style={{ marginTop: 5, paddingHorizontal: 24 }}>
         <View style={[styles.rowWithSpaceBetween]}>
-          <View style={{ mflex: 0.8 }}>
+          <View style={{ mflex: 0.8 ,alignItems:'flex-start'}}>
             <Text p style={[styles.profileLabel, styles.orderInfoLabel]}>
-              {"Order Id"}
+              {string("Order Id")}
             </Text>
             <Text
               style={[
@@ -168,7 +168,7 @@ class ReturnDetail extends Component {
           </View>
           <View style={{ flex: 0.5, alignItems: "flex-end" }}>
             <Text p style={[styles.profileLabel, styles.orderInfoLabel]}>
-              {"Status"}
+              {string("Status")}
             </Text>
             <Text
               p
@@ -189,7 +189,7 @@ class ReturnDetail extends Component {
         <View style={[styles.rowWithSpaceBetween, { paddingTop: 10 }]}>
           <View style={{ flex: 0.8 }}>
             <Text p style={[styles.profileLabel, styles.orderInfoLabel]}>
-              {"Reason of Return"}
+              {string("Reason of Return")}
             </Text>
             <Text
               p
@@ -210,7 +210,7 @@ class ReturnDetail extends Component {
         <View style={[styles.rowWithSpaceBetween, { paddingTop: 10 }]}>
           <View style={{ flex: 1 }}>
             <Text p style={[styles.profileLabel, styles.orderInfoLabel]}>
-              {"Comments"}
+              {string("Comments")}
             </Text>
             <Text
               p
@@ -236,22 +236,22 @@ class ReturnDetail extends Component {
   returnCutomerQuery = () => {
     return (
       <View style={{ marginTop: 16, paddingHorizontal: 24 }}>
-        <View style={[styles.rowWithSpaceBetween]}>
+        <View style={[styles.rowWithSpaceBetween,{alignItems:'flex-start'}]}>
           <Text p style={[styles.labelRetunInfo, { color: colors.primary }]}>
-            {"When will I get my refund?"}
+            {string("When will I get my refund?")}
           </Text>
         </View>
-        <View style={[styles.rowWithSpaceBetween, { marginTop: 8 }]}>
+        <View style={[styles.rowWithSpaceBetween, { marginTop: 8,alignItems:'flex-start' }]}>
           <Text p style={[styles.labelRetunInfoText, {}]}>
             {
-              "Your refund will be generated once the item reached final warehouse and money will be transferred to your account in 2 - 3 working days."
+              string('returnWorking')
             }
           </Text>
         </View>
         <View style={{height:16}} />
         {this.renderInfoCard()}
         <View style={{height:32}} />
-          {this.renderButton('CONTINUE SHOPPING')}
+          {this.renderButton(string('continueShopping'))}
       </View>
     );
   };
@@ -259,7 +259,7 @@ class ReturnDetail extends Component {
   renderInfoCard = () => {
     return (
       <View style={{ marginTop: 16 }}>
-        <View style={styles.returnCard}>
+        <View style={[styles.returnCard,{alignItems:'flex-start'}]}>
           <Text
             p
             style={[
@@ -267,14 +267,14 @@ class ReturnDetail extends Component {
               { color: colors.primary, fontWeight: "normal" }
             ]}
           >
-            {`You have already requested a return of this item. \n Return received, Processing your refund  for this item.`}
+            {`${string('alreadyReturnRequest')} \n ${string('Returnreceived')}`}
           </Text>
           <View style={[styles.rowWithSpaceBetween, { marginTop: 24 }]}>
             <Text
               p
               style={[styles.labelRetunInfoText, { fontSize: normalize(12) }]}
             >
-              {"Return received on: Mar 1, 2019"}
+              {`${string('Return received on')}: Mar 1, 2019`}
             </Text>
           </View>
         </View>
@@ -296,7 +296,7 @@ class ReturnDetail extends Component {
             }
           ]}
           hideLeftIcon={true}
-          title={"Return details"}
+          title={string("Return details")}
           onRightPress={() => this.props.navigation.goBack()}
         />
         <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>

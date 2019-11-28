@@ -46,13 +46,13 @@ class AddReview extends Component {
     return [
       {
         field: rating,
-        name: "Rating",
+        name: string("Rating"),
         rules: "required",
         lang: lang
       },
       {
         field: comment,
-        name: "Comment",
+        name: string("Comment"),
         rules: "required|no_space",
         lang: lang
       }
@@ -97,7 +97,7 @@ class AddReview extends Component {
   };
   //**************************Api Call ************************/
 
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -109,7 +109,7 @@ class AddReview extends Component {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
@@ -135,13 +135,13 @@ class AddReview extends Component {
               shadowRadius: 0.1
             }
           ]}
-          title={"Add Review"}
+          title={string('Add Review')}
           backPress={() => this.props.navigation.goBack()}
         />
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
           <View style={{ marginTop: 25, paddingHorizontal: 24 }}>
             <View style={{ paddingTop: 4 }}>
-              {this.renderLabel("Rating")}
+              {this.renderLabel(string("Rating"))}
               <View style={{ height: 8 }} />
               <Rating
                 imageSize={42}
@@ -150,13 +150,13 @@ class AddReview extends Component {
               />
             </View>
             <View style={{ height: 38 }} />
-            {this.renderLabel("Comment")}
+            {this.renderLabel(string("Comment"))}
             <TextInputComponent
               label={""}
               inputMenthod={input => {
                 this.nameRef = input;
               }}
-              placeholder={"Enter comment"}
+              placeholder={string('Enter comment')}
               placeholderTextColor="rgba(62,62,62,0.55)"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -182,7 +182,7 @@ class AddReview extends Component {
           </View>
         </ScrollView>
         <View style={{ flex: 0.2, paddingHorizontal: 24 }}>
-          {this.renderButton("Submit")}
+          {this.renderButton(string("Submit"),false,"Submit")}
         </View>
       </View>
     );

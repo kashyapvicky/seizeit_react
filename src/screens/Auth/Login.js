@@ -186,7 +186,7 @@ class Login extends Component {
           user.device_token = fcm_id
           this.postSocialRequest(user)
         } else {
-          toastRef.show('User info not getting')
+          toastRef.show(string('User info not getting'))
         }
         // this.setState({ userInfo });
       } catch (error) {
@@ -195,26 +195,26 @@ class Login extends Component {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           setToastMessage(true, colors.danger)
           setTimeout(() => {
-            toastRef.show('You user cancels the sign in flow')
+            toastRef.show(string('You user cancels the sign in flow'))
           }, 500)
 
           // user cancelled the login flow
         } else if (error.code === statusCodes.IN_PROGRESS) {
           setToastMessage(true, colors.danger)
           setTimeout(() => {
-            toastRef.show('Trying to invoke another sign in flow (or any of the other operations) when previous one has not yet finished', colors.danger)
+            toastRef.show(string('anotherInvokeSigup'), colors.danger)
           }, 500)
           // operation (f.e. sign in) is in progress already
         } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           setToastMessage(true, colors.danger)
           setTimeout(() => {
-            toastRef.show('Play services are not available or outdated,')
+            toastRef.show(string('PlayService'))
           }, 500)
           // play services not available or outdated
         } else {
           setToastMessage(true, colors.danger)
           setTimeout(() => {
-            toastRef.show('Error from api')
+            toastRef.show(string('Error from api'))
           }, 500)
           // some other error happened
         }
@@ -251,7 +251,6 @@ class Login extends Component {
           toastRef.show(error.message);
         }, 500)
         // ToastMessage(error)
-        console.log("Login fail with error: " + error);
       })
     }
 
@@ -301,9 +300,8 @@ class Login extends Component {
       .catch((err) => {
         setToastMessage(true, colors.danger)
         setTimeout(() => {
-          toastRef.show('ERROR GETTING DATA FROM FACEBOOK')
+          toastRef.show(string('ERROR GETTING DATA FROM FACEBOOK'))
         }, 500)
-        console.log('ERROR GETTING DATA FROM FACEBOOK')
       })
   }
   // Instagram user info
@@ -332,25 +330,24 @@ class Login extends Component {
         debugger
         setToastMessage(true, colors.danger)
         setTimeout(() => {
-          toastRef.show('ERROR GETTING DATA FROM INSTAGRAM')
+          toastRef.show(string('ERROR GETTING DATA FROM INSTAGRAM'))
         }, 500)
-        console.log('ERROR GETTING DATA FROM INSTAGRAM')
       })
   }
   pressButton = (title) => {
     //this.googleSignin()
     if (title == 'CONTINUE') {
       this.loginByEmail()
-    } else if (title == 'CONTINUE USING FACEBOOK') {
+    } else if (title == 'FACEBOOK') {
       this.facebookLogin()
-    } else if (title == 'CONTINUE USING GOOGLE') {
+    } else if (title == 'GOOGLE') {
       debugger
       this.googleSignin()
-    } else if (title == 'CONTINUE USING INSTAGRAM') {
+    } else if (title == 'INSTAGRAM') {
       this.instagramLogin.show()
     }
   };
-  renderButton = (title, transparent, imageLeft, color, fontSize, center) => {
+  renderButton = (title, transparent, imageLeft, color, fontSize, center,action) => {
     return (
       <CustomeButton
         buttonStyle={{
@@ -372,15 +369,15 @@ class Login extends Component {
         imageLeftLocal={imageLeft}
         fontSize={normalize(fontSize)}
         color={transparent ? '#455F6C' : '#FFFFFF'}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
   };
-  renderSocialButton = (title, transparent, imageLeft, color, fontSize, center) => {
+  renderSocialButton = (title, transparent, imageLeft, color, fontSize, action) => {
     return <TouchableOpacity
       activeOpacity={0.8}
-      onPress={() => this.pressButton(title.toUpperCase())}
+      onPress={() => this.pressButton(action.toUpperCase())}
       style={{
         borderColor: transparent ? '#EAEAEA' : 'transparent',
         justifyContent: 'center',
@@ -424,7 +421,7 @@ class Login extends Component {
             <Image source={homelogo} />
           </View>
           <View style={{ marginTop: 25 }}>
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 10,alignItems:'flex-start' }}>
               <Text style={styles.loginText}>{string("loginsmall")}</Text>
             </View>
             <View>
@@ -503,9 +500,10 @@ class Login extends Component {
                 )}
               <TouchableOpacity
                 activeOpacity={9}
+                style={{alignItems:'flex-start',flex:1}}
                 onPress={() => this.props.navigation.navigate("ForgotPassword")}
               >
-                <View style={styles.forgotPassView}>
+                <View style={[styles.forgotPassView,{alignItems:'flex-start'}]}>
                   <Text style={styles.becomePartner}>
                     {string("forgotpass")}
                   </Text>
@@ -515,7 +513,7 @@ class Login extends Component {
           </View>
           <View style={{ height: 16 }} />
           <View style={styles.continueButton}>
-            {this.renderButton('CONTINUE', false, false, colors.primary, 16, true)}
+            {this.renderButton(string('continue'), false, false, colors.primary, 16, true,'CONTINUE')}
             <View style={{ height: 30 }} />
             <View style={styles.dontHaveAnAccountView}>
               <View>
@@ -553,10 +551,10 @@ class Login extends Component {
           <View style={{ height: 28 }} />
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <View>
-              {this.renderSocialButton(string("continueusingfacebook"), false, Images.facebookIcon, '#3E5F97', 22)}
+              {this.renderSocialButton(string("continueusingfacebook"), false, Images.facebookIcon, '#3E5F97',22, 'FACEBOOK')}
             </View>
             <View style={{ paddingHorizontal: 24 }}>
-              {this.renderSocialButton(string("continueusinggoogle"), true, Images.googleIcon, colors.transparent, 24)}
+              {this.renderSocialButton(string("continueusinggoogle"), true, Images.googleIcon, colors.transparent,24, 'GOOGLE')}
             </View>
             <View>
               {/* {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',32)} */}

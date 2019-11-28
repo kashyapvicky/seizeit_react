@@ -25,20 +25,7 @@ const initialState = {
   mobileNumber: "+91 902-319-4565",
   orderArrivedDate:'',
   allProduts: [],
-  addresses: [
-    {
-      id: 1,
-      name: "Leo Harmon",
-      address:
-        "3065 Kirlin Prairie Suite 200, Sector 29D,  oppo. Tribune colony Chandigarh 160030"
-    },
-    {
-      id: 2,
-      name: "Cody Ramos",
-      address:
-        "3065 Kirlin Prairie Suite 200, Sector 29D,  oppo. Tribune colony Chandigarh 160030"
-    }
-  ],
+
   refreshing: false,
   isModalVisible: false,
   qauntity: []
@@ -99,19 +86,19 @@ export default class OrderSuccessFull extends Component {
 
               <View style={styles.OrderSuccessFullViewTitleMessge}>
                 <Text style={styles.requetSubmitted}>
-                  {'Verify Your Email Address'}
+                  {string('Verify Your Email Address')}
                 </Text>
                 <View style={{height:15 }} />
                 <View style={{ marginHorizontal: 10,}}>
 
                   <Text style={styles.requestSubmitedMessage}>
-                    {`We have sent you a verification email to your email address. Click and follow the link inside it.`}
+                    {`${string('sentText')}`}
                   </Text>
                 </View>
               </View>
               <View style={{height:55 }} />
               <View style={{flex:1, }}>
-                {this.renderButton('Continue')}
+                {this.renderButton(string('continue'))}
                 <View style={{height:10 }} />
                 {/* <TouchableOpacity
                   onPress={() =>

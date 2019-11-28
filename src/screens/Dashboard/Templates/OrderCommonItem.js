@@ -33,7 +33,7 @@ export default OrderCommonItem = ({ item }) => {
           }
         />
       </View>
-      <View style={{ flex: 0.7, paddingLeft: 8 }}>
+      <View style={{ flex: 0.7, paddingLeft: 8 ,alignItems:'flex-start'}}>
         <View>
           <Text
             p
@@ -49,7 +49,8 @@ export default OrderCommonItem = ({ item }) => {
               : ""}
           </Text>
         </View>
-        <View>
+        <View style={{ alignItems:'flex-start',
+}}>
           <Text p style={{ color: "#000000" }}>
             {item && item.product_detail
               ? item.product_detail.product_title
@@ -73,15 +74,20 @@ export default OrderCommonItem = ({ item }) => {
             paddingTop: 6
           }}
         >
+          <View style={{flex:0.8,alignItems:'flex-start'}}>
           <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
             ${item && item.product_detail ? item.product_detail.price : ""}
           </Text>
+          </View>
+        
           {item.status == 6 && (
             <View
               style={{
+                
                 width: "auto",
                 justifyContent: "center",
-                paddingHorizontal: 6,
+                paddingHorizontal: 8,
+                // flex:0.,
                 height: 18,
                 marginTop: 8,
                 // justifyContent:'center',
@@ -91,7 +97,7 @@ export default OrderCommonItem = ({ item }) => {
               }}
             >
               <Text
-                textAlign
+              textAlign
                 style={[
                   styles.text,
                   { color: "#96C50F", fontSize: normalize(10) }

@@ -159,7 +159,7 @@ class Countries extends Component {
               paddingTop: 0,
             }
           ]}
-          placeholder={"Search Country"}
+          placeholder={string("Search Country")}
           placeholderTextColor={"rgba(0,0,0,0.56)"}
           value={this.state.search_text}
           onChangeText={text => this.onChangeSearchProduct(text)}
@@ -212,7 +212,7 @@ class Countries extends Component {
                 height: 100
               }}
             >
-              <Text p>No Search country found</Text>
+              <Text p>{string("No Search country found")}</Text>
             </View>
           )}
           itemSeparatorComponent={this.ItemSeparator}

@@ -59,13 +59,13 @@ class Checkout extends Component {
           icon: false,
           title: "CARDS"
         },
-        {
-          name: "Cash on delivery",
-          description:
-            "Please keep exact change handy to help you serve us better",
-          icon: false,
-          title: "COD"
-        }
+        // {
+        //   name: "Cash on delivery",
+        //   description:
+        //     "Please keep exact change handy to help you serve us better",
+        //   icon: false,
+        //   title: "COD"
+        // }
         // {
         //   name: "Bank transfer",
         //   description: string("youCreditsAmount"),
@@ -245,10 +245,10 @@ class Checkout extends Component {
     let { toastRef } = this.props.screenProps;
     if (!this.state.address_id) {
       setToastMessage(true, colors.danger);
-      return toastRef.show("Please add address first");
+      return toastRef.show(string("Please add address first"));
     } else if (selectedPaymentType && selectedPaymentType.length < 1) {
       setToastMessage(true, colors.danger);
-      return toastRef.show("Please select payment type");
+      return toastRef.show(string("Please select payment type"));
     } else {
       debugger
       let payType = selectedPaymentType[0]
@@ -408,7 +408,7 @@ class Checkout extends Component {
   };
   // add Button Presss
   addButtonPress = title => {
-    if (title == "Add Promo code") {
+    if (title == "AddPromo") {
       let { subTotal, totalAmount, delivery } = this.state;
 
       this.props.navigation.navigate("Promotions", {
@@ -451,7 +451,7 @@ class Checkout extends Component {
             }
           ]}
           hideLeftIcon={true}
-          title={"Checkout"}
+          title={string("Checkout")}
           onRightPress={() => this.props.navigation.goBack()}
         />
         {carts && carts.length > 0 ? (
@@ -629,11 +629,11 @@ class Checkout extends Component {
     );
   };
 
-  addButton = title => {
+  addButton = (title,action) => {
     return (
       <TouchableOpacity
         style={{ paddingTop: 16 }}
-        onPress={() => this.addButtonPress(title)}
+        onPress={() => this.addButtonPress(action)}
       >
         <Text h5 style={{ color: colors.primary, fontSize: normalize(14) }}>
           +{title.toUpperCase()}
@@ -660,8 +660,8 @@ class Checkout extends Component {
     return (
       <View style={{ paddingHorizontal: 24, flex: 1 }}>
         <RenderLabel
-          label={"Personal details"}
-          rightLabel={"Change"}
+          label={string("Personal details")}
+          rightLabel={string("Change")}
           onPressChange={() =>
             this.props.navigation.navigate("EditProfile", {
               updatePersonalDetail: user => this.updatePersonalDetail(user)
@@ -691,8 +691,8 @@ class Checkout extends Component {
     return (
       <View style={{ paddingHorizontal: 24, flex: 1, paddingVertical: 8 }}>
         <RenderLabel
-          label={"Delivering to"}
-          rightLabel={this.state.address_id ? "Change" : "Add"}
+          label={string("Delivering to")}
+          rightLabel={this.state.address_id ? string("Change") : string("Add")}
           onPressChange={() => this.onPressChange()}
         />
 
@@ -700,7 +700,7 @@ class Checkout extends Component {
         <View style={{ paddingTop: 16 }}>
           {!this.state.address ? (
             <Text p style={[styles.subLable]}>
-              {"No default address found ."}
+              {string("No default address found")}
             </Text>
           ) : (
               <Text p style={[styles.subLable]}>
@@ -717,7 +717,7 @@ class Checkout extends Component {
       <View style={{ flex: 1, paddingVertical: 16 }}>
         <View>
           <Text h5 style={[styles.pLable]}>
-            Name
+            {string("Name")}
           </Text>
           <Text p style={[styles.subLable]}>
             {name}
@@ -725,7 +725,7 @@ class Checkout extends Component {
         </View>
         <View style={{ paddingTop: 16 }}>
           <Text h5 style={[styles.pLable]}>
-            Phone Number
+          {string("Phone Number")}
           </Text>
           <Text p style={[styles.subLable]}>{`${phone_code} ${phone}`}</Text>
         </View>
@@ -766,7 +766,7 @@ class Checkout extends Component {
         />
         <View style={{ height: 10 }} />
         <View style={{ paddingHorizontal: 24 }}>
-          {this.addButton("Add Promo code")}
+          {this.addButton(string("Add Promo code"),'AddPromo')}
         </View>
         <View style={{ height: 10 }} />
       </View>
@@ -832,7 +832,7 @@ class Checkout extends Component {
               color: "white"
             }}
           >
-            PLACE ORDER{" "}
+            {string("PLACE ORDER")}
           </Text>
           <View>
             <Icons

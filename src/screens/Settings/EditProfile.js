@@ -248,17 +248,17 @@ class EditProfile extends Component {
 }
   openPermissionModal = () => {
     return Alert.alert(
-        'Allow Permissions',
-        'You need to provide the permissions manually to access the feature..',
+        string('Allow Permissions'),
+        string('mauallyPermission'),
         [
             {
-                text: 'No Way',
+                text: string('No Way'),
                 onPress: () => console.log('Permission denied'),
                 style: 'cancel',
             },
             this.state.cameraPermission == 'undetermined'
-                ? { text: 'OK', onPress: this._requestPermission }
-                : { text: 'Open Settings', onPress: Permissions.openSettings },
+                ? { text: string('OK'), onPress: this._requestPermission }
+                : { text: string('Open Settings'), onPress: Permissions.openSettings },
         ],
     )
 }
@@ -352,7 +352,7 @@ renderProfileView = () => {
             }
           ]}
           //   hideLeftIcon={true}
-          title={"Edit Profile"}
+          title={string("Edit Profile")}
           backPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
@@ -425,7 +425,7 @@ renderProfileView = () => {
         <View style={{ height: 35 }} />
 
         <View style={[styles.continueButton, {flex:0.1, paddingHorizontal: 24 }]}>
-          {this.renderButton("UPDATE", false, false, colors.primary, 16)}
+          {this.renderButton(string("UPDATE"), false, false, colors.primary, 16)}
           <View style={{ height: 25 }} />
         </View>
         {this.state.isModalVisible ? this.renderBottomModal() : null}

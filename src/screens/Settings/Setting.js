@@ -58,16 +58,19 @@ class Settings extends Component {
       accountSettingArr: [
         {
           name: "Bank",
+          value:'Bank',
           description: "Bank accounts added",
           routeName: "BankAccount"
         },
         {
           name: "Wishlist",
+          value: "Wishlist",
           description: "Create your wishlist to buy in future",
           routeName: "Wishlist"
         },
         {
           name: "Address",
+          value: "Address",
           description: "Add, Edit or remove your address",
           routeName: "Address"
         },
@@ -80,16 +83,19 @@ class Settings extends Component {
       ordersArray: [
         {
           name: "Order History",
+          value: "Order History",
           description: "History of upcoming and past orders",
           routeName: "Orders"
         },
         {
           name: "Order Placed",
+          value: "Order Placed",
           description: "Your upcoming and past orders",
           routeName: "OrderPlaced"
         },
         {
           name: "Returns",
+          value: "Returns",
           description: "You can track your return process",
           routeName: "Returns"
         }
@@ -105,10 +111,10 @@ class Settings extends Component {
       let accountArray = this.state.accountSettingArr;
       let orderArray = this.state.ordersArray;
       const accountSettingArr = accountArray.filter(function(x) {
-        return toRemoveAccountM.indexOf(x.name) < 0;
+        return toRemoveAccountM.indexOf(x.value) < 0;
       });
       const ordersArray = orderArray.filter(function(x) {
-        return toRemoveOrderM.indexOf(x.name) < 0;
+        return toRemoveOrderM.indexOf(x.value) < 0;
       });
       this.setState({
         accountSettingArr,
@@ -120,10 +126,10 @@ class Settings extends Component {
       let accountArray = this.state.accountSettingArr;
       let orderArray = this.state.ordersArray;
       const accountSettingArr = accountArray.filter(function(x) {
-        return toRemoveAccountM.indexOf(x.name) < 0;
+        return toRemoveAccountM.indexOf(x.value) < 0;
       });
       const ordersArray = orderArray.filter(function(x) {
-        return toRemoveOrderM.indexOf(x.name) < 0;
+        return toRemoveOrderM.indexOf(x.value) < 0;
       });
       this.setState({
         accountSettingArr,
@@ -185,9 +191,9 @@ closeModal() {
 
   _renderScrollViewContent = () => {
     return (
-      <View style={detailStyles.scrollViewContent}>
+      <View style={[detailStyles.scrollViewContent]}>
         <View style={{ paddingHorizontal: 30 }}>
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10,alignItems:'flex-start'}}>
             <Text style={styles.accountSetting}>
               {string("accountSettings")}
             </Text>
@@ -218,9 +224,10 @@ closeModal() {
                 }
                 }
               >
-                <View style={[styles.contactUsView, { borderBottomWidth: 0 }]}>
-                  <Text style={styles.titleOneText}>{account.name}</Text>
-                  <Text style={styles.titleTwoText}>{account.description}</Text>
+                <View style={[styles.contactUsView, { borderBottomWidth: 0,alignItems:'flex-start',
+ }]}>
+                  <Text style={styles.titleOneText}>{string(account.name)}</Text>
+                  <Text style={styles.titleTwoText}>{string(account.description)}</Text>
                 </View>
               </TouchableOpacity>
             );
@@ -228,8 +235,9 @@ closeModal() {
         </View>
         <View style={styles.bottomSpace2} />
         <View style={{ paddingHorizontal: 30 }}>
-          <View style={{ marginBottom: 10 }}>
-            <Text style={styles.accountSetting}>{string("orders")}</Text>
+          <View style={{ marginBottom: 10,alignItems:'flex-start',
+ }}>
+            <Text style={styles.accountSetting}>{string("Orders")}</Text>
           </View>
           {this.state.ordersArray.map((res, index) => {
             return (
@@ -238,9 +246,10 @@ closeModal() {
                 activeOpacity={0.8}
                 onPress={() => this.props.navigation.navigate(res.routeName)}
               >
-                <View style={styles.contactUsView}>
-                  <Text style={styles.titleOneText}>{res.name}</Text>
-                  <Text style={styles.titleTwoText}>{res.description}</Text>
+                <View style={[styles.contactUsView,{alignItems:'flex-start',
+}]}>
+                  <Text style={styles.titleOneText}>{string(res.name)}</Text>
+                  <Text style={styles.titleTwoText}>{string(res.description)}</Text>
                 </View>
               </TouchableOpacity>
             );
@@ -250,7 +259,8 @@ closeModal() {
         <View style={styles.bottomSpace2} />
 
         <View style={{ paddingHorizontal: 30 }}>
-          <View style={{ marginBottom: 10 }}>
+          <View style={{ marginBottom: 10,alignItems:'flex-start',
+ }}>
             <Text style={styles.accountSetting}>{string("other")}</Text>
           </View>
           {/* {this.props && this.props.user && this.props.user.role_id == 3 ?
@@ -280,7 +290,7 @@ closeModal() {
                   } */}
 
           <TouchableOpacity onPress={() => this.flipCard()}>
-            <View style={styles.contactUsView}>
+            <View style={[styles.contactUsView,{alignItems:'flex-start'}]}>
               <Text style={styles.titleOneText}>{string("blogs")}</Text>
               <Text style={styles.titleTwoText}>{string("readBlogs")}</Text>
             </View>
@@ -288,7 +298,7 @@ closeModal() {
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate("Contact")}
           >
-            <View style={[styles.contactUsView, { borderBottomWidth: 0 }]}>
+            <View style={[styles.contactUsView, { borderBottomWidth: 0,alignItems:'flex-start' }]}>
               <Text style={styles.titleOneText}>{string("contactus")}</Text>
               <Text style={styles.titleTwoText}>{string("happytohelp")}</Text>
             </View>

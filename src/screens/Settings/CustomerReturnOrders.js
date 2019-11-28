@@ -38,7 +38,7 @@ class CustomerReturOrders extends Component {
       ]
     };
   }
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -51,7 +51,7 @@ class CustomerReturOrders extends Component {
         }}
         fontSize={normalize(14)}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(title,action)}
         title={title}
       />
     );
@@ -95,7 +95,7 @@ class CustomerReturOrders extends Component {
             }
           ]}
           //   hideLeftIcon={true}
-          title={"Return Order"}
+          title={string("Return Order")}
           backPress={() => this.props.navigation.goBack()}
         />
 

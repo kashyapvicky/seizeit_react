@@ -199,9 +199,9 @@ class Filter extends Component {
   renderPrice = () => {
     return this.state.prices.length ? (
       <View style={{ paddingVertical: 0 }}>
-        <View>
+        <View style={{alignItems:'flex-start'}}> 
           <Text h5 style={styles.shortByPrice}>
-            {"Sort by Price"}
+            {string("Sort by Price")}
           </Text>
         </View>
         <View style={{ marginTop: 10 }}>
@@ -217,9 +217,9 @@ class Filter extends Component {
   renderFrequencyOfUsage = () => {
     return this.state.frequencyOfUsage.length ? (
       <View style={{ paddingVertical: 0 }}>
-        <View>
+        <View style={{alignItems:'flex-start'}}> 
           <Text h5 style={styles.shortByPrice}>
-            {"Frequency of Usage"}
+            {string("Frequency of Usage")}
           </Text>
         </View>
         <View style={{ marginTop: 10 }}>
@@ -237,7 +237,7 @@ class Filter extends Component {
       <View style={{ flex: 1 }}>
         <Header
           isRightIcon={false}
-          isRightText={"RESET"}
+          isRightText={string("RESET")}
           headerStyle={[
             styles.shadow,
             {
@@ -246,12 +246,12 @@ class Filter extends Component {
             }
           ]}
           hideLeftIcon={false}
-          title={"Filter"}
+          title={string("Filters")}
           onRightPress={() => this.resetFilter()}
           backPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
-          style={{ flex: 1, paddingHorizontal: 24 }}
+          style={{ flex: 1, marginHorizontal: 24 }}
           showsVerticalScrollIndicator={false}
         >
           <View style={{ height: 16 }} />
@@ -263,7 +263,7 @@ class Filter extends Component {
           <View style={{ height: 16 }} />
         </ScrollView>
         <View style={{flex:0.2,justifyContent:'center',alignItems:'center'}}>
-        {this.renderButton('Apply')}
+        {this.renderButton(string('Apply'))}
 
         </View>
       </View>

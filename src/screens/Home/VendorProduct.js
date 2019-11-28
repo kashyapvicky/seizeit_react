@@ -253,7 +253,7 @@ class VendorProduct extends Component {
           ListEmptyComponent={
             <ProductPlaceholder
               array={[1, 2, 3, 4, 5, 6]}
-              message={this.props.screenProps.loader ? "" : "No products found"}
+              message={this.props.screenProps.loader ? "" : string("No products found")}
               loader={this.loaderComponent}
             />
           }

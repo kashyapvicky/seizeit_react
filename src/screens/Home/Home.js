@@ -251,7 +251,7 @@ class Home extends Component {
         style={style && style}
         pointerEvents="none"
         onPress={() => this.props.navigation.navigate("SearchProduct")}
-        placeHolder={"What are you looking for?"}
+        placeHolder={string("What are you looking for?")}
       />
     );
   };
@@ -311,7 +311,7 @@ class Home extends Component {
   };
   renderLabel = title => {
     return (
-      <View>
+      <View style={{flex:1,alignItems:'flex-start'}}>
         <Text h4 style={styles.labelHeading}>
           {title}
         </Text>
@@ -337,7 +337,7 @@ class Home extends Component {
       />
     );
   };
-  renderProductsList = (array, label, imageHeight) => {
+  renderProductsList = (array, label, imageHeight,action) => {
     return (
       <View style={{ flex: 1 }}>
         {this.renderLabel(label)}
@@ -354,7 +354,7 @@ class Home extends Component {
             <ProductPlaceholder loader={this.loaderComponent} />
           }
           renderItem={({ item, index }) =>
-            this.renderItems(item, index, imageHeight, array, label)
+            this.renderItems(item, index, imageHeight, array, action)
           }
         />
       </View>
@@ -371,19 +371,21 @@ class Home extends Component {
           <View style={{ height: 28 }} />
           {this.renderProductsList(
             this.state.popular,
-            "Trending Products",
-            96
+            string("Trending Products"),
+            96,
+            'Trending'
           )}
           <View style={{ height: 16 }} />
           {this.renderButton("Explore more in Trending")}
           <View style={{ height: 32 }} />
           {this.renderProductsList(
             this.state.featured,
-            "Featured Products",
-            168
+            string("Featured Products"),
+            168,
+            'Featured'
           )}
           <View style={{ height: 16 }} />
-          {this.renderButton("Explore more products")}
+          {this.renderButton(string("Explore more products"))}
           <View style={{ height: 16 }} />
         </View>
       </View>
@@ -434,7 +436,7 @@ class Home extends Component {
   onPressWishlist = (item, index, label) => {
     let { addWishlitsRequestApi } = this.props.screenProps.productActions;
     this.bounce(index, label);
-    if (label == "Trending Products") {
+    if (label == "Trending") {
       let updateProducts = updateWishListSuccess(
         this.state.popular,
         item
@@ -442,7 +444,7 @@ class Home extends Component {
       this.setState({
         popular: updateProducts
       });
-    } else if (label == "Featured Products") {
+    } else if (label == "Featured") {
       let updateProducts = updateWishListSuccess(
         this.state.featured,
         item
@@ -460,12 +462,12 @@ class Home extends Component {
 
   addRemoveCart = (item, label) => {
     let { addCartRequestApi } = this.props.screenProps.productActions;
-    if (label == "Trending Products") {
+    if (label == "Trending") {
       let updateProducts = updateCartSuccess(this.state.popular, item);
       this.setState({
         popular: updateProducts
       });
-    } else if (label == "Featured Products") {
+    } else if (label == "Featured") {
       let updateProducts = updateCartSuccess(this.state.featured, item);
       this.setState({
         featured: updateProducts

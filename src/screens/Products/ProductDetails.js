@@ -23,6 +23,7 @@ import Listitems from "../Home/Templates/ListItem";
 import { postRequest, getRequest } from "../../redux/request/Service";
 import { ProductPlaceholder } from "../Home/Templates/PlaceHolderProduct";
 import ProductSlider from "./Templates/ProductSlider";
+import { string } from "../../utilities/languages/i18n";
 
 import Features from "./Templates/Feature";
 import styles from "../../styles";
@@ -158,14 +159,14 @@ export default class ProductDetail extends Component {
   /************** Cart Method  **************/
   renderLabel = title => {
     return (
-      <View>
+      <View style={{alignItems:'flex-start'}}>
         <Text h5 style={[styles.labelHeading, { fontSize: normalize(18) }]}>
           {title}
         </Text>
       </View>
     );
   };
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -177,7 +178,7 @@ export default class ProductDetail extends Component {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
@@ -185,12 +186,12 @@ export default class ProductDetail extends Component {
   pressButton = (title) => {
     let { product } = this.state;
 
-    if (title == "Add to Cart") {
+    if (title == "AddtoCart") {
       let { product } = this.state;
       this.addToCart(product);
-    } else if (title == "View Cart") {
+    } else if (title == "ViewCart") {
       this.props.navigation.navigate("Cart");
-    } else if (title == "View All Reviews") {
+    } else if (title == "ViewAllReviews") {
       this.props.navigation.navigate("AllReviews",{
         vendorId:product.vendor.id,
         vendorAverage:product.vendorAverage
@@ -239,7 +240,7 @@ export default class ProductDetail extends Component {
               vendor: product
             })
           }
-          style={{ flexDirection: "row", flex: 1 }}
+          style={{ flexDirection: "row", flex: 1}}
         >
           {product.vendor && product.vendor.pic ? (
             <View>
@@ -253,12 +254,15 @@ export default class ProductDetail extends Component {
           <View
             style={{ justifyContent: "center", paddingLeft: 12, flex: 0.8 }}
           >
+            <View style={{ alignItems: "flex-start",}}>
             <Text p style={{ fontSize: normalize(18), color: "#000000" }}>
               {" "}
               {`${
                 product.vendor && product.vendor.name ? product.vendor.name : ""
               }`}
             </Text>
+            </View>
+           
             <View
               style={{
                 paddingTop: 8
@@ -277,7 +281,7 @@ export default class ProductDetail extends Component {
               }
             >
               <Text h5 style={{ color: colors.primary }}>
-                Add review
+                {string("Add review")}
               </Text>
             </TouchableOpacity>:null
           }
@@ -285,13 +289,13 @@ export default class ProductDetail extends Component {
         {product.vendor_rating &&
         product.vendor_rating.length > 0 &&
         ((user && user.user_type == "customer") || !user)
-          ? this._renderReviesList(product.vendor_rating, "Reviews", 168)
+          ? this._renderReviesList(product.vendor_rating, string("Reviews"), 168)
           : null}
         {product.vendor_rating &&
         product.vendor_rating.length > 1 &&
         ((user && user.user_type == "customer") || !user) ? (
           <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
-            {this.renderButton("View All Reviews")}
+            {this.renderButton(string("View All Reviews"),false,"ViewAllReviews")}
           </View>
         ) : null}
       </View>
@@ -299,7 +303,7 @@ export default class ProductDetail extends Component {
   };
   renderProductsList = (array, label, imageHeight) => {
     return (
-      <View style={{ flex: 1, paddingHorizontal: 24 }}>
+      <View style={{ flex: 1, paddingHorizontal: 24, }}>
         {this.renderLabel(label)}
         <View style={{ height: 10 }} />
         <FlatList
@@ -316,7 +320,7 @@ export default class ProductDetail extends Component {
             <ProductPlaceholder
               array={[1, 2]}
               message={
-                this.props.screenProps.loader ? "" : "No similar products found"
+                this.props.screenProps.loader ? "" : string("No similar products found")
               }
               loader={this.loaderComponent}
             />
@@ -339,7 +343,7 @@ export default class ProductDetail extends Component {
           ListEmptyComponent={
             <NotificationPlaceholder
               array={[1]}
-              message={this.props.screenProps.loader ? "" : "No review found"}
+              message={this.props.screenProps.loader ? "" : string("No review found")}
               loader={this.loaderComponent}
             />
           }
@@ -369,12 +373,12 @@ export default class ProductDetail extends Component {
     return (
       <View style={detailStyles.scrollViewContent}>
         <View style={{ flex: 1, paddingVertical: 16 }}>
-          <View style={{ paddingHorizontal: 24 }}>
+          <View style={{ paddingHorizontal: 24 ,alignItems:'flex-start'}}>
             <ProductItemDetail product={this.state.product} />
           </View>
-          <View style={{ paddingHorizontal: 24 }}>
+          <View style={{ paddingHorizontal: 24 ,alignItems:'flex-start'}}>
             <View style={{ height: 16 }} />
-            {this.renderLabel("Product Details")}
+            {this.renderLabel(string("Product Details"))}
             <View style={{ height: 16 }} />
             {this.renderDescription()}
             <View style={{ height: 24 }} />
@@ -382,13 +386,13 @@ export default class ProductDetail extends Component {
           </View>
           <View style={{ height: 24 }} />
           {((user && user.user_type == "customer") || !user) && (
-            <View style={{ paddingHorizontal: 24 }}>
-              <FeatureLabel title={"Posted by"} />
+            <View style={{ paddingHorizontal: 24,alignItems:'flex-start' }}>
+              <FeatureLabel title={string("Posted by")} />
             </View>
           )}
           <View style={{ height: 16 }} />
           {((user && user.user_type == "customer") || !user) && (
-            <View style={{ flex: 1, paddingHorizontal: 24 }}>
+            <View style={{ flex: 1, paddingHorizontal: 24, }}>
               {this.renderVendorProfile()}
             </View>
           )}
@@ -397,7 +401,7 @@ export default class ProductDetail extends Component {
           {this.renderSpaceBorder()}
           <View style={{ height: 8 }} />
           {((user && user.user_type == "customer") || !user) &&
-            this.renderProductsList(this.state.similarProducts, "Similar Products", 168)}
+            this.renderProductsList(this.state.similarProducts, string("Similar Products"), 168)}
           <View style={{ height: 24 }} />
         </View>
       </View>
@@ -476,12 +480,14 @@ export default class ProductDetail extends Component {
     let { user } = this.props.screenProps.user;
     let { params } = this.props.navigation.state;
     let title = "Add to Cart";
+    let action="AddtoCart";
     if (
       carts &&
       carts.length > 0 &&
       carts.findIndex(x => x.product_id == this.state.product.product_id) > -1
     ) {
       title = "View Cart";
+      action="ViewCart"
     }
     // Because of content inset the scroll value will be negative on iOS so bring
     // it back to 0.
@@ -649,7 +655,7 @@ export default class ProductDetail extends Component {
             </Animated.View>
           ) : null}
           {((user && user.user_type == "customer") || !user) &&
-            this.renderButton(title)}
+            this.renderButton(title,false,action)}
         </View>
       </LazyHOC>
     );

@@ -80,7 +80,7 @@ class ChooseType extends Component {
           h4
           textAlign
           style={{ fontSize: normalize(24), fontWeight: "normal" }}
-        >{`Please choose what type of user are you?`}</Text>
+        >{string('Please choose what type of user are you?')}</Text>
       </View>
     );
   };
@@ -120,7 +120,7 @@ class ChooseType extends Component {
           h4
           textAlign
           style={{ fontSize: normalize(16), fontWeight: "bold" }}
-        >{`${item.name}`}</Text>
+        >{`${string(item.name)}`}</Text>
       </TouchableOpacity>
     ));
   };

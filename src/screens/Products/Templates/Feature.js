@@ -7,6 +7,7 @@ import  styles  from "../../../styles";
 import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import {sizeStatus} from '../../../utilities/method'
+import { string } from "../../../utilities/languages/i18n";
 
 export const FeatureLabel = ({title}) => {
     return (
@@ -34,8 +35,8 @@ const Features = ({product}) => {
   let sizeText = sizeStatus(product.size_id)
   return <View style={{flex:1,}}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}} >
-              <FeatureLabel title={'Size'}/>
-              <FeatureLabel title={'#Number of times it is used'}/>
+              <FeatureLabel title={string('Size')}/>
+              <FeatureLabel title={string("noOfTimes")}/>
             </View>
             <View style={{height:8}}/>
 

@@ -303,9 +303,9 @@ class AddNewProduct extends Component {
   }
   pressButton = (title)=>{
     debugger
-    if(title =='Add a Product'){
+    if(title =='AddProduct'){
         this.addProduct()
-    }else if(title =='Update a Product'){
+    }else if(title =='UpdateProduct'){
         this.updateProduct()
     }
   }
@@ -318,55 +318,55 @@ ValidationRules = () => {
   return [
     {
       field: productCategory.name,
-      name: 'Category',
+      name: string('Category'),
       rules: "required",
       lang: lang
     },
     {
       field: productSubCategory.name,
-      name: 'Sub Category',
+      name: string('Sub Category'),
       rules: "required",
       lang: lang
     },
     {
       field: productBrand.name,
-      name: 'Product Brand',
+      name: string('Product Brand'),
       rules: "required",
       lang: lang
     },
     {
       field: productTitle,
-      name: 'Product Title',
+      name: string('Product Title'),
       rules: "required|no_space",
       lang: lang
     },
     {
       field: productDes,
-      name: 'Product Description',
+      name: string('Product Description'),
       rules: "required|no_space",
       lang: lang
     },
     {
       field: productSize.name,
-      name: 'Product Size',
+      name: string('Product Size'),
       rules: "required",
       lang: lang
     },
     {
       field: noOfTimeUsed.name,
-      name: 'Used time',
+      name: string('Used time'),
       rules: "required",
       lang: lang
     },
     {
       field: productPrice,
-      name: 'Product price',
+      name: string('Product price'),
       rules: "required|numeric",
       lang: lang
     }
   ];
 };
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -378,7 +378,7 @@ ValidationRules = () => {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
@@ -397,7 +397,7 @@ ValidationRules = () => {
               fontSize: normalize(18)
             }}
           >
-            Available for sale
+            {string("Available for sale")}
           </Text>
           <ToggleSwitch
             isOn={this.state.isOnAvailSale}
@@ -420,7 +420,7 @@ ValidationRules = () => {
               fontSize: normalize(18)
             }}
           >
-            Sold out
+            {string("Sold out")}
           </Text>
           <ToggleSwitch
             isOn={this.state.isSoldOut}
@@ -622,9 +622,12 @@ renderProductImgaes = () => {
     let {toastRef} = this.props.screenProps
     let {setToastMessage} = this.props.screenProps.actions
     let {params} =this.props.navigation.state
-   let  buttonTitle='Add a Product'
+   let  buttonTitle=string('Add a Product')
+   let action='AddProduct'
     if(params && params.selectedProduct){
-      buttonTitle='Update a Product'
+      buttonTitle=string('Update a Product')
+       action='UpdateProduct'
+
     }
     return (
    
@@ -639,7 +642,7 @@ renderProductImgaes = () => {
                 shadowRadius: 0.1
               }
             ]}
-            title={"Add a Product"}
+            title={buttonTitle}
             onRightPress={() => this.props.navigation.goBack()}
           />
           <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
@@ -658,7 +661,7 @@ renderProductImgaes = () => {
             <View
               style={{ marginTop: 10, paddingHorizontal: 24, paddingBottom: 8 }}
             >
-              {this.renderLabel("Product Details")}
+              {this.renderLabel(string("Product Details"))}
               <TextInputComponent
                  pointerEvents="none"
 
@@ -670,7 +673,7 @@ renderProductImgaes = () => {
                 }
                 selectItem={(item)=> this.selectCategory(item)}
                 openDropDown={this.state.openDropDownCat}
-                label={"Product category"}
+                label={string("Product category")}
                 editable={false}
                 inputMenthod={input => {
                   this.productCateRef = input;
@@ -701,7 +704,7 @@ renderProductImgaes = () => {
                 user={this.props.user}
                 pointerEvents="none"
 
-                label={"Sub Category"}
+                label={string("Sub Category")}
                 
                 inputMenthod={input => {
                   this.productSubCateRef = input;
@@ -713,7 +716,7 @@ renderProductImgaes = () => {
                     })
                   }else{
                     setToastMessage(true,colors.danger)
-                    return toastRef.show('Please select first category',colors.danger)
+                    return toastRef.show(string('Please select first category'),colors.danger)
                   }
                 }
                 }
@@ -756,7 +759,7 @@ renderProductImgaes = () => {
                 }
                 selectItem={(item)=> this.selectBrand(item)}
                 openDropDown={this.state.openDropDownBrand}
-                label={"Brand"}
+                label={string("Brand")}
                 editable={false}
                 inputMenthod={input => {
                   this.productBrandRef = input;
@@ -788,7 +791,7 @@ renderProductImgaes = () => {
 
               <TextInputComponent
                 user={this.props.user}
-                label={"Product Title"}
+                label={string("Product Title")}
                 inputMenthod={input => {
                   this.productTitleRef = input;
                 }}
@@ -814,7 +817,7 @@ renderProductImgaes = () => {
               />
               <View style={{ height: 10 }} />
               <TextInputComponent
-                label={"Product Description"}
+                label={string("Product Description")}
                 inputMenthod={input => {
                   this.productDesRef = input;
                 }}
@@ -844,7 +847,7 @@ renderProductImgaes = () => {
               <View style={{ height: 10 }} />
               <TextInputComponent
                 user={this.props.user}
-                label={"Size"}
+                label={string("Size")}
                 inputMenthod={input => {
                   this.productSizeRef = input;
                 }}
@@ -886,7 +889,7 @@ renderProductImgaes = () => {
               <View style={{ height: 10 }} />
               <TextInputComponent
                 user={this.props.user}
-                label={"Number of time it is used"}
+                label={string("noOfTimes")}
                 inputMenthod={input => {
                   this.productNameOfTimeRef = input;
                 }}
@@ -898,7 +901,7 @@ renderProductImgaes = () => {
 
                 lists={this.state.noOfTimeUsedList}
                 editable={false}
-                placeholder={"in used time"}
+                placeholder={string("in used time")}
                 placeholderTextColor="rgba(62,62,62,0.55)"
                 selectionColor="#96C50F"
                 returnKeyType="next"
@@ -929,11 +932,11 @@ renderProductImgaes = () => {
                 <View style={{ height: 10 }} />
               <TextInputComponent
                 user={this.props.user}
-                label={"Price"}
+                label={string("Price")}
                 inputMenthod={input => {
                   this.productPriceRef = input;
                 }}
-                placeholder={'in $$'}
+                placeholder={`${string('in')} $$`}
                 placeholderTextColor="rgba(62,62,62,0.55)"
                 selectionColor="#96C50F"
                 returnKeyType="done"
@@ -956,7 +959,7 @@ renderProductImgaes = () => {
             </View>
             <View style={styles.borderSalesReport} />
             <View style={{ paddingHorizontal: 24 }}>
-              {this.renderLabel("Product Images")}
+              {this.renderLabel(string("Product Images"))}
               <View style={{ height: 10 }} />
               {this.renderProductImgaes()}
             </View>
@@ -965,7 +968,7 @@ renderProductImgaes = () => {
         </TouchableWithoutFeedback>
            
           </ScrollView>
-          {this.renderButton(buttonTitle)}
+          {this.renderButton(buttonTitle,false,action)}
           {this.state.isModalVisible ? this.renderBottomModal() : null}
 
         </View>

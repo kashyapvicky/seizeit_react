@@ -86,7 +86,7 @@ class ForgetPassword extends Component {
   backToFirst = () => {
     this.props.navigation.navigate("Login");
   };
-  renderButton = (title,transparent,imageLeft,color,fontSize) => {
+  renderButton = (title,transparent,imageLeft,color,fontSize,action) => {
     return (
       <CustomeButton
         buttonStyle={{
@@ -100,13 +100,13 @@ class ForgetPassword extends Component {
         buttonTextStyle={{fontWeight:imageLeft ?'normal' :'bold'}}
         fontSize={normalize(fontSize)}
         color={transparent ?'#455F6C':'#FFFFFF'}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
   };
   pressButton = (title) => {
-    if(title =='RESET PASSWORD'){
+    if(title =='RESET'){
       this.forgetPassword()
     }
   }
@@ -162,7 +162,7 @@ class ForgetPassword extends Component {
             <View style={{ height: 20 }} />
           </View>
           <View style={{ height: 20 }} />
-          {this.renderButton(string("resetpass"),false,false,colors.primary,16)}
+          {this.renderButton(string("resetpass"),false,false,colors.primary,16,'RESET')}
           <View style={{ height: 20 }} />
         </ScrollView>
       </View>

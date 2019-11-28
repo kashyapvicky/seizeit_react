@@ -67,7 +67,7 @@ class BankAccount extends Component {
                 return {
                   ...item,
                   title: item.bank_name,
-                  subTitle: 'ACCOUNT NUMBER',
+                  subTitle: string('ACCOUNT NUMBER'),
                   description: item.account_number
                 }
               }),
@@ -142,7 +142,7 @@ class BankAccount extends Component {
     })
   }
   /*******************************APi Call  ***************************/
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -154,7 +154,7 @@ class BankAccount extends Component {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
@@ -228,9 +228,11 @@ class BankAccount extends Component {
     let { params } = this.props.navigation.state
      let buttonTitle='ADD NEW'
      let labelName = 'Saved Bank Account'
+     let action = 'ADD NEW'
     let {selectedBank} = this.state
     if(params && params.fromRequestTransfer && selectedBank){
       buttonTitle = 'SUBMIT'
+      action="SUBMIT"
    }
    if(params && params.fromRequestTransfer){
     buttonTitle = 'Select Bank Account'
@@ -246,15 +248,15 @@ class BankAccount extends Component {
               shadowRadius: 0.1
             }
           ]}
-          title={"Bank Account"}
+          title={string("Bank Account")}
           backPress={() => this.props.navigation.goBack()}
         />
         {this.state.bankArray.length > 0 && <View style={{ paddingHorizontal: 24, marginBottom: 8, marginTop: 24 }}>
-          <RenderLabel label={labelName} />
+          <RenderLabel label={string(labelName)} />
         </View>}
         {this.renderBankList()}
         <View style={{ flex: 0.2, paddingHorizontal: 16 }}>
-          {this.renderButton(buttonTitle)}
+          {this.renderButton(string(buttonTitle),false,action)}
         </View>
       </View>
     );

@@ -442,7 +442,7 @@ class Products extends Component {
         <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
           {this.state.products.length > 0 ? (
             <Text p={styles.totalProduct}>
-              {`${this.state.products.length}`} Products in total
+              {`${this.state.products.length}`} {string("Products in total")}
             </Text>
           ) : null}
         </View>
@@ -484,7 +484,7 @@ class Products extends Component {
   renderSearchInput = () => {
     return (
       <SearchInput
-        placeHolder={"Search your products here"}
+        placeHolder={string("Search your products here")}
         onChangeText={text => {
           this.onChangeTextInput(text);
         }}
@@ -504,7 +504,7 @@ class Products extends Component {
         <Header
           isRightIcon={false}
           hideLeftIcon={true}
-          title={"Products"}
+          title={string("Products")}
           backPress={() => this.props.navigation.goBack()}
         />
         <View

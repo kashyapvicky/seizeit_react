@@ -17,7 +17,7 @@ export default LineChartComponet = props => {
     <View style={{flex:1,}}>
       <View style={styles.totalprofitView}>
         <Text style={[styles.totalProfitOverSale]}>
-          {'Sales report'}
+          {string('Sales report')}
         </Text>
       </View>
       <View style={[{marginVertical:10,marginHorizontal:16,backgroundColor:'rgba(150,197,15,0.07)'}]}>
@@ -30,7 +30,7 @@ export default LineChartComponet = props => {
       <View style={[styles.totalProfitOverSales,{marginVertical:12}]}>
         <View>
           <Text style={[styles.totalProfitOverSale, { marginBottom: 15 }]}>
-            {'Total Profit over Sales'}
+            {string('Total Profit over Sales')}
           </Text>
           <Text
             style={[styles.profitAndSale, { fontSize: 26 }]}
@@ -39,7 +39,7 @@ export default LineChartComponet = props => {
             ${props.total_sale}
           </Text>
           <Text style={[styles.totalProfitOverSale, { color: 'rgba(0,0,0,0.56)',fontSize:14 }]}>
-            {'Total Sales'}
+            {string('Total Sales')}
           </Text>
         </View>
       </View>
@@ -49,7 +49,7 @@ export default LineChartComponet = props => {
       <View style={[styles.totalProfitOverSales,{marginTop:10}]}>
         <View>
           <Text style={[styles.totalProfitOverSale, { marginBottom: 10 }]}>
-            {'Total Revenue made'}
+            {string('Total Revenue made')}
           </Text>
           <Text
             style={[styles.profitAndSale, { fontSize: 26 }]}

@@ -73,7 +73,7 @@ renderItems = ({ item, index }) => {
           ListEmptyComponent={
             <ProductPlaceholder
               array={[1, 2, 3, 4, 5, 6]}
-              message={props.screenProps.loader ? "" : "No products found"}
+              message={props.screenProps.loader ? "" : string("No products found")}
               loader={this.loaderComponent}
             />
           }

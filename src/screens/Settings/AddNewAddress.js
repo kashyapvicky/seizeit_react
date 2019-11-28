@@ -144,55 +144,55 @@ class AddNewAddress extends Component {
     return [
       {
         field: name,
-        name: "Country namme",
+        name: string("Country name"),
         rules: "required",
         lang: lang
       },
       {
         field: state,
-        name: "State name",
+        name: string("State name"),
         rules: "required|no_space",
         lang: lang
       },
       {
         field: fullName,
-        name: "Full Name",
+        name: string("Full Name"),
         rules: "required|no_space",
         lang: lang
       },
       {
         field: phoneNumber,
-        name: "Mobile Number",
+        name: string("Mobile Number"),
         rules: "required|numeric|no_space|min:10|max:10",
         lang: lang
       },
       {
         field: pinCode,
-        name: "Pincode",
+        name: string("Pincode"),
         rules: "required|no_space|numeric",
         lang: lang
       },
       {
         field: city,
-        name: "City name",
+        name: string("City name"),
         rules: "required|no_space",
         lang: lang
       },
       {
         field: houseNo,
-        name: "House number",
+        name: string("House number"),
         rules: "required|no_space",
         lang: lang
       },
       {
         field: streetNo,
-        name: "Street number",
+        name: string("Street number"),
         rules: "required|no_space",
         lang: lang
       },
       {
         field: landmark,
-        name: "Landmark",
+        name: string("Landmark"),
         rules: "required|no_space",
         lang: lang
       }
@@ -217,9 +217,9 @@ class AddNewAddress extends Component {
   };
 
   pressButton = title => {
-    if (title == "Save new address" || title == "Update address") {
+    // if (title == "Save new address" || title == "Update address") {
       this.addAddress();
-    }
+    // }
   };
   updateCountry = country => {
     this.setState({
@@ -242,7 +242,7 @@ class AddNewAddress extends Component {
               height: 48
             }
           ]}
-          title={"Add new address"}
+          title={string("Add new address")}
           backPress={() => this.props.navigation.goBack()}
         />
         <KeyboardAvoidingView
@@ -253,7 +253,7 @@ class AddNewAddress extends Component {
         >
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ paddingTop: 25, paddingHorizontal: 16, flex: 1 }}
+            style={{ paddingTop: 25, marginHorizontal: 16, flex: 1 }}
           >
             <TextInputComponent
               pointerEvents="none"
@@ -262,12 +262,12 @@ class AddNewAddress extends Component {
                   updateCountry: country => this.updateCountry(country)
                 })
               }
-              label={"Select your country"}
+              label={string("Select your country")}
               editable={false}
               inputMenthod={input => {
                 this.productCountryRef = input;
               }}
-              placeholder={"Country name"}
+              placeholder={string("Country name")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -290,12 +290,12 @@ class AddNewAddress extends Component {
             />
             <View style={{ height: 10 }} />
             <TextInputComponent
-              label={"State"}
+              label={string("State")}
               inputMenthod={input => {
                 this.stateRef = input;
               }}
               bankAccount
-              placeholder={"Enter State name"}
+              placeholder={string("Enter State name")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -315,7 +315,8 @@ class AddNewAddress extends Component {
               textInputStyle={styles.textInputStyle}
             />
             <View style={{ height: 25 }} />
-            <View style={{ marginTop: 5 }}>
+            <View style={{ marginTop: 5,alignItems:'flex-start',
+ }}>
               <Text
                 p
                 style={{
@@ -324,7 +325,7 @@ class AddNewAddress extends Component {
                   ...styles.text
                 }}
               >
-                Full Address Details
+                {string("Full Address Details")}
               </Text>
             </View>
             <TextInputComponent
@@ -333,7 +334,7 @@ class AddNewAddress extends Component {
                 this.fullRef = input;
               }}
               bankAccount
-              placeholder={"Full name"}
+              placeholder={string("Full name")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -358,7 +359,7 @@ class AddNewAddress extends Component {
                 this.mobileRef = input;
               }}
               bankAccount
-              placeholder={"10 digit mobile"}
+              placeholder={string('10digitPhone')}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -383,7 +384,7 @@ class AddNewAddress extends Component {
                 this.pinCodeRef = input;
               }}
               bankAccount
-              placeholder={"Pincode"}
+              placeholder={string("Pincode")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -408,7 +409,7 @@ class AddNewAddress extends Component {
                 this.cityRef = input;
               }}
               bankAccount
-              placeholder={"City"}
+              placeholder={string("City name")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -433,7 +434,7 @@ class AddNewAddress extends Component {
                 this.houseNoRef = input;
               }}
               bankAccount
-              placeholder={"H.No./Flat/Building"}
+              placeholder={string("hnoflatbuilding")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -458,7 +459,7 @@ class AddNewAddress extends Component {
                 this.streetRef = input;
               }}
               bankAccount
-              placeholder={"Street No./Colony"}
+              placeholder={string("StreetNo")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="next"
@@ -483,7 +484,7 @@ class AddNewAddress extends Component {
                 this.landmarkRef = input;
               }}
               bankAccount
-              placeholder={"Landmark"}
+              placeholder={string("Landmark")}
               placeholderTextColor="#000000"
               selectionColor="#96C50F"
               returnKeyType="done"
@@ -507,7 +508,7 @@ class AddNewAddress extends Component {
         </KeyboardAvoidingView>
         <View style={{ flex: 0.12, paddingHorizontal: 16 }}>
           {this.renderButton(
-            this.state.address_id ? "Update address" : "Save new address"
+            this.state.address_id ? string("Update address") : string("Save new address")
           )}
         </View>
       </View>

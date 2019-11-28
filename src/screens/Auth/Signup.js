@@ -163,7 +163,7 @@ class Signup extends Component {
           user.device_token =fcm_id
           this.postSocialRequest(user);
         } else {
-          toastRef.show("User info not getting");
+          toastRef.show(string("User info not getting"));
         }
         // this.setState({ userInfo });
       } catch (error) {
@@ -171,7 +171,7 @@ class Signup extends Component {
         if (error.code === statusCodes.SIGN_IN_CANCELLED) {
           setToastMessage(true, colors.danger);
           setTimeout(() => {
-            toastRef.show("You user cancels the sign in flow");
+            toastRef.show(string("You user cancels the sign in flow"));
           }, 500);
 
           // user cancelled the login flow
@@ -179,7 +179,7 @@ class Signup extends Component {
           setToastMessage(true, colors.danger);
           setTimeout(() => {
             toastRef.show(
-              "Trying to invoke another sign in flow (or any of the other operations) when previous one has not yet finished",
+             string("anotherInvokeSigup"),
               colors.danger
             );
           }, 500);
@@ -187,13 +187,13 @@ class Signup extends Component {
         } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
           setToastMessage(true, colors.danger);
           setTimeout(() => {
-            toastRef.show("Play services are not available or outdated,");
+            toastRef.show(string('PlayService'));
           }, 500);
           // play services not available or outdated
         } else {
           setToastMessage(true, colors.danger);
           setTimeout(() => {
-            toastRef.show("Error from api");
+            toastRef.show(string('Error from api'));
           }, 500);
 
           debugger;
@@ -236,9 +236,6 @@ class Signup extends Component {
           setTimeout(() => {
             toastRef.show(error.message);
           }, 1000);
-
-          // ToastMessage(error)
-          console.log("Login fail with error: " + error);
         });
     }
   };
@@ -305,22 +302,21 @@ class Signup extends Component {
         setIndicator(false);
         setToastMessage(true, colors.danger);
         setTimeout(() => {
-          toastRef.show("ERROR GETTING DATA FROM FACEBOOK");
+          toastRef.show(string('ERROR GETTING DATA FROM FACEBOOK'));
         }, 1000);
 
-        console.log("ERROR GETTING DATA FROM FACEBOOK");
       });
   };
 
   pressButton = title => {
     if (title == "CONTINUE") {
-      this.signUpRequest();
+       this.signUpRequest();
       //this.props.navigation.navigate('EnterMobile')
-    } else if (title == "CONTINUE USING FACEBOOK") {
+    } else if (title == "FACEBOOK") {
       this.facebookLogin();
-    } else if (title == "CONTINUE USING GOOGLE") {
+    } else if (title == "GOOGLE") {
       this.googleSignin();
-    } else if (title == "CONTINUE USING INSTAGRAM") {
+    } else if (title == "INSTAGRAM") {
       this.instagramLogin.show();
     }
   };
@@ -330,12 +326,12 @@ class Signup extends Component {
     imageLeft,
     color,
     fontSize,
-    center
+    action
   ) => {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() => this.pressButton(title.toUpperCase())}
+        onPress={() => this.pressButton(action.toUpperCase())}
         style={{
           borderColor: transparent ? "#EAEAEA" : "transparent",
           justifyContent: "center",
@@ -376,12 +372,11 @@ class Signup extends Component {
       .catch(err => {
         setToastMessage(true, colors.danger);
         setTimeout(() => {
-          toastRef.show("ERROR GETTING DATA FROM INSTAGRAM");
+          toastRef.show(string("ERROR GETTING DATA FROM INSTAGRAM"));
         }, 500);
-        console.log("ERROR GETTING DATA FROM INSTAGRAM");
       });
   };
-  renderButton = (title, transparent, imageLeft, color, fontSize, center) => {
+  renderButton = (title, transparent, imageLeft, color, fontSize, center,action) => {
     return (
       <CustomeButton
         buttonStyle={{
@@ -402,7 +397,7 @@ class Signup extends Component {
         imageLeftLocal={imageLeft}
         fontSize={normalize(fontSize)}
         color={transparent ? "#455F6C" : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
@@ -417,7 +412,7 @@ class Signup extends Component {
                 <Image source={backButton} />
               </View>
             </TouchableOpacity>
-            <View style={{ marginVertical: 20 }}>
+            <View style={{ marginVertical: 20,alignItems:'flex-start' }}>
               <Text style={styles.loginText}>{string("signupsmall")}</Text>
             </View>
             <View style={styles.firstNameLastNameView}>
@@ -561,16 +556,17 @@ class Signup extends Component {
           <View style={{ height: 35 }} />
           <View style={styles.continueButton}>
             {this.renderButton(
-              "CONTINUE",
+              "continue",
               false,
               false,
               colors.primary,
               16,
-              true
+              true,
+              "CONTINUE",
             )}
             <View style={{ height: 30 }} />
-            <View style={styles.dontHaveAnAccountView}>
-              <View>
+            <View style={[styles.dontHaveAnAccountView,{alignItems:'flex-start'}]}>
+              <View style={{alignItems:'flex-start'}}>
                 <Text
                   style={[
                     styles.whatisPetPartner,
@@ -583,7 +579,7 @@ class Signup extends Component {
                     onPress={() => this.props.navigation.navigate("Login")}
                   >
                     {" "}
-                    {string("login")}
+                    {string("Login")}
                   </Text>
                 </Text>
               </View>
@@ -613,10 +609,10 @@ class Signup extends Component {
           <View style={{ height: 16 }} />
           <View style={{flexDirection:'row',justifyContent:'center'}}>
             <View>
-            {this.renderSocialButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',22)}
+            {this.renderSocialButton(string("continueusingfacebook"),false,Images.facebookIcon,'#3E5F97',22,"FACEBOOK")}
             </View>
             <View style={{paddingHorizontal:24}}>
-            {this.renderSocialButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,24)}
+            {this.renderSocialButton(string("continueusinggoogle"),true,Images.googleIcon,colors.transparent,24,"GOOGLE")}
             </View>   
             <View>
             {/* {this.renderSocialButton(string("continueusinginstagram"),true,Images.instagram,'#E1306C',32)} */}

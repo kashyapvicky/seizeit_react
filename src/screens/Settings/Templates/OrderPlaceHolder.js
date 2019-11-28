@@ -7,6 +7,7 @@ import {
 import { screenDimensions } from "../../../utilities/contsants";
 import { Gradient } from "../../../components/GradientPlaceholder";
 import styles from "../../../styles";
+import { string } from "../../../utilities/languages/i18n";
 
 export const OrderPlaceholder = ({ loader = Promise, array = [1, 2] }) => {
   return (
@@ -92,7 +93,7 @@ export const OrderPlaceholder = ({ loader = Promise, array = [1, 2] }) => {
         }}
       />
       <View style={{alignSelf:'center',position:'absolute',top:'35%'}}>
-             <Text p>No Data found</Text>
+      <Text p>{string('nodatafound')}</Text>
          </View>
     </PlaceholderContainer>
   );

@@ -30,7 +30,7 @@ export default OrderPlacedListItem = ({
         }
       ]}
     >
-      <View style={{ flex: 1, paddingTop: 8 }}>
+      <View style={{ flex: 1, paddingTop: 8,alignItems:'flex-start', }}>
         <Text
           h5
           style={{
@@ -75,7 +75,8 @@ export default OrderPlacedListItem = ({
                   />
                 </View>
                 <View style={{ flex: 0.7, paddingLeft: 12 }}>
-                  <View>
+                  <View style={{alignItems:'flex-start',
+}}>
                     <Text
                       p
                       style={{
@@ -89,6 +90,7 @@ export default OrderPlacedListItem = ({
                     <View
                       style={{
                         justifyContent: "flex-end",
+                        alignItems:'flex-start',
                         flex: 1,
                         paddingTop: 8
                       }}
@@ -100,7 +102,7 @@ export default OrderPlacedListItem = ({
                           fontSize: normalize(13)
                         }}
                       >
-                        by{" "}
+                        {string("by")}{" "}
                         {product_detail && product_detail.vendor && product_detail.vendor.name
                           ? product_detail.vendor.name
                           : ""}
@@ -112,11 +114,11 @@ export default OrderPlacedListItem = ({
               <View
                 style={{
                   flex: 1,
-                  flexDirection: "row"
+                  flexDirection: "row",justifyContent:'space-between',
                 }}
               >
                 <View style={{ flex: 0.4 }}></View>
-                <View style={{ flex: 0.8, alignItems: "flex-start" }}>
+                <View style={{ flex: 0.8, alignItems: "flex-end" }}>
                   <Text
                     h5
                     style={{
@@ -136,11 +138,11 @@ export default OrderPlacedListItem = ({
          {status == 7 && <View style={{flexDirection:'row',flex:1,paddingTop:16,paddingBottom:16}}>
           <View style={{flex:0.35}}/>
           <View style={{flex:0.3}}>
-          {renderButton('Return',true,resItem,item)}
+          {renderButton(string('Return'),true,resItem,item,'Return')}
           </View>
           <View style={{flex:0.05}} />
           <View style={{flex:0.3}}>
-          {renderButton('Order again',false,resItem,item)}
+          {renderButton(string('Order again'),false,resItem,item,'Order')}
           </View>
           </View>}
             </View>

@@ -156,6 +156,7 @@ class Blogs extends Component {
                                 flex: 1,
                                 paddingHorizontal: 16,
                                 paddingBottom: 8,
+                                alignItems:'flex-start',
                                 justifyContent: 'flex-end',
                             }]}>
                                 <Text style={styles.blog_title}>{item.title}</Text>
@@ -230,7 +231,7 @@ class Blogs extends Component {
                             shadowRadius: 0.1
                         }
                     ]}
-                    title={"Blogs"}
+                    title={string("Blogs")}
                     backPress={() => this.goBack()}
                 />
 

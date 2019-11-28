@@ -7,6 +7,7 @@ import styles from "../../../styles";
 import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import { Images } from "../../../utilities/contsants";
+import { string } from "../../../utilities/languages/i18n";
 
 export const FilterItemsCheckBox = ({item,index,onSelect}) => {
   return  <TouchableOpacity key={index} activeOpacity={9} onPress={() =>onSelect ?  onSelect(item):null}>
@@ -30,7 +31,7 @@ export const FilterItemsRadio = ({item,index,onSelect}) => {
             <Image source={Images.radioBoxTrue} />
             : <Image source={Images.radioBoxFalse} />
         }
-        <Text style={[styles.range, { paddingLeft: 10 }]}>{item.title}</Text>
+        <Text style={[styles.range, { paddingLeft: 10 }]}>{string(item.title)}</Text>
     </View>
   </TouchableOpacity>
   };

@@ -167,7 +167,7 @@ class SearchProduct extends Component {
               paddingTop: 4
             }
           ]}
-          placeholder={"Search product"}
+          placeholder={string("Search product")}
           placeholderTextColor={"rgba(0,0,0,0.56)"}
           value={this.state.searchText}
           onChangeText={text => this.onChangeSearchProduct(text)}
@@ -207,7 +207,7 @@ class SearchProduct extends Component {
                 height: 100
               }}
             >
-              <Text p>No Search result found</Text>
+          <Text p>{string("No Search result found")}</Text>
             </View>
           )}
           // contentContainerStyle={{ flexGrow: 1 }}
@@ -233,7 +233,7 @@ class SearchProduct extends Component {
                 height: 100
               }}
             >
-              <Text p>No Previous result found</Text>
+          <Text p>{string("No Previous result found")}</Text>
             </View>
           )}
         />
@@ -277,7 +277,7 @@ class SearchProduct extends Component {
         >
           {this.renderSerachProduct()}
           <View style={{ height: 16 }} />
-          {this.renderLabel("Previous Searches")}
+          {this.renderLabel(string("Previous Searches"))}
           <View style={{ height: 16 }} />
           {this.renderPreviousSerachProduct()}
         </ScrollView>

@@ -78,7 +78,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
               {item.brand ?item.brand.name.toUpperCase() : '' }
             </Text>
           </View>
-          <View>
+          <View style={{alignItems:'flex-start'}}>
             <Text
               p
               style={{

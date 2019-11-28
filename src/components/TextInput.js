@@ -43,10 +43,12 @@ export default class TextInputLabel extends Component {
     return (
       <View style={{ marginTop: 10, }}>
         {
-        this.props.label ? <Text p style={labelStyle}>
+        this.props.label ?<View style={{alignItems:'flex-start'}}>
+           <Text p style={labelStyle}>
           {this.props.label}
-        </Text> : null}
-        <TouchableOpacity
+        </Text></View> : null}
+        <View
+        pointerEvents
           onPress={() => (this.props.onPress ?this.props.onPress() : null)}
           style={[
             this.props.viewTextStyle,
@@ -63,6 +65,7 @@ export default class TextInputLabel extends Component {
         >
           <View
             style={{
+              alignItems:'flex-start',
               flex:
                 this.props.rightIcon && this.props.rightIcon != null ? 0.9 : 1
             }}
@@ -76,7 +79,6 @@ export default class TextInputLabel extends Component {
                 // fontWeight: "500",
                 color: '#000000',
                 fontFamily: fonts.sourcesanspro,
-
                 ...styles.text,
                 ...this.props.textInputStyle,
                 // lineHeight:16
@@ -111,7 +113,7 @@ export default class TextInputLabel extends Component {
             </View>
           ) : null}
 
-        </TouchableOpacity>
+        </View>
         {this.props.openDropDown ? 
     
           <DropDownList 

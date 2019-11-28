@@ -101,11 +101,11 @@ export default class ReturnRequestSubmitSuccess extends Component {
             </View>
             <View style={{ height: 35 }} />
             <View style={styles.OrderSuccessFullViewTitleMessge}>
-              <Text style={styles.requetSubmitted}>{"Request Submitted"}</Text>
+              <Text style={styles.requetSubmitted}>{string("requestSubmitted")}</Text>
               <View style={{ height: 15 }} />
               <View style={{ marginHorizontal: 8 }}>
                 <Text style={styles.requestSubmitedMessage}>
-                  {`Our pickup person will pick item from your selected address within 2  working days.`}
+                  {`${string('pickupOrder')}`}
                 </Text>
               </View>
             </View>

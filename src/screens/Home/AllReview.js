@@ -122,7 +122,7 @@ import {ReviewItem} from './Templates/ReviewItem'
           ListEmptyComponent={
             <NotificationPlaceholder
               array={[1, 2, 2]}
-              message={this.props.screenProps.loader ? "" : "No review found"}
+              message={this.props.screenProps.loader ? "" : string("No review found")}
               loader={this.loaderComponent}
             />
           }
@@ -143,7 +143,7 @@ import {ReviewItem} from './Templates/ReviewItem'
             }
           ]}
 
-          title={"All Review"}
+          title={string("All Review")}
           isRightText={this.state.is_purchase == 1 ? "Add" :false}
           onRightPress={() => {
             this.rightPress();

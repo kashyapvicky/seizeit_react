@@ -72,7 +72,7 @@ class AddNewBankAccount extends Component {
       return toastRef.show(validation[0].message);
     } else if (accountNumber != confirmAccountNumber) {
       setToastMessage(true, colors.danger);
-      return toastRef.show('The confirm account number and account number must match.');
+      return toastRef.show(string('confirmIBan'));
     }else {
       let data = {};
       data["bank_name"] =bankAccount.name;
@@ -109,31 +109,31 @@ class AddNewBankAccount extends Component {
   return [
     {
       field: bankAccount.name,
-      name: "Bank name",
+      name: string("Bank name"),
       rules: "required",
       lang: lang
     },
     {
       field: accountNumber,
-      name: "IBAN number",
+      name: string("IBAN number"),
       rules: "required|numeric|max:16",
       lang: lang
     },
     {
       field: confirmAccountNumber,
-      name: "Confirm IBAN number",
+      name: string("Confirm IBAN number"),
       rules: "required|numeric|max:16",
       lang: lang
     },
     {
       field: ifscNumber,
-      name: "Swift Code",
+      name: string("Swift Code"),
       rules: "required|no_space",
       lang: lang
     },
     {
       field: accountHolderName,
-      name: "Account holder name",
+      name: string("Account holder name"),
       rules: "required|no_space",
       lang: accountHolderName
     },
@@ -171,7 +171,7 @@ class AddNewBankAccount extends Component {
               
             }
           ]}
-        title={"Add new Bank Account"}
+        title={string("Add new Bank Account")}
         backPress={() => this.props.navigation.goBack()}
       />
         <KeyboardAvoidingView
@@ -188,7 +188,7 @@ class AddNewBankAccount extends Component {
           <View  style={{ marginTop: 25,paddingHorizontal:16 }}>
           <TextInputComponent
                 user={this.props.user}
-                label={'Select Bank name'}
+                label={string('Select Bank name')}
                 inputMenthod={input => {
                   this.accountNumberRef = input;
                 }}
@@ -205,7 +205,7 @@ class AddNewBankAccount extends Component {
                 editable={false}
                 openDropDown={this.state.openDropDownBank}
                 bankAccount
-                placeholder={'ICICI Bank'}
+                placeholder={string('ICICI Bank')}
                 placeholderTextColor="rgba(62,62,62,0.55)"
                 selectionColor="#96C50F"
                 returnKeyType="next"
@@ -229,7 +229,7 @@ class AddNewBankAccount extends Component {
             <View style={{ height: 10 }} />
               <TextInputComponent
                 user={this.props.user}
-                label={'Enter IBAN Number'}
+                label={string('Enter IBAN Number')}
                 inputMenthod={input => {
                   this.accountNumberRef = input;
                 }}
@@ -255,7 +255,7 @@ class AddNewBankAccount extends Component {
               />
             <View style={{ height: 10 }} />
             <TextInputComponent
-                label={'Re - Enter IBAN Number'}
+                label={string('Re - Enter IBAN Number')}
                 inputMenthod={input => {
                   this.confirmAccountNumberRef = input;
                 }}
@@ -282,7 +282,7 @@ class AddNewBankAccount extends Component {
               />
                <View style={{ height: 10 }} />
             <TextInputComponent
-                label={'SWIFT Code'}
+                label={string('SWIFT Code')}
                 inputMenthod={input => {
                   this.ifscRef = input;
                 }}
@@ -310,7 +310,7 @@ class AddNewBankAccount extends Component {
                <View style={{ height: 10 }} />
             <TextInputComponent
                 
-                label={'Name of the Account holder'}
+                label={string('Name of the Account holder')}
                 inputMenthod={input => {
                   this.nameRef = input;
                 }}
@@ -339,7 +339,7 @@ class AddNewBankAccount extends Component {
         </ScrollView>
         </KeyboardAvoidingView>
         <View style={{flex:0.15,paddingHorizontal: 16}}>
-        {this.renderButton('Save new Bank Account')}
+        {this.renderButton(string('Save new Bank Account'))}
       </View>
     </View>
     );

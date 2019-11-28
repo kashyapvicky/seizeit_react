@@ -32,7 +32,7 @@ class Promotions extends Component {
     super(props);
     this.state = {
       addPromotion: false,
-      title: "Promotions",
+      title: string("Promotions"),
       promoCode: null,
       loader: false,
       bagTotal: 0,
@@ -79,7 +79,7 @@ class Promotions extends Component {
   rightPress = () => {
     this.setState({
       addPromotion: true,
-      title: "Add Promotions"
+      title: string("Add Promotions")
     });
   };
   checkPromoCode = coupon_code => {
@@ -164,12 +164,12 @@ class Promotions extends Component {
     if (this.state.addPromotion) {
       if (this.props.navigation.state.params) {
         this.setState({
-          title: "Apply Promotions",
+          title: string("Apply Promotions"),
           addPromotion: false
         });
       } else {
         this.setState({
-          title: "Promotions",
+          title: string("Promotions"),
           addPromotion: false
         });
       }
@@ -278,7 +278,7 @@ class Promotions extends Component {
               }}
             >
               <Text p style={[styles.text, { color: "#FF7E5D" }]}>
-                {"Apply"}
+                {string("Apply")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -288,7 +288,7 @@ class Promotions extends Component {
                 p
                 style={[styles.bold, { color: "#3E3E3E", fontWeight: "600" }]}
               >
-                {`Get ${item.discount_type == 1 ? '$':''}${item.discount}${item.discount_type == 2 ? '%' :''} discount`}
+                {`${string("Get")} ${item.discount_type == 1 ? '$':''}${item.discount}${item.discount_type == 2 ? '%' :''} ${string("discount")}`}
               </Text>
 
               <Text
@@ -317,7 +317,7 @@ class Promotions extends Component {
                   }
                 ]}
               >
-                {`Valid till ${item.valid_upto}`}
+                {`${string("Valid till")} ${item.valid_upto}`}
               </Text>
             </View>
           </View>
@@ -335,7 +335,7 @@ class Promotions extends Component {
           inputMenthod={input => {
             this.productTitleRef = input;
           }}
-          placeholder={"Enter promo code"}
+          placeholder={string("Enter promo code")}
           placeholderTextColor="rgba(62,62,62,0.55)"
           selectionColor="#96C50F"
           returnKeyType="next"
@@ -359,7 +359,7 @@ class Promotions extends Component {
           <View
             style={{ flex: 0.2, marginTop: "25%", justifyContent: "flex-end" }}
           >
-            {this.renderButton("Apply")}
+            {this.renderButton(string("Apply"))}
           </View>
         ) : null}
       </View>
@@ -377,7 +377,7 @@ class Promotions extends Component {
           ListEmptyComponent={
             <OrderPlaceholder
               array={[1, 2, 3, 4]}
-              message={this.props.screenProps.loader ? "" : "No data found "}
+              message={this.props.screenProps.loader ? "" : string("nodatafound")}
               loader={this.loaderComponent}
             />
           }

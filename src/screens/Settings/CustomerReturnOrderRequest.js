@@ -54,13 +54,13 @@ class CustomerReturnOrder extends Component {
     return [
       {
         field: return_title,
-        name: "Title",
+        name: string("Title"),
         rules: "required|no_space",
         lang: lang
       },
       {
         field: return_description,
-        name: "Comment",
+        name:string("Comment"),
         rules: "required|no_space",
         lang: lang
       }
@@ -90,7 +90,7 @@ class CustomerReturnOrder extends Component {
     }
   };
   //***************** Api Function **********************************/
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -103,7 +103,7 @@ class CustomerReturnOrder extends Component {
         }}
         fontSize={normalize(14)}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title}
       />
     );
@@ -156,12 +156,12 @@ class CustomerReturnOrder extends Component {
     return (
       <View style={{ marginTop: 25 }}>
         <TextInputComponent
-          label={"Why are you returning this item?"}
+          label={string("Why are you returning this item?")}
           inputMenthod={input => {
             this.accountNumberRef = input;
           }}
           bankAccount
-          placeholder={"Color fainted"}
+          placeholder={string("Color fainted")}
           placeholderTextColor="rgba(62,62,62,0.55)"
           selectionColor="#96C50F"
           returnKeyType="next"
@@ -182,11 +182,11 @@ class CustomerReturnOrder extends Component {
         />
         <View style={{ height: 10 }} />
         <TextInputComponent
-          label={"Comments"}
+          label={string("Comments")}
           inputMenthod={input => {
             this.confirmAccountNumberRef = input;
           }}
-          placeholder={"Describe the problem here…"}
+          placeholder={string("Describe the problem here…")}
           placeholderTextColor="rgba(62,62,62,0.55)"
           selectionColor="#96C50F"
           returnKeyType="next"
@@ -226,7 +226,7 @@ class CustomerReturnOrder extends Component {
             }
           ]}
           hideLeftIcon={true}
-          title={"Return Order"}
+          title={string("Return Order")}
           onRightPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
@@ -243,7 +243,7 @@ class CustomerReturnOrder extends Component {
             paddingVertical: 8
           }}
         >
-          {this.renderButton("CONTINUE")}
+          {this.renderButton(string("continue"),false,"CONTINUE")}
         </View>
       </View>
     );

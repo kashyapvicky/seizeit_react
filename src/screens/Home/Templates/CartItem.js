@@ -84,7 +84,7 @@ class CartItem extends Component {
             <ProductPlaceholder
               array={[1, 2]}
               message={
-                this.props.screenProps.loader ? "" : "Your cart is Empty "
+                this.props.screenProps.loader ? "" : string('Your cart is Empty')
               }
               loader={this.loaderComponent}
             />

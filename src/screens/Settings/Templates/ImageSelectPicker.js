@@ -36,14 +36,14 @@ export default ImageSelectPickerModal = ({isModalVisible,launchCamera,openImageL
                 <TouchableOpacity style={{ paddingVertical: 16 }} onPress={() => {
                     launchCamera()
                 }}>
-                    <Text h5 >Take Photo</Text>
+                    <Text h5 >{string("Take Photo")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{ paddingVertical: 8 }}
                     onPress={() => {
                         openImageLibrary()
                     }}
                 >
-                    <Text h5 >Choose Existing</Text>
+                    <Text h5 >{string("Choose Existing")}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => closeModal()}
@@ -51,7 +51,7 @@ export default ImageSelectPickerModal = ({isModalVisible,launchCamera,openImageL
                         alignItems: 'center', justifyContent: 'center',
                         paddingTop: 36
                     }}>
-                    <Text h5 style={{ fontSize: 18, color: '#939699' }}>Cancel</Text>
+                    <Text h5 style={{ fontSize: 18, color: '#939699' }}>{string("Cancel")}</Text>
                 </TouchableOpacity>
             </View>
         </CustomModal>

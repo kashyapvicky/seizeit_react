@@ -86,14 +86,14 @@ class Earnings extends Component {
     })
       } else {
         setToastMessage(true,colors.danger)
-        toastRef.show('Amount should be greator then 100')
+        toastRef.show(string('Amount should be greator then 100'))
     }
 
   }
 /******************** Api Function  *****************/
 
   pressButton = (title)=>{
-    if(title == 'Request Transfer'){
+    if(title == 'RequestTransfer'){
         this.requestTransferPayment()
     }
   }
@@ -105,7 +105,7 @@ class Earnings extends Component {
       });
     }
   };
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -117,7 +117,7 @@ class Earnings extends Component {
         }}
         fontSize={normalize(13)}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title}
       />
     );
@@ -153,7 +153,7 @@ class Earnings extends Component {
                   // fontWeight: "600"
                 }}
               >
-                {item.type == 1 ? 'Recevied' : 'Paid Comission'}
+                {item.type == 1 ? string('Recevied') : string('Paid Comission')}
               </Text>
             </View>
             <View>
@@ -220,7 +220,7 @@ class Earnings extends Component {
               { color: "#000000", fontSize: normalize(18) }
             ]}
           >
-            Last 30 Days
+            {string("Last 30 Days")}
           </Text>
        
           <TouchableOpacity>
@@ -240,7 +240,7 @@ class Earnings extends Component {
           renderItem={this.renderItems}
           ListEmptyComponent={() =>
             !this.props.screenProps.loader ? (
-              <ListEmptyComponent message={"No Earning found"} />
+              <ListEmptyComponent message={string("No Earning found")} />
             ) : null
           }
           // refreshing={this.state.isRefreshing}
@@ -278,7 +278,7 @@ class Earnings extends Component {
               // lineHeight:16
               // borderBottomWidth: 1, borderBottomColor: isFocused ? '#75B152' : 'rgba(0,0,0,0.11)'
             }}
-            placeholder={"Search your products here"}
+            placeholder={string("Search your products here")}
             placeholderTextColor={"#96C50F"}
             // secureTextEntry={this.props.secureTextEntry?this.props.secureTextEntry:false}
           />
@@ -291,7 +291,7 @@ class Earnings extends Component {
       <View style={[styles.totalProfitOverSales, { marginTop: 16 }]}>
         <View>
           <Text style={[styles.totalProfitOverSale, { marginBottom: 5 }]}>
-            {"Available Income"}
+            {string("Available Income")}
           </Text>
           <Text
             style={[styles.profitAndSale, { fontSize: 26 }]}
@@ -301,7 +301,7 @@ class Earnings extends Component {
           </Text>
         </View>
         <View style={{ flex: 0.7, alignSelf: "center" }}>
-          {this.renderButton("Request Transfer")}
+          {this.renderButton("Request Transfer",false,"RequestTransfer")}
         </View>
       </View>
     );
@@ -330,7 +330,7 @@ class Earnings extends Component {
             }
           ]}
           hideLeftIcon={true}
-          title={"Earnings"}
+          title={string("Earnings")}
           backPress={() => this.props.navigation.goBack()}
         />
         {this.renderTopSection()}

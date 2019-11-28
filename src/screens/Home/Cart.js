@@ -50,8 +50,6 @@ class Cart extends Component {
     });
   }
   pressButton = async (data) => {
-    
-    
     let {user} = this.props.screenProps.user
     if(user){
       this.props.navigation.navigate("Checkout");
@@ -109,7 +107,7 @@ class Cart extends Component {
             }
           ]}
           hideLeftIcon={true}
-          title={"Cart"}
+          title={string("Cart")}
           onRightPress={() => this.props.navigation.goBack()}
         />
         <CartItem 
@@ -147,7 +145,7 @@ class Cart extends Component {
           </View> */}
 
             <View style={{ flex: 1, justifyContent: "center" }}>
-              {this.renderButton("Proceed to Checkout")}
+              {this.renderButton(string("Proceed to Checkout"))}
             </View>
           </View>
         ) : null}

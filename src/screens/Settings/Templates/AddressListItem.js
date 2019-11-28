@@ -49,7 +49,7 @@ style={[
       </Text>
     </View>
     {item.subTitle ?  <View
-      style={{ flexDirection: "row", justifyContent: "space-between" }}
+      style={{ flexDirection: "row", justifyContent: "space-between",alignItems:'flex-start' }}
     >
     <Text
         p
@@ -74,7 +74,7 @@ style={[
     <View
       style={{ flexDirection: "row", justifyContent: "space-between" }}
     >
-      <View style={{flex:0.8}}>
+      <View style={{flex:0.8,alignItems:'flex-start'}}>
       <Text
         p
         style={{

@@ -82,7 +82,7 @@ class StartScreen extends Component {
     }
   };
 
-  renderButton = (title, transparent) => {
+  renderButton = (title, transparent,action) => {
     return (
       <Button
         buttonStyle={{
@@ -94,7 +94,7 @@ class StartScreen extends Component {
         }}
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title)}
+        onPress={() => this.pressButton(action)}
         title={title.toUpperCase()}
       />
     );
@@ -175,9 +175,9 @@ class StartScreen extends Component {
           <Image source={Images.homeLogo} />
         </View>
         <View style={[styles.bottomStyle]}>
-          {this.renderButton("Shop as a guest")}
+          {this.renderButton(string('Shop as a guest'),false,'Shop as a guest')}
           <View style={{ height: 20 }} />
-          {this.renderButton("Login", "transparent")}
+          {this.renderButton(string("Login"), "transparent",'Login')}
           <View style={{ height: 20 }} />
           <TouchableOpacity
             onPress={() =>

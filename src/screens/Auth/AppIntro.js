@@ -17,6 +17,8 @@ import CustomeButton from "../../components/Button";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import Text from "../../components/Text";
 import colors from "../..//utilities/config/colors";
+import { string } from "../../utilities/languages/i18n";
+
 import { Images } from "../../utilities/contsants";
 const { width, height } = Dimensions.get("window");
 export default class AppIntro extends Component {
@@ -29,7 +31,7 @@ export default class AppIntro extends Component {
           title: "Browse Products",
           description: (
             <Text p style={styles.introDesc}>
-              {`Browse all products in different categories,and select your favourite one. `}
+              {`${string("BrowseAll")}`}
             </Text>
           )
         },
@@ -38,7 +40,7 @@ export default class AppIntro extends Component {
           title: "Secure Payments",
           description: (
             <Text p style={styles.introDesc}>
-              {`All payments of platform are fully secured and from trusted authorities`}
+              {`${string("All payments of platform are fully secured and from trusted authorities")}`}
             </Text>
           )
         },
@@ -48,7 +50,7 @@ export default class AppIntro extends Component {
           title: "Easy and Fast Deliveries",
           description: (
             <Text p style={styles.introDesc}>
-              {`Super easy and fast deliveries on our platform.`}
+              {`${string("superEasy")}`}
             </Text>
           )
         },
@@ -57,7 +59,7 @@ export default class AppIntro extends Component {
           title: "Grow with Seize IT",
           description: (
             <Text p style={styles.introDesc}>
-              {`Earn with us, Become a Vendor and sell on our platform`}
+              {`${string("Earn with us, Become a Vendor and sell on our platform")}`}
             </Text>
           )
         }
@@ -94,8 +96,8 @@ export default class AppIntro extends Component {
           <View
             style={{
               alignSelf: "center",
-              flex: 0.15,
-              paddingVertical: 8,
+              flex: 0.2,
+              // paddingVertical: 8,
               justifyContent: "center"
             }}
           >
@@ -107,7 +109,7 @@ export default class AppIntro extends Component {
                 textAlign: "center"
               }}
             >
-              {item.title}
+              {string(item.title)}
             </Text>
           </View>
           {item.description}
@@ -153,7 +155,6 @@ export default class AppIntro extends Component {
       debugger
       if(setWalkThrough){
         setWalkThrough(true)
-
       }
        this.props.navigation.navigate('StartupScreen')
   }

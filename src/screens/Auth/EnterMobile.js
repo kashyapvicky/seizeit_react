@@ -206,7 +206,7 @@ class EnterMobile extends Component {
               />
             </View>
             <View style={{ height: 32 }} />
-          {this.renderButton('CONTINUE',false,false,colors.primary,16)}
+          {this.renderButton(string('continue'),false,false,colors.primary,16)}
           <View style={{ height: 20 }} />
         </ScrollView>
       </View>

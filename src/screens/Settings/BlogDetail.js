@@ -11,6 +11,7 @@ import {
   RefreshControl
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { string } from "../../utilities/languages/i18n";
 
 const HEADER_MAX_HEIGHT = 312;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 60 : 73;
@@ -224,6 +225,8 @@ export default class BlogDetail extends Component {
                   flex: 1,
                   justifyContent: "flex-end",
                   paddingHorizontal: 16,
+                  alignItems:'flex-start',
+
                   paddingVertical: 16,
                   opacity: titleMainOpacity,
                   transform: [

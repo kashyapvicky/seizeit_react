@@ -38,10 +38,10 @@ export default class ChangeLocation extends Component {
     super(props);
     this.state = {
       showInput: false,
-      currentAddress: "Failed to find your current location.",
+      currentAddress: string("Failed to find your current location."),
       addressQuery: "",
       predictions: [],
-      currentPlaceID:''
+      currentPlaceID: ''
     };
     this.onGetCurrentPlacePress();
   }
@@ -91,27 +91,27 @@ export default class ChangeLocation extends Component {
   };
 
   onSelectSuggestion(placeID) {
-    let {toastRef} = this.props.screenProps
+    let { toastRef } = this.props.screenProps
     debugger
-    if(placeID){
+    if (placeID) {
       RNGooglePlaces.lookUpPlaceByID(placeID)
-      .then(results => {
-        this.setState({
-          selectedAddress:results.address,
-          selectedLocation:results.location
+        .then(results => {
+          this.setState({
+            selectedAddress: results.address,
+            selectedLocation: results.location
+          })
+          let { params } = this.props.navigation.state
+          if (params) {
+            let location = {}
+            location['currentAddress'] = results.address
+            location['name'] = results.name
+            location['currentLocation'] = results.location
+            params.updateLocation(location)
+            this.props.navigation.goBack()
+          }
         })
-        let {params} = this.props.navigation.state
-        if(params){
-          let location={}
-          location['currentAddress'] = results.address
-          location['name'] = results.name
-          location['currentLocation'] = results.location
-          params.updateLocation(location)
-          this.props.navigation.goBack()
-        }
-      })
-      .catch(error => console.log(error.message));
-    }else{
+        .catch(error => console.log(error.message));
+    } else {
       toastRef.show('Place id not found')
     }
   }
@@ -124,7 +124,7 @@ export default class ChangeLocation extends Component {
           this.setState({
             currentAddress: results[0].address,
             currentLocation: results[0].location,
-            currentPlaceID:results[0].placeID
+            currentPlaceID: results[0].placeID
           });
         }
       })
@@ -139,14 +139,14 @@ export default class ChangeLocation extends Component {
         <TouchableOpacity
           style={
             (styles.listItem,
-            appstyles.shadow,
-            {
-              shadowRadius: 0.01,
-              shadowOpacity: 0.04,
-              flexDirection: "row",
-              backgroundColor: "white",
-              paddingVertical: 18
-            })
+              appstyles.shadow,
+              {
+                shadowRadius: 0.01,
+                shadowOpacity: 0.04,
+                flexDirection: "row",
+                backgroundColor: "white",
+                paddingVertical: 18
+              })
           }
           onPress={() => this.onSelectSuggestion(item.placeID)}
         >
@@ -172,16 +172,18 @@ export default class ChangeLocation extends Component {
       <TouchableOpacity
         style={
           (styles.listItem,
-          {
-            flexDirection: "row",
-            backgroundColor: "white",
-            paddingTop: 16,
-            marginTop: 16
-          })
+            {
+              flexDirection: "row",
+              backgroundColor: "white",
+              alignItems:'flex-start',
+              paddingTop: 16,
+              marginTop: 16
+            })
         }
         onPress={() => this.onSelectSuggestion(this.state.currentPlaceID)}
-        >
-        <View style={styles.avatar}>
+      >
+        <View style={[styles.avatar,{              alignItems:'flex-start',
+}]}>
           <FontAwesome
             name={"location-arrow"}
             size={28}
@@ -189,8 +191,9 @@ export default class ChangeLocation extends Component {
             style={{ alignSelf: "center" }}
           />
         </View>
-        <View style={styles.placeMeta}>
-          <Text p style={styles.primaryText}>{`Current Location`}</Text>
+        <View style={[styles.placeMeta,{alignItems:'flex-start',
+}]}>
+          <Text p style={styles.primaryText}>{string("Current Location")}</Text>
           <Text style={styles.secondaryText}>{this.state.currentAddress}</Text>
         </View>
       </TouchableOpacity>
@@ -198,10 +201,10 @@ export default class ChangeLocation extends Component {
   };
   render() {
     return (
-      <KeyboardAvoidingView 
-      enabled={false}
-      behavior={'height'} 
-      style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        enabled={false}
+        behavior={'height'}
+        style={{ flex: 1 }}>
         <Header
           isRightIcon={false}
           headerStyle={[
@@ -212,11 +215,11 @@ export default class ChangeLocation extends Component {
               shadowOpacity: 0.1
             }
           ]}
-          title={"Location"}
+          title={string("Location")}
           backPress={() => this.props.navigation.goBack()}
         />
         <ScrollView
-          style={{ flex: 1, paddingHorizontal: 24 }}
+          style={{ flex: 1, marginHorizontal: 24 }}
           showsVerticalScrollIndicator={false}
         >
           <View style={{ marginTop: 24 }}>
@@ -227,7 +230,7 @@ export default class ChangeLocation extends Component {
                   style={styles.input}
                   value={this.state.addressQuery}
                   onChangeText={this.onQueryChange}
-                  placeholder={"Search Location"}
+                  placeholder={string("Search Location")}
                   placeholderTextColor="#9BABB4"
                   underlineColorAndroid={"transparent"}
                   autoFocus
@@ -293,7 +296,7 @@ const styles = StyleSheet.create({
     flex: 0.1
   },
   placeMeta: {
-    flex: 0.9
+    flex: 0.9,
   },
   buttonText: {
     color: "white"

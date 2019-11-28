@@ -54,16 +54,21 @@ class Home extends Component {
       buttons: [
         {
           name: "Reject Order",
-          backgroundColor: "#6B7580"
+          backgroundColor: "#6B7580",
+          value: "Reject Order",
         },
         {
           name: "Confirm Order",
-          backgroundColor: "#96C50F"
+          backgroundColor: "#96C50F",
+          value: "Confirm Order",
+
         },
         {
           name: "Order details",
           backgroundColor: "#FFFFFF",
-          color: "#96C50F"
+          color: "#96C50F",
+          value: "Order details",
+
         }
       ]
     };
@@ -92,7 +97,6 @@ class Home extends Component {
   /******************** Api Function  *****************/
   getStartEndDate = (start_date,end_date) =>{
     this.getGraphData(start_date,end_date)
-
   }
   getGraphData= (dat1,dat2) => {
     let start_date = moment(dat1).format('YYYY-MM-DD')
@@ -180,7 +184,7 @@ class Home extends Component {
     }
   };
   /******************** Api Function  End *****************/
-  renderButton = (title, backgroundColor, color, order) => {
+  renderButton = (title, backgroundColor, color, order,action) => {
     return (
       <Button
         buttonStyle={{
@@ -194,7 +198,7 @@ class Home extends Component {
         }}
         fontSize={14}
         color={color}
-        onPress={() => this.pressButton(title, order)}
+        onPress={() => this.pressButton(action, order)}
         title={title}
       />
     );
@@ -210,7 +214,7 @@ class Home extends Component {
         {this.state.orders.length > 0 ? (
           <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
             <Text p={{ color: "#6B7580", fontSize: normalize(14) }}>
-              {`${this.state.orders.length} Orders in total`}
+              {`${this.state.orders.length} ${string("Orders in total")}`}
             </Text>
           </View>
         ) : null}
@@ -236,7 +240,8 @@ class Home extends Component {
         {
           name: "Order details",
           backgroundColor: "#FFFFFF",
-          color: "#96C50F"
+          color: "#96C50F",
+          value:'Order detail'
         }
       ];
     } else {
@@ -271,16 +276,18 @@ class Home extends Component {
               <View style={{ flex: 0.5 }}>
                 {index == 1
                   ? this.renderButton(
-                      this.buttonStatus(item.status),
+                      string(this.buttonStatus(item.status)),
                       button.backgroundColor,
                       button.color,
-                      item
+                      item,
+                      this.buttonStatus(item.status)
                     )
                   : this.renderButton(
-                      button.name,
+                      string(button.name),
                       button.backgroundColor,
                       button.color,
-                      item
+                      item,
+                      button.value
                     )}
               </View>
             );
@@ -302,7 +309,7 @@ class Home extends Component {
           renderItem={this.renderItems}
           ListEmptyComponent={() =>
             !this.props.screenProps.loader ? (
-              <ListEmptyComponent message={"No Orders found"} />
+              <ListEmptyComponent message={string("No Orders found")} />
             ) : null
           }
         />
@@ -338,7 +345,7 @@ class Home extends Component {
         <Header
           isRightIcon={Images.notification}
           hideLeftIcon={true}
-          title={"Dashboard"}
+          title={string("Dashboard")}
           backPress={() => this.props.navigation.goBack()}
         />
         {this.renderScrollableTab()}

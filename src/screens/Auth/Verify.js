@@ -60,7 +60,7 @@ class Verify extends Component {
     let {setLoggedUserData,setToastMessage} = this.props.screenProps.actions
     let {toastRef} = this.props.screenProps
     if(this.state.code.length < 6 ){
-       return toastRef.show('Please add code first')
+       return toastRef.show(string('Please add code first'))
     }else {
       if (!netStatus) {
         return toastRef.show(string('NetAlert'))
@@ -181,7 +181,7 @@ renderButton = (title, transparent, imageLeft, color, fontSize) => {
           </View>
 
           <View style={{ height: 20 }} />
-          {this.renderButton("VERIFY", false, false, colors.primary, 16)}
+          {this.renderButton(string("VERIFY"), false, false, colors.primary, 16)}
           <View style={{ height: 20 }} />
           <View style={styles.dontHaveAnAccountView}>
               <View>
