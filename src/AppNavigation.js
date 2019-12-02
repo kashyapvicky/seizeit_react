@@ -51,6 +51,7 @@ function getActiveRouteName(navigationState) {
   }
   return route.routeName;
 }
+String.currency = "AED"
 class AppNavigation extends React.Component {
   static socket;
   constructor(props) {
@@ -93,16 +94,33 @@ class AppNavigation extends React.Component {
     /*
     * Triggered when a particular notification has been received in foreground
     * */
+   const channel = new firebase.notifications.Android.Channel('fcm_FirebaseNotifiction_default_channel', 'Demo app name', firebase.notifications.Android.Importance.High)
+   .setDescription('SeizeItapp description')
+   firebase.notifications().android.createChannel(channel);
     this.notificationListener = firebase.notifications().onNotification((notification) => {
-        const { title, body } = notification;
-       // this.showAlert(title, body);
-    });
+      const localNotification = new firebase.notifications.Notification({
+        show_in_foreground: true,
+    })
+        .setNotificationId(notification.notificationId)
+        .setTitle(notification.title)
+        .setBody(notification.body)
+        .setData(notification.data)
+        .android.setChannelId('fcm_FirebaseNotifiction_default_channel') // e.g. the id you chose above
+        .android.setSmallIcon('@drawable/icon') // create this icon in Android Studio
+        .android.setColor(colors.primary) // you can set a color here
+        .android.setPriority(firebase.notifications.Android.Priority.High);
+        firebase.notifications()
+        .displayNotification(localNotification)
+
+  
+    })
   
     /*
     * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
     * */
     this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
-        const { title, body } = notificationOpen.notification;
+
+
         //this.showAlert(title, body);
     });
   

@@ -17,7 +17,7 @@ export const FilterItemsCheckBox = ({item,index,onSelect}) => {
           <Image source={Images.checkBoxTrue} />
           : <Image source={Images.checkBoxFalse} />
       }
-      <Text style={[styles.range, { paddingLeft: 10 }]}>{item.title}</Text>
+      <Text style={[styles.range, { paddingLeft: 10,paddingRight:10 }]}>{item.title}</Text>
   </View>
 </TouchableOpacity>
 };
@@ -31,7 +31,7 @@ export const FilterItemsRadio = ({item,index,onSelect}) => {
             <Image source={Images.radioBoxTrue} />
             : <Image source={Images.radioBoxFalse} />
         }
-        <Text style={[styles.range, { paddingLeft: 10 }]}>{string(item.title)}</Text>
+        <Text style={[styles.range, { paddingLeft: 10,paddingRight:10 }]}>{string(item.title)}</Text>
     </View>
   </TouchableOpacity>
   };

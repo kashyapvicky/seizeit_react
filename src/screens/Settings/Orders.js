@@ -198,6 +198,7 @@ class Orders extends Component {
       
         style={{ flex: 1, paddingHorizontal: 16, marginTop: 16 }}
       >
+        <View style={{alignItems:'flex-start'}}> 
         <Text
           h5
           style={{
@@ -207,6 +208,8 @@ class Orders extends Component {
         >
           {item.date}
         </Text>
+        </View>
+       
         <View style={{ flex: 1, marginTop: 16 }}>
           {this.renderItems(item.orders,index,item)}
         </View>
@@ -278,7 +281,8 @@ class Orders extends Component {
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
+                    alignItems:'flex-start'
                   }}
                 >
                   <Text
@@ -293,16 +297,17 @@ class Orders extends Component {
                     Order ID: {`#ORDER${order.id}`}
                   </Text>
                 </View>
-                <View>
+                <View style={{alignItems:'flex-start'}}>
                   <Text p style={{ color: "#000000", fontSize: normalize(16) }}>
-                    {`${order.amount}`}
+                    {`${String.currency} ${order.amount}`}
                   </Text>
                 </View>
                 <View
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    paddingTop: 6
+                    paddingTop: 6,
+                    alignItems:'flex-start'
                   }}
                 >
                   <Text
@@ -317,7 +322,8 @@ class Orders extends Component {
                 </View>
                 <View
                   style={{
-                    paddingTop: 6
+                    paddingTop: 6,
+                    alignItems:'flex-start'
                   }}
                 >
                   {order.status < 4 ?

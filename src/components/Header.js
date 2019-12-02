@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Image,I18nManager, TouchableOpacity } from "react-native";
 import Text from "./Text";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -27,7 +27,9 @@ const Header = props => {
             name={"arrow-back"}
             size={28}
             color={"#000000"}
-            style={{ alignSelf: "center" }}
+            style={{ alignSelf: "center",transform: [
+              { scaleX: I18nManager.isRTL ?-1 :1}]}
+            }
           />
         </TouchableOpacity>
       ) : null}

@@ -17,6 +17,7 @@ import {
   Image,
   ScrollView,
   FlatList,
+  I18nManager,
   KeyboardAvoidingView,
   Dimensions
 } from "react-native";
@@ -175,15 +176,16 @@ export default class ChangeLocation extends Component {
             {
               flexDirection: "row",
               backgroundColor: "white",
-              alignItems:'flex-start',
+              alignItems: 'flex-start',
               paddingTop: 16,
               marginTop: 16
             })
         }
         onPress={() => this.onSelectSuggestion(this.state.currentPlaceID)}
       >
-        <View style={[styles.avatar,{              alignItems:'flex-start',
-}]}>
+        <View style={[styles.avatar, {
+          alignItems: 'flex-start',
+        }]}>
           <FontAwesome
             name={"location-arrow"}
             size={28}
@@ -191,9 +193,10 @@ export default class ChangeLocation extends Component {
             style={{ alignSelf: "center" }}
           />
         </View>
-        <View style={[styles.placeMeta,{alignItems:'flex-start',
-}]}>
-          <Text p style={styles.primaryText}>{string("Current Location")}</Text>
+        <View style={[styles.placeMeta, {
+          alignItems: 'flex-start',
+        }]}>
+          <Text p style={styles.primaryText}>{string("Currentlocation")}</Text>
           <Text style={styles.secondaryText}>{this.state.currentAddress}</Text>
         </View>
       </TouchableOpacity>
@@ -230,7 +233,7 @@ export default class ChangeLocation extends Component {
                   style={styles.input}
                   value={this.state.addressQuery}
                   onChangeText={this.onQueryChange}
-                  placeholder={string("Search Location")}
+                  placeholder={string("Searchlocation")}
                   placeholderTextColor="#9BABB4"
                   underlineColorAndroid={"transparent"}
                   autoFocus
@@ -325,6 +328,7 @@ const styles = StyleSheet.create({
     color: "#000000",
     height: 48,
     paddingLeft: 8,
+    textAlign:I18nManager.isRTL ? 'right':'left',
     fontSize: normalize(18),
     paddingVertical: 4
   },

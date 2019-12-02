@@ -29,7 +29,8 @@ const ProductItemDetail = ({ product }) => {
       </View>
       <View
         style={{
-          paddingTop: 8
+          paddingTop: 8,
+          alignItems:'flex-start'
         }}
       >
         <Text
@@ -46,14 +47,16 @@ const ProductItemDetail = ({ product }) => {
       </View>
       <View
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingTop: 14
+          // flexDirection: "row",
+          // justifyContent: "space-between",
+          paddingTop: 14,
+          flex:1,
+          // backgroundColor:'red'
         }}
       >
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, }}>
           <Text h5 style={{ color: "#000000", fontSize: normalize(24) }}>
-            ${product.price}
+          {String.currency} {product.price}
           </Text>
         </View>
       </View>

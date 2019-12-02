@@ -6,7 +6,8 @@ import {
   Text,
   TouchableOpacity,
   Platform,
-  Image
+  Image,
+  I18nManager
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -39,7 +40,8 @@ export default class TextInputLabel extends Component {
     let borderColor = {
       borderColor: !isFocused ? "rgba(0,0,0,0.2)" : "#96C50F"
     };
-    // let {textAlign,fontFamilyBold,fontFamilyRegular} = this.props.user
+    let isRTL = I18nManager.isRTL
+    // let {isRTL} = this.props.user
     return (
       <View style={{ marginTop: 10, }}>
         {
@@ -47,8 +49,7 @@ export default class TextInputLabel extends Component {
            <Text p style={labelStyle}>
           {this.props.label}
         </Text></View> : null}
-        <View
-        pointerEvents
+        <TouchableOpacity
           onPress={() => (this.props.onPress ?this.props.onPress() : null)}
           style={[
             this.props.viewTextStyle,
@@ -65,7 +66,7 @@ export default class TextInputLabel extends Component {
         >
           <View
             style={{
-              alignItems:'flex-start',
+              // alignItems:'flex-start',
               flex:
                 this.props.rightIcon && this.props.rightIcon != null ? 0.9 : 1
             }}
@@ -75,7 +76,7 @@ export default class TextInputLabel extends Component {
               style={[{
                 height: 48,
                 fontSize: normalize(20),
-                textAlign: "left",
+                textAlign: isRTL ? "right":"left",
                 // fontWeight: "500",
                 color: '#000000',
                 fontFamily: fonts.sourcesanspro,
@@ -113,7 +114,7 @@ export default class TextInputLabel extends Component {
             </View>
           ) : null}
 
-        </View>
+        </TouchableOpacity>
         {this.props.openDropDown ? 
     
           <DropDownList 

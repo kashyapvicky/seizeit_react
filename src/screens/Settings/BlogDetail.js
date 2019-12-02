@@ -7,6 +7,7 @@ import {
   View,
   FlatList,
   Image,
+  I18nManager,
   TouchableOpacity,
   RefreshControl
 } from "react-native";
@@ -210,10 +211,13 @@ export default class BlogDetail extends Component {
                 style={{ alignSelf: "center" }}
                 onPress={() => this.props.navigation.goBack()}
               >
-                <Image source={require("../../assets/images/ic_back_w.png")} />
+                <Image 
+                style={{transform: [
+                  { scaleX: I18nManager.isRTL ?-1 :1}, ]}}
+                source={require("../../assets/images/ic_back_w.png")} />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate("Cart")}
+              //  onPress={() => this.props.navigation.navigate("Cart")}
                 style={{ alignSelf: "center" }}
               >
                 <Image source={require("../../assets/images/ic_share_w.png")} />
@@ -262,14 +266,17 @@ export default class BlogDetail extends Component {
             style={{ alignSelf: "center", zIndex: 1000 }}
             onPress={() => this.props.navigation.goBack()}
           >
-          <Image source={require("../../assets/images/ic_back_w.png")} />
+          <Image source={require("../../assets/images/ic_back_w.png")}
+          style={{transform: [
+            { scaleX: I18nManager.isRTL ?-1 :1}, ]}}
+          />
           </TouchableOpacity>
           <View>
             <Text style={[detailStyles.title,{color:'white',fontSize:normalize(16)}]}>{this.state.item.title}</Text>
           </View>
 
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate("Share")}
+           // onPress={() => this.props.navigation.navigate("Share")}
             style={{ alignSelf: "center" }}
           >
           <Image source={require("../../assets/images/ic_share_w.png")} />

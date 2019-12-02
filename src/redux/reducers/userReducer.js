@@ -6,6 +6,7 @@ const initialState = {
   toastMessage: null,
   loader: false,
   lang: "en",
+  isRTL:false,
   fcm_id:null,
   walkThrough:false,
   netStatus: true,
@@ -48,7 +49,9 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         lang: action.lang,
-        isRTL: action.lang == "ar" ? true : false
+        isRTL: action.lang == "ar" ? true : false,
+        // textAlign: action.lang=='en'?'left':'right'
+
         // fontFamilyBold: action.lang=='en'?'MyriadPro-Bold':'Mirza-Bold',
         //fontFamilySemibold: action.lang=='en'?'MyriadPro-Semibold':'Mirza-SemiBold',
         //fontFamilyRegular: action.lang=='en'?'MyriadPro-Regular':'Mirza-Regular',
@@ -56,7 +59,6 @@ const user = (state = initialState, action) => {
         //fontFamilySemibold: action.lang=='en'?'campton-semibold':'Noor-Regular',
         //fontFamilyRegular: action.lang=='en'?'campton-light':'Noor-Regular',
         //flexDirection: (action.lang =='ar') ? 'row-reverse':'row',
-        //textAlign: action.lang=='en'?'left':'right'
       };
       case type.NOTI_FCM_ID:
         return {

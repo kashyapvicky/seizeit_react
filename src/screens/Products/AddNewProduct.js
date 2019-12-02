@@ -618,12 +618,11 @@ renderProductImgaes = () => {
 /***************** Camera Function  *************/
 
   render() {
-    console.log("productBrand",this.state.productBrand)
     let {toastRef} = this.props.screenProps
     let {setToastMessage} = this.props.screenProps.actions
     let {params} =this.props.navigation.state
-   let  buttonTitle=string('Add a Product')
-   let action='AddProduct'
+   let  buttonTitle=string('Addaproduct')
+    let action='AddProduct'
     if(params && params.selectedProduct){
       buttonTitle=string('Update a Product')
        action='UpdateProduct'
@@ -936,7 +935,7 @@ renderProductImgaes = () => {
                 inputMenthod={input => {
                   this.productPriceRef = input;
                 }}
-                placeholder={`${string('in')} $$`}
+                placeholder={`${string('in')} AED`}
                 placeholderTextColor="rgba(62,62,62,0.55)"
                 selectionColor="#96C50F"
                 returnKeyType="done"

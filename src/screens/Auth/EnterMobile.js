@@ -7,7 +7,8 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
-  Platform
+  Platform,
+  I18nManager
 } from "react-native";
 //Local imports
 import backButton from "../../assets/images/ic_back.png";
@@ -165,7 +166,11 @@ class EnterMobile extends Component {
         <ScrollView>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <View style={styles.backButtonImage}>
-              <Image source={backButton} />
+              <Image source={backButton} 
+                style={{ transform: [
+                  { scaleX: I18nManager.isRTL ?-1 :1}]}
+                }
+              />
             </View>
           </TouchableOpacity>
 

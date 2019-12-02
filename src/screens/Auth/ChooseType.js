@@ -5,7 +5,8 @@ import {
   Image,
   StatusBar,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  I18nManager
 } from "react-native";
 
 //local imports
@@ -130,7 +131,11 @@ class ChooseType extends Component {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <View style={[styles.backButtonImage, { alignItems: "center" }]}>
-              <Image source={Images.backButton} />
+              <Image source={Images.backButton} 
+                style={{ transform: [
+                  { scaleX: I18nManager.isRTL ?-1 :1}]}
+                }
+              />
             </View>
           </TouchableOpacity>
         </View>

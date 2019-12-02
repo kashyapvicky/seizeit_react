@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  I18nManager,
   Image
 } from "react-native";
 import Icons from "react-native-vector-icons/Ionicons";
@@ -16,6 +17,7 @@ import colors from "../utilities/config/colors";
 import { Images } from "../utilities/contsants";
 
 export default  SearchInput = (props) =>{
+
     return <TouchableOpacity 
     onPress={()=> props.onPress ? props.onPress() : null}
     style={[styles.searchView,props.style && props.style]}>
@@ -35,7 +37,7 @@ export default  SearchInput = (props) =>{
           style={{
             height: 40,
             fontSize: normalize(14),
-            // textAlign: "left",
+             textAlign:  I18nManager.isRTL ? "right":"left",
             paddingHorizontal:16,
             // fontWeight: "500",
             color: "#96C50F",

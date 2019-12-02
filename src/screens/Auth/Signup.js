@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   Image,
   StatusBar,
+  I18nManager,
   Keyboard,
   TouchableOpacity,
   ScrollView,
@@ -409,7 +410,11 @@ class Signup extends Component {
           <View>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <View style={{ paddingTop: 20 }}>
-                <Image source={backButton} />
+                <Image source={backButton} 
+                style={{ transform: [
+                  { scaleX: I18nManager.isRTL ?-1 :1}]}
+                }
+                />
               </View>
             </TouchableOpacity>
             <View style={{ marginVertical: 20,alignItems:'flex-start' }}>

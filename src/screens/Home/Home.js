@@ -66,15 +66,7 @@ class Home extends Component {
       refreshing: false
     };
     this.isbarShow = false;
-    if (Platform.OS == "android") {
-      requestLocationPermission().then(res => {
-        if (res) {
-          this.onGetCurrentPlacePress();
-        }
-      });
-    } else {
-      this.onGetCurrentPlacePress();
-    }
+   
     // Placeholder Product
     this.loaderComponent = new Promise(resolve => {
       setTimeout(() => {
@@ -89,6 +81,18 @@ class Home extends Component {
     this.setState({
       ...homeData
     })
+    this.getLocationRequest()
+  }
+  getLocationRequest =async ()=>{
+    if (Platform.OS == "android") {
+      requestLocationPermission().then(res => {
+        if (res) {
+           this.onGetCurrentPlacePress();
+        }
+      });
+    } else {
+      this.onGetCurrentPlacePress();
+    }
   }
   UNSAFE_componentWillReceiveProps(nextProps){
 

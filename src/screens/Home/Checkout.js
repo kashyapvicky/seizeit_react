@@ -632,7 +632,8 @@ class Checkout extends Component {
   addButton = (title,action) => {
     return (
       <TouchableOpacity
-        style={{ paddingTop: 16 }}
+        style={{ paddingTop: 16,alignItems:'flex-start' }}
+
         onPress={() => this.addButtonPress(action)}
       >
         <Text h5 style={{ color: colors.primary, fontSize: normalize(14) }}>
@@ -715,7 +716,7 @@ class Checkout extends Component {
     let { name, phone_code, phone } = this.state.user;
     return (
       <View style={{ flex: 1, paddingVertical: 16 }}>
-        <View>
+        <View style={{alignItems:'flex-start'}}>
           <Text h5 style={[styles.pLable]}>
             {string("Name")}
           </Text>
@@ -723,7 +724,7 @@ class Checkout extends Component {
             {name}
           </Text>
         </View>
-        <View style={{ paddingTop: 16 }}>
+        <View style={{ paddingTop: 16,alignItems:'flex-start' }}>
           <Text h5 style={[styles.pLable]}>
           {string("Phone Number")}
           </Text>
@@ -786,13 +787,13 @@ class Checkout extends Component {
     let taxCharges = (subTotal*tax/100).toFixed(2)
     let vatCharges = (subTotal*vat/100).toFixed(2)
     let totalAmountData = (Number(totalAmount)+Number(dlCharges)+Number(vatCharges)+Number(taxCharges)).toFixed(2)
+    let {isRTL} = this.props.screenProps.user
     return (
       <TouchableOpacity
         onPress={() => this.saveOrderApi()}
         style={{
           flex: 0.12,
           justifyContent: "flex-end",
-          justifyContent: "center",
           flexDirection: "row",
           backgroundColor: colors.primary
         }}
@@ -801,7 +802,8 @@ class Checkout extends Component {
           style={{
             flex: 0.55,
             justifyContent: "center",
-            paddingHorizontal: 16
+            paddingHorizontal: 16,
+            alignItems:'flex-start'
           }}
         >
           <Text
@@ -812,7 +814,7 @@ class Checkout extends Component {
               color: "white"
             }}
           >
-            {`$${(totalAmountData)}`}
+            {`${String.currency} ${(totalAmountData)}`}
           </Text>
         </View>
         <View
@@ -834,12 +836,13 @@ class Checkout extends Component {
           >
             {string("PLACE ORDER")}
           </Text>
-          <View>
+          <View style={{alignItems:'flex-start',paddingLeft:8}}>
             <Icons
               name={"ios-arrow-forward"}
               color={"#FFFFFF"}
               size={20}
-              style={{ alignSelf: "center" }}
+              style={{ alignSelf: "center" ,transform: [
+                { scaleX:isRTL ?-1 :1}]}}
             />
           </View>
         </View>

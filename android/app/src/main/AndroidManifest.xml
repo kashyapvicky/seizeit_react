@@ -40,6 +40,9 @@
     
       <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
 
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="fcm_FirebaseNotifiction_default_channel"/>
     <service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
     <intent-filter>
       <action android:name="com.google.firebase.MESSAGING_EVENT" />

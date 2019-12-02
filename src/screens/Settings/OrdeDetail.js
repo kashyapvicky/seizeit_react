@@ -206,7 +206,7 @@ const ItemsProduct = ({ item }) => {
           }}
         >
           <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-            ${item.price}
+          {String.currency} {item.price}
           </Text>
         </View>
       </View>

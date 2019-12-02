@@ -36,7 +36,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${fromCheckout ? subTotal : amount}
+           {String.currency} {fromCheckout ? subTotal : amount}
         </Text>
       </View>
 
@@ -66,7 +66,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${delivery_charge ? delivery_charge : 0}
+           {String.currency} {delivery_charge ? delivery_charge : 0}
         </Text>
       </View>
       {/* <View
@@ -124,7 +124,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${vat ? vat : 0}
+         {String.currency} {vat ? vat : 0}
         </Text>
       </View>
       {
@@ -182,7 +182,7 @@ export default InvoiceInfo = ({ order, fromCheckout, subTotal,promoCode,promoAmo
             { color: "#000000", fontSize: normalize(16) }
           ]}
         >
-          ${amount}
+           {String.currency} {amount}
         </Text>
       </View>
       {!fromCheckout && (

@@ -99,7 +99,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
             }}
           >
             <Text h5 style={{ color: "#000000", fontSize: normalize(13) }}>
-              {`$${item.price}`}
+              {`${String.currency} ${item.price}`}
             </Text>
             <TouchableOpacity
               onPress={() => onPressCart && onPressCart()}

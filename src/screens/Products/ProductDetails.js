@@ -8,7 +8,8 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  RefreshControl
+  RefreshControl,
+  I18nManager
 } from "react-native";
 
 const HEADER_MAX_HEIGHT = 300;
@@ -609,7 +610,10 @@ export default class ProductDetail extends Component {
                 style={{ alignSelf: "center", zIndex: 1000 }}
                 onPress={() => this.props.navigation.goBack()}
               >
-                <Image source={require("../../assets/images/ic_back.png")} />
+                <Image source={require("../../assets/images/ic_back.png")} 
+                style={{transform: [
+      { scaleX: I18nManager.isRTL ?-1 :1}, ]}}
+                />
               </TouchableOpacity>
               {((user && user.user_type == "customer") || !user) && (
                 <TouchableOpacity
@@ -638,7 +642,9 @@ export default class ProductDetail extends Component {
                 style={{ alignSelf: "center", zIndex: 1000 }}
                 onPress={() => this.props.navigation.goBack()}
               >
-                <Image source={require("../../assets/images/ic_back.png")} />
+                <Image source={require("../../assets/images/ic_back.png")} 
+                       style={{transform: [
+                        { scaleX: I18nManager.isRTL ?-1 :1}, ]}}/>
               </TouchableOpacity>
               <View>
                 <Text style={detailStyles.title}>

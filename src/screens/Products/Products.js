@@ -357,7 +357,7 @@ class Products extends Component {
                 <Ionicons name={"dots-vertical"} size={28} color={"#D8D8D8"} />
               </TouchableOpacity>
             </View>
-            <View>
+            <View style={{alignItems:'flex-start',flex:1}}>
               <Text p style={{ color: "#000000" }}>
                 {item.product_title}
               </Text>
@@ -370,7 +370,7 @@ class Products extends Component {
               }}
             >
               <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-                {`$${item.price}`}
+                {`${String.currency} ${item.price}`}
               </Text>
               <TouchableOpacity
                 onPress={() => this.openStatusDropDown(index)}
@@ -439,7 +439,7 @@ class Products extends Component {
   renderProductsList = () => {
     return (
       <View style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}>
-        <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+        <View style={{ paddingHorizontal: 16, paddingVertical: 8,alignItems:'flex-start' }}>
           {this.state.products.length > 0 ? (
             <Text p={styles.totalProduct}>
               {`${this.state.products.length}`} {string("Products in total")}

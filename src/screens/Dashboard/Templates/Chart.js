@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, I18nManager,View } from "react-native";
 
 import { LineChart } from "react-native-chart-kit";
 // Component
@@ -15,7 +15,7 @@ export default LineChartComponet = props => {
   console.log(props.data ," props.data ")
   return (
     <View style={{flex:1,}}>
-      <View style={styles.totalprofitView}>
+      <View style={[styles.totalprofitView,{alignItems:'flex-start'}]}>
         <Text style={[styles.totalProfitOverSale]}>
           {string('Sales report')}
         </Text>
@@ -28,7 +28,7 @@ export default LineChartComponet = props => {
       </View> 
 
       <View style={[styles.totalProfitOverSales,{marginVertical:12}]}>
-        <View>
+        <View style={{alignItems:'flex-start'}}>
           <Text style={[styles.totalProfitOverSale, { marginBottom: 15 }]}>
             {string('Total Profit over Sales')}
           </Text>
@@ -36,7 +36,7 @@ export default LineChartComponet = props => {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            ${props.total_sale}
+            {String.currency} {props.total_sale}
           </Text>
           <Text style={[styles.totalProfitOverSale, { color: 'rgba(0,0,0,0.56)',fontSize:14 }]}>
             {string('Total Sales')}
@@ -47,7 +47,7 @@ export default LineChartComponet = props => {
       <View style={styles.borderSalesReport} />
 
       <View style={[styles.totalProfitOverSales,{marginTop:10}]}>
-        <View>
+      <View style={{alignItems:'flex-start'}}>
           <Text style={[styles.totalProfitOverSale, { marginBottom: 10 }]}>
             {string('Total Revenue made')}
           </Text>
@@ -55,12 +55,14 @@ export default LineChartComponet = props => {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            ${props.total_sale}
+            {String.currency} {props.total_sale}
           </Text>
         </View>
       </View>
 
-      <View style={{ marginHorizontal: 16, marginTop: 40 }}>
+      <View style={{ 
+        alignItems:'flex-start',
+        marginHorizontal: 16, marginTop: 40,}}>
         <LineChart
           data={{
             labels: props.labels,
@@ -72,8 +74,10 @@ export default LineChartComponet = props => {
           }}
           width={screenDimensions.width - 20} // from react-native
           height={220}
-          yAxisLabel={"$"}
+          isRTL={true}
+          yAxisLabel={"AED "}
           chartConfig={{
+         
             backgroundColor: "#FFFFFF",
             backgroundGradientFrom: "#FFFFFF",
             backgroundGradientTo: "#FFFFFF",
@@ -86,7 +90,10 @@ export default LineChartComponet = props => {
           // bezier
           style={{
             marginVertical: 4,
-            borderRadius: 5
+            borderRadius: 5,
+            transform: [
+              { scaleX: I18nManager.isRTL ?-1 :1}, 
+            ],
           }}
         />
       </View>

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
+  I18nManager,
   Dimensions,
   ActivityIndicator
 } from "react-native";
@@ -49,7 +50,11 @@ class Contact extends Component {
                 onPress={() => this.props.navigation.goBack()}
               >
                 <View>
-                  <Image source={backButton} />
+                  <Image source={backButton} 
+                   style={{transform: [
+                    { scaleX: I18nManager.isRTL ?-1 :1}]}
+                  }
+                  />
                 </View>
               </TouchableOpacity>
             </View>

@@ -359,7 +359,7 @@ renderProfileView = () => {
           showsVerticalScrollIndicator={false}
           style={{
             flex: 1,
-            paddingHorizontal: 24
+            marginHorizontal: 24
           }}
         >
            <View style={{ height: 20 }} />

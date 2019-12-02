@@ -4,6 +4,7 @@ import {
     AppRegistry,
     View,
     Image,
+    I18nManager,
     TouchableOpacity
 } from 'react-native';
 import moment from 'moment';
@@ -51,11 +52,16 @@ export default class CalendarStripComponent extends Component {
     }
     render() {
         return (
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 16 }}>
+            <View style={{ flexDirection: 'row',
+             justifyContent: 'space-between', paddingVertical: 16 }}>
                 <TouchableOpacity style={{ flex: 0.2 }}
                     onPress={() => this.onPressLeft()}
                 >
-                    <Image source={require('../../../assets/images/ic_previous.png')} />
+                 <Image 
+                   style={{transform: [
+                    { scaleX: I18nManager.isRTL ?-1 :1}]}
+                  }
+                 source={require('../../../assets/images/ic_previous.png')} />
                 </TouchableOpacity>
                 <View style={{ flex: 0.8, alignSelf: 'center', justifyContent: 'center', alignItems: 'center' }}>
                     <Text p>{moment(this.state.startMonth).format('MMMM')}-{moment(this.state.endMonth).format('MMMM')}</Text>
@@ -63,7 +69,11 @@ export default class CalendarStripComponent extends Component {
                 <TouchableOpacity style={{ flex: 0.2 }}
                     onPress={() => this.onPressRight()}
                 >
-                    <Image source={require('../../../assets/images/ic_next.png')} />
+                    <Image 
+                     style={{transform: [
+                        { scaleX: I18nManager.isRTL ?-1 :1}]}
+                      }
+                    source={require('../../../assets/images/ic_next.png')} />
                 </TouchableOpacity>
             </View>
         );

@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   FlatList,
   Keyboard,
+  I18nManager,
   TextInput
 } from "react-native";
 import DeviceInfo from "react-native-device-info";
@@ -153,7 +154,7 @@ class SearchProduct extends Component {
         style={{
           flex: 1,
           flexDirection: "row",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
         <TextInput
@@ -162,6 +163,7 @@ class SearchProduct extends Component {
             {
               flex: 1,
               paddingLeft: 16,
+              textAlign:I18nManager.isRTL?"right":'left',
               height: 48,
               justifyContent: "center",
               paddingTop: 4
@@ -242,7 +244,7 @@ class SearchProduct extends Component {
   };
   renderLabel = title => {
     return (
-      <View style={{ paddingHorizontal: 32 }}>
+      <View style={{ paddingHorizontal: 32,alignItems:'flex-start'  }}>
         <Text h4 style={[styles.labelHeading, { color: "rgba(0,0,0,0.56)" }]}>
           {title}
         </Text>
@@ -276,7 +278,7 @@ class SearchProduct extends Component {
           showsVerticalScrollIndicator={false}
         >
           {this.renderSerachProduct()}
-          <View style={{ height: 16 }} />
+          <View style={{ height: 16,}} />
           {this.renderLabel(string("Previous Searches"))}
           <View style={{ height: 16 }} />
           {this.renderPreviousSerachProduct()}

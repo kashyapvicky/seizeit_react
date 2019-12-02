@@ -7,7 +7,8 @@ import {
   Keyboard,
   TouchableOpacity,
   ScrollView,
-  Platform
+  Platform,
+  I18nManager
 } from "react-native";
 import CodeInput from "react-native-confirmation-code-input";
 import {postRequest} from '../../redux/request/Service'
@@ -133,7 +134,10 @@ renderButton = (title, transparent, imageLeft, color, fontSize) => {
         <ScrollView>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <View style={styles.backButtonImage}>
-              <Image source={backButton} />
+              <Image source={backButton} 
+              style={{ transform: [
+                { scaleX: I18nManager.isRTL ?-1 :1}]}
+              }/>
             </View>
           </TouchableOpacity>
 

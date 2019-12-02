@@ -186,7 +186,7 @@ class Earnings extends Component {
           </View>
           <View style={{ flex: 0.3, paddingRight: 8, alignItems: "flex-end" }}>
             <Text p style={{ color: item.type == 1 ? colors.primary :colors.danger, fontSize: normalize(18) }}>
-              {`${item.type == 1 ? '+' : '-'}$${item.vendor_amount} `}
+              {`${item.type == 1 ? '+' : '-'} ${String.currency} ${item.vendor_amount} `}
             </Text>
             <Ionicons name={"chevron-right"} size={28} color={item.type == 1 ? colors.primary :colors.danger} />
           </View>
@@ -289,7 +289,7 @@ class Earnings extends Component {
   renderTopSection = () => {
     return (
       <View style={[styles.totalProfitOverSales, { marginTop: 16 }]}>
-        <View>
+        <View style={{alignItems:'flex-start'}}>
           <Text style={[styles.totalProfitOverSale, { marginBottom: 5 }]}>
             {string("Available Income")}
           </Text>
@@ -297,7 +297,7 @@ class Earnings extends Component {
             style={[styles.profitAndSale, { fontSize: 26 }]}
             numberOfLines={1}
           >
-            ${this.state.walletAmount}
+             {String.currency} {this.state.walletAmount}
           </Text>
         </View>
         <View style={{ flex: 0.7, alignSelf: "center" }}>

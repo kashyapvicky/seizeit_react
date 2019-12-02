@@ -76,7 +76,7 @@ export default OrderCommonItem = ({ item }) => {
         >
           <View style={{flex:0.8,alignItems:'flex-start'}}>
           <Text h5 style={{ color: "#000000", fontSize: normalize(18) }}>
-            ${item && item.product_detail ? item.product_detail.price : ""}
+          {String.currency} {item && item.product_detail ? item.product_detail.price : ""}
           </Text>
           </View>
         

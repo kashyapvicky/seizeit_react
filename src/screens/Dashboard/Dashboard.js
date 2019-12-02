@@ -167,6 +167,7 @@ class Home extends Component {
   };
 
   pressButton = (title, order) => {
+    debugger
     if (title == "Reject Order") {
       this.changeOrderStatus(order.id, 8);
     } else if (title == "Confirm Order") {
@@ -212,7 +213,7 @@ class Home extends Component {
         style={{ paddingVertical: 16, paddingHorizontal: 8 }}
       >
         {this.state.orders.length > 0 ? (
-          <View style={{ paddingHorizontal: 16, paddingVertical: 8 }}>
+          <View style={{ paddingHorizontal: 16, paddingVertical: 8 ,alignItems:'flex-start'}}>
             <Text p={{ color: "#6B7580", fontSize: normalize(14) }}>
               {`${this.state.orders.length} ${string("Orders in total")}`}
             </Text>
@@ -241,7 +242,7 @@ class Home extends Component {
           name: "Order details",
           backgroundColor: "#FFFFFF",
           color: "#96C50F",
-          value:'Order detail'
+          value:'Order details'
         }
       ];
     } else {

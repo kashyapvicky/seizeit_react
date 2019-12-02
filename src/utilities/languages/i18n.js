@@ -15,7 +15,7 @@ export const string = memoize(
 );
 export const setI18nConfig = (language='en',showRTL=false) => {
   // fallback if no available language fits
-  const fallback = { languageTag: language, isRTL: showRTL };
+  const fallback = { languageTag: 'en', isRTL: false };
   const { languageTag, isRTL } =
     // RNLocalize.findBestAvailableLanguage(Object.keys(translationGetters)) ||
     fallback;
