@@ -54,7 +54,7 @@ class EnterMobile extends Component {
     return [
       {
         field: phoneNumber,
-        name: string("mobilenumber"),
+        name: string("mobile number"),
         rules: 'required|numeric|no_space|min:10|max:10',
         lang: lang
       }
@@ -175,7 +175,7 @@ class EnterMobile extends Component {
           </TouchableOpacity>
 
             <View style={{ marginTop: 20 }}>
-              <Text style={styles.loginText}>{string("mobilenumber")}</Text>
+              <Text style={styles.loginText}>{string("mobile number")}</Text>
             </View>
             <View style={{ marginTop: 10 }}>
               <Text style={styles.forgetPassMessage}>
@@ -186,7 +186,7 @@ class EnterMobile extends Component {
               {/* <Text></Text> */}
               <TextInputComponent
                 user={this.props.user}
-                label={string("mobilenumber")}
+                label={string("mobile number")}
                 inputMenthod={input => {
                   this.emailField = input;
                 }}

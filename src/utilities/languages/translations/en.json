@@ -57,6 +57,8 @@
   "Verify Your Email Address": "Verify Your Email Address",
   "sentText": "We have sent you a verification email to your email address. Click and follow the link inside it.",
   "mobileEnterMessage": "Enter your 10 digit mobile number. ",
+  "mobilenumber": "Mobile Number",
+    "mobile number": "Mobile Number",
   "verifyMobile": "Mobile Verification",
   "otpNotReceive": "Didn’t received OTP yet? ",
   "enter6Digit": "Enter the 6 digit OTP sent to your mobile number",

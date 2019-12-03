@@ -35,7 +35,7 @@ class AddNewAddress extends Component {
     this.state = {
       accountNumber: "",
       country: "",
-      state: "",
+      state: "manama",
       phoneNumber: "",
       loader: false,
       securePassword: true,
@@ -96,7 +96,9 @@ class AddNewAddress extends Component {
       data["city"] = city;
       data["flat"] = houseNo;
       data["street"] = streetNo;
-      data["landmark"] = landmark;
+      if(landmark){
+        data["landmark"] = landmark;
+      }
       data["phone_number"] = phoneNumber;
       data["full_address"] = fullName;
       let apiName = `customer/addaddress`;
@@ -148,12 +150,12 @@ class AddNewAddress extends Component {
         rules: "required",
         lang: lang
       },
-      {
-        field: state,
-        name: string("State name"),
-        rules: "required|no_space",
-        lang: lang
-      },
+      // {
+      //   field: state,
+      //   name: string("State name"),
+      //   rules: "required|no_space",
+      //   lang: lang
+      // },
       {
         field: fullName,
         name: string("Full Name"),
@@ -193,7 +195,7 @@ class AddNewAddress extends Component {
       {
         field: landmark,
         name: string("Landmark"),
-        rules: "required|no_space",
+        rules: "no_space",
         lang: lang
       }
     ];
@@ -289,7 +291,7 @@ class AddNewAddress extends Component {
               }}
             />
             <View style={{ height: 10 }} />
-            <TextInputComponent
+            {/* <TextInputComponent
               label={string("State")}
               inputMenthod={input => {
                 this.stateRef = input;
@@ -313,8 +315,8 @@ class AddNewAddress extends Component {
                 this.fullRef.focus();
               }}
               textInputStyle={styles.textInputStyle}
-            />
-            <View style={{ height: 25 }} />
+            /> */}
+            {/* <View style={{ height: 25 }} /> */}
             <View style={{ marginTop: 5,alignItems:'flex-start',
  }}>
               <Text
