@@ -179,6 +179,9 @@ class Home extends Component {
       .then(res => {
         if (res && res.success) {
           setHomeDataSuccess(res.success)
+          this.setState({
+            refreshing: false
+          });
           // this.setState(
           //   {
           //     featured:
@@ -380,7 +383,7 @@ class Home extends Component {
             'Trending'
           )}
           <View style={{ height: 16 }} />
-          {this.renderButton("Explore more in Trending")}
+          {this.renderButton(string("Explore more in Trending"))}
           <View style={{ height: 32 }} />
           {this.renderProductsList(
             this.state.featured,

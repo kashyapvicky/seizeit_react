@@ -56,13 +56,13 @@ class StartScreen extends Component {
         language: lang
       },
       async () => {
-        // if (lang == "en") {
-        //   this.props.screenProps.setI18nConfig("en", false);
-        // } else if (lang == "ar") {
-        //   this.props.screenProps.setI18nConfig("ar", true);         
-        // }
-     //   this.props.screenProps.actions.setLanguage(lang);
-       // this.reloadApp(lang)
+        if (lang == "en") {
+          this.props.screenProps.setI18nConfig("en", false);
+        } else if (lang == "ar") {
+          this.props.screenProps.setI18nConfig("ar", true);         
+        }
+       this.props.screenProps.actions.setLanguage(lang);
+       this.reloadApp(lang)
       }
     );
   };
@@ -116,7 +116,7 @@ class StartScreen extends Component {
           }}
         >
           <TouchableOpacity
-            //  onPress={() => this.changeLanguage("en")}
+             onPress={() => this.changeLanguage("en")}
             style={
              [language == "en"
                 ? styles.selectedLangButton
@@ -140,7 +140,7 @@ class StartScreen extends Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            // onPress={() => this.changeLanguage("ar")}
+             onPress={() => this.changeLanguage("ar")}
             style={
              [ language == "ar"
                 ? styles.selectedLangButton

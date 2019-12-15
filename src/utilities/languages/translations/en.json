@@ -168,6 +168,7 @@
   "Posted by": "Posted by",
   "Similar Products": "Similar Products",
   "Add to Cart": "Add to Cart",
+  "View Cart" :"View Cart",
   "Reviews": "Reviews",
   "Products in total": "Products in total",
   "Products": "Products",
@@ -307,6 +308,12 @@
   "unlockprofile":"Unlock your profile",
   "unlock2":"Unlock now to start exploring more features in your app",
   "startshopping":"start shopping",
-  "postedon": "Posted on"
+  "postedon": "Posted on",
+  "home":"Home",
+  "Profile":"Profile",
+  "Explore more in Trending":"Explore more in Trending",
+  "Payment" :"Payment",
+  "Items":"Items",
+  "Add note if any":"Add note if any"
 
 }

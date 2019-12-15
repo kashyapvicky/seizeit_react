@@ -76,7 +76,7 @@ class ChooseType extends Component {
   };
   renderLabel = () => {
     return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
+      <View style={{ flex: 0.75, justifyContent: "center" }}>
         <Text
           h4
           textAlign
@@ -98,7 +98,6 @@ class ChooseType extends Component {
             marginBottom: 24,
             elevation: 2,
             backgroundColor: "#FFFFFF",
-
             width: 168,
             height: 192,
             borderRadius: 24,
@@ -140,7 +139,7 @@ class ChooseType extends Component {
           </TouchableOpacity>
         </View>
         {this.renderLabel()}
-        <View style={{ height: 32 }} />
+        <View style={{ height: 24 }} />
         {this.renderType()}
       </View>
     );

@@ -524,7 +524,7 @@ class Checkout extends Component {
         inputMenthod={input => {
           this.confirmAccountNumberRef = input;
         }}
-        placeholder={"Add note if any..."}
+        placeholder={`${string("Add note if any")}...`}
         placeholderTextColor={colors.primary}
         selectionColor="#96C50F"
         returnKeyType="next"
@@ -616,7 +616,7 @@ class Checkout extends Component {
   renderScrollableTab = () => {
     return (
       <View style={{ paddingVertical: 16, paddingHorizontal: 24 }}>
-        <RenderLabel label={"Payment"} />
+        <RenderLabel label={string("Payment")} />
         <View style={{ height: 20 }}></View>
         {this.renderPaymentMethod()}
         {/* <ScrollableTabView
@@ -648,7 +648,7 @@ class Checkout extends Component {
         key={index}
         style={{ flex: 1, paddingHorizontal: 24, marginTop: 8 }}
       >
-        <RenderLabel label={"Items"} />
+        <RenderLabel label={string("Items")} />
         <View style={{ height: 10 }} />
         <CartItem {...this.props} />
 

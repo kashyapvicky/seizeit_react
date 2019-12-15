@@ -188,6 +188,7 @@ async requestPermission() {
 
   setI18nConfigReload = async () => {
     let { lang, isRTL } = this.props.user;
+    debugger
     setI18nConfig(lang, isRTL);
   };
   handleLocalizationChange = (lang, isRTL) => {
@@ -273,6 +274,7 @@ async requestPermission() {
           {this.props.loader && <Indicator />}
           {this.props.user.netStatus ? null : <OfflineNotice {...this.props} />}
           {/* <Line name="Translation example" value={string("hello")} /> */}
+          
           <AppStack
             ref={navigatorRef => {
               NavigationService.setTopLevelNavigator(navigatorRef);

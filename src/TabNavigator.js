@@ -16,6 +16,7 @@ import { ProductsNavigatorStack } from "./screens/Products/ProductNavigationConf
 import { EarningNavigatorStack } from "./screens/Earnings/EarningNavigationConfiguration";
 import { NotificationNavigatorStack } from "./screens/Notifications/NotificationNavigationConfiguration";
 import { ExploreNavigatorStack } from "./screens/Explore/ExploreNavigationConfiguration";
+import { string } from "./utilities/languages/i18n";
 // Get Active route to particular screen
 const getActiveRouteState = route => {
   if (
@@ -88,7 +89,7 @@ export const VendorTabNavigator = createBottomTabNavigator(
     DashBoard: {
       screen: DashboardNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Dashboard",
+        tabBarLabel: string("Dashboard"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_dash_active.png")
@@ -100,7 +101,7 @@ export const VendorTabNavigator = createBottomTabNavigator(
     Products: {
       screen: ProductsNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Products",
+        tabBarLabel: string("Products"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_products_active.png")
@@ -113,7 +114,7 @@ export const VendorTabNavigator = createBottomTabNavigator(
     Earnings: {
       screen: EarningNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Earning",
+        tabBarLabel: string("Earnings"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_earnings_active.png")
@@ -126,7 +127,7 @@ export const VendorTabNavigator = createBottomTabNavigator(
     Setting: {
       screen: SettingNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Profile",
+        tabBarLabel: string("Profile"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/user_profile.png")
@@ -172,7 +173,7 @@ export const CustomerTabNavigator = createBottomTabNavigator(
     Home: {
       screen: HomeNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Home",
+        tabBarLabel: string("home"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_home_active.png")
@@ -184,7 +185,7 @@ export const CustomerTabNavigator = createBottomTabNavigator(
     Explore: {
       screen: ExploreNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Explore",
+        tabBarLabel: string("Explore"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_search_active.png")
@@ -197,7 +198,7 @@ export const CustomerTabNavigator = createBottomTabNavigator(
     Notifications: {
       screen: NotificationNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Notifications",
+        tabBarLabel: string("notifications"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_notification_active.png")
@@ -210,7 +211,7 @@ export const CustomerTabNavigator = createBottomTabNavigator(
     Setting: {
       screen: SettingNavigatorStack,
       navigationOptions: {
-        tabBarLabel: "Profile",
+        tabBarLabel: string("Profile"),
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/user_profile.png")

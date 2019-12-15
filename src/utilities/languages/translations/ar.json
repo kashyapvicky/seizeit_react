@@ -168,6 +168,7 @@
   "Posted by": "منشور من طرف",
   "Similar Products": "منتجات مماثلة",
   "Add to Cart": "أضف إلى السلة",
+  "View Cart" :"عرض السلة",
   "Reviews": "التعليقات",
   "Products in total": "مجموع المنتجات ",
   "Products": "المنتجات",
@@ -307,6 +308,14 @@
   "unlockprofile":"إفتح ملفك الشخصي",
   "unlock2":"قم بالفتح الآن لبدء استكشاف المزيد من الميزات في التطبيق",
   "startshopping":"إبداء التسوق",
-  "postedon": "نشرعلى"
+  "postedon": "نشرعلى",
+  "home":"الصفحة الرئيسية",
+  "Profile":"الملف الشخصي",
+  "Explore more in Trending":"استكشاف المزيد في الإمالة",
+  "Payment" :"دفع",
+  "Items":"العناصر",
+  "Add note if any":"أضف ملاحظة إن وجدت"
+
+
 
 }
