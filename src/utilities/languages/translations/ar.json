@@ -83,6 +83,7 @@
   "All Review": "كل المراجعات",
   "loginRequired": "تحتاج إلى تسجيل الدخول للمواصلة!",
   "cancel": "إلغاء",
+  "canceltext": "إلغاء",
   "OK": "حسنا",
   "Cart": "عربة التسوق",
   "Proceed to Checkout": "باشرالخروج ",
@@ -314,8 +315,10 @@
   "Explore more in Trending":"استكشاف المزيد في الإمالة",
   "Payment" :"دفع",
   "Items":"العناصر",
-  "Add note if any":"أضف ملاحظة إن وجدت"
-
+  "Add note if any":"أضف ملاحظة إن وجدت",
+  "UpdateaProduct":"تحديث المنتج",
+  "ACTIVE":"نشيط",
+  "SOLD OUT":"بيعت كلها"
 
 
 }

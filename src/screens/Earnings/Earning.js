@@ -118,7 +118,7 @@ class Earnings extends Component {
         fontSize={normalize(13)}
         color={transparent ? colors.primary : "#FFFFFF"}
         onPress={() => this.pressButton(action)}
-        title={title}
+        title={string(title)}
       />
     );
   };
@@ -196,7 +196,7 @@ class Earnings extends Component {
   };
   renderProductsList = (item, index) => {
     return (
-      <View skey={index} tabLabel={item.title} style={{  }}>
+      <View skey={index} tabLabel={string(item.title)} style={{  }}>
                {
             this.state.earnings && this.state.earnings.length >0?  
         <View

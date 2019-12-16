@@ -46,14 +46,15 @@ import {
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = Platform.OS === "ios" ? 10 : 10;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+import i18n from "i18n-js";
 
 class Home extends Component {
-  // loadingComponent: Promise<React.Element<*>>;
+  
   constructor(props) {
     super(props);
     this.veiwRef = {};
     this.state = {
-      name: "Location",
+      name: string("Location"),
       visible2: false,
       categories: [],
       featured: [],
@@ -65,6 +66,7 @@ class Home extends Component {
       ),
       refreshing: false
     };
+    
     this.isbarShow = false;
    
     // Placeholder Product
@@ -263,6 +265,7 @@ class Home extends Component {
     );
   };
   showAllCateItems = ({ item, index }) => {
+    let {lang} = this.props.screenProps.user
     return (
       <View index={index} style={styles.showAllPetProductsView}>
         <TouchableOpacity
@@ -288,7 +291,7 @@ class Home extends Component {
             />
             <View style={{ paddingTop: 8 }}>
               <Text p style={styles.itemName}>
-                {item.name}
+                {lang == 'ar' ? item.arabic_name : item.name}
               </Text>
             </View>
           </View>
@@ -298,7 +301,7 @@ class Home extends Component {
   };
   renderCategory = () => {
     return (
-      <View style={{ paddingHorizontal: 16 }}>
+      <View style={{ paddingHorizontal: 16,alignItems:'flex-start' }}>
         <FlatList
           bounces={false}
           autoplay={true}
@@ -391,8 +394,10 @@ class Home extends Component {
             168,
             'Featured'
           )}
-          <View style={{ height: 16 }} />
+          <View style={{marginVertical:16,}}>
           {this.renderButton(string("Explore more products"))}
+
+          </View>
           <View style={{ height: 16 }} />
         </View>
       </View>

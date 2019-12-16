@@ -100,7 +100,7 @@ class StartScreen extends Component {
     );
   };
   renderLangButton = () => {
-    let { language } = this.state;
+    let language = this.props.screenProps.user.lang
     return (
       <View
         style={{

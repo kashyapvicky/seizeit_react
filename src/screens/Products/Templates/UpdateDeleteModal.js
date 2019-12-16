@@ -17,12 +17,12 @@ export default UpdateDeleteModal = ({ isModalVisible, deleteProduct, updateProdu
                 borderTopRightRadius: 0,
                 borderTopLeftRadius: 0
             }]}>
-                <TouchableOpacity style={{ paddingVertical: 16 }} onPress={() => {
+                <TouchableOpacity style={{ paddingVertical: 16,alignItems:'flex-start' }} onPress={() => {
                     updateProduct()
                 }}>
                     <Text h5 >{string('Update Product')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingVertical: 8 }}
+                <TouchableOpacity style={{ paddingVertical: 8,alignItems:'flex-start' }}
                     onPress={() => {
                         deleteProduct()
                     }}
@@ -35,7 +35,7 @@ export default UpdateDeleteModal = ({ isModalVisible, deleteProduct, updateProdu
                         alignItems: 'center', justifyContent: 'center',
                         paddingTop: 36
                     }}>
-                    <Text h5 style={{ fontSize: 18, color: '#939699' }}>{string('cancel')}</Text>
+                    <Text h5 style={{ fontSize: 18, color: '#939699' }}>{string('canceltext')}</Text>
                 </TouchableOpacity>
             </View>
         </CustomModal>

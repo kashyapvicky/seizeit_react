@@ -17,6 +17,8 @@ import { EarningNavigatorStack } from "./screens/Earnings/EarningNavigationConfi
 import { NotificationNavigatorStack } from "./screens/Notifications/NotificationNavigationConfiguration";
 import { ExploreNavigatorStack } from "./screens/Explore/ExploreNavigationConfiguration";
 import { string } from "./utilities/languages/i18n";
+import i18n from "i18n-js";
+
 // Get Active route to particular screen
 const getActiveRouteState = route => {
   if (
@@ -47,7 +49,8 @@ HomeNavigatorStack.navigationOptions = ({ navigation }) => {
     tabBarVisible = true;
   }
   return {
-    tabBarVisible
+    tabBarVisible,
+
   };
 };
 ExploreNavigatorStack.navigationOptions = ({ navigation }) => {
@@ -88,8 +91,9 @@ export const VendorTabNavigator = createBottomTabNavigator(
   {
     DashBoard: {
       screen: DashboardNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("Dashboard"),
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+        tabBarLabel:lang == 'en' ? "Dashboard":"لوحة المبيعات",
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_dash_active.png")
@@ -97,24 +101,27 @@ export const VendorTabNavigator = createBottomTabNavigator(
           return <Image source={image} style={styles.tabIcon} />;
         }
       }
+      }
     },
     Products: {
       screen: ProductsNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("Products"),
-        tabBarIcon: ({ tintColor, focused }) => {
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+          tabBarLabel:lang == 'en' ? "Products":'المنتجات',
+         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_products_active.png")
             : require("./assets/images/ic_products_inactive.png");
           return <Image source={image} style={styles.tabIcon} />;
-        }
+        }}
       }
       // params: { title: 'myOrders', isBusinessMan: true },
     },
     Earnings: {
       screen: EarningNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("Earnings"),
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+          tabBarLabel:lang == 'en' ? "Earnings":'أرباح',
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_earnings_active.png")
@@ -122,13 +129,15 @@ export const VendorTabNavigator = createBottomTabNavigator(
           return <Image source={image} style={styles.tabIcon} />;
         }
       }
+    }
       // params: { title: 'notifications', isBusinessMan: true },
     },
     Setting: {
       screen: SettingNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("Profile"),
-        tabBarIcon: ({ tintColor, focused }) => {
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+          tabBarLabel:lang == 'en' ? "Profile":"الملف الشخصي",
+          tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/user_profile.png")
             : require("./assets/images/user_profile.png");
@@ -139,6 +148,7 @@ export const VendorTabNavigator = createBottomTabNavigator(
             />
           );
         }
+      }
       },
       params: { isBusinessMan: true }
     }
@@ -172,20 +182,23 @@ export const CustomerTabNavigator = createBottomTabNavigator(
   {
     Home: {
       screen: HomeNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("home"),
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+        tabBarLabel:lang == 'en' ? "Home":"الصفحة الرئيسية",
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_home_active.png")
             : require("./assets/images/ic_home_inactive.png");
           return <Image source={image} style={styles.tabIcon} />;
         }
+       }
       }
     },
     Explore: {
       screen: ExploreNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("Explore"),
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+        tabBarLabel:lang == 'en' ? "Explore":'إكتشف',
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_search_active.png")
@@ -193,12 +206,14 @@ export const CustomerTabNavigator = createBottomTabNavigator(
           return <Image source={image} style={styles.tabIcon} />;
         }
       }
+      }
       // params: { title: 'myOrders', isBusinessMan: true },
     },
     Notifications: {
       screen: NotificationNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("notifications"),
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+        tabBarLabel:lang == 'en' ? "Notifications":'إخطارات',
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/ic_notification_active.png")
@@ -206,12 +221,14 @@ export const CustomerTabNavigator = createBottomTabNavigator(
           return <Image source={image} style={styles.tabIcon} />;
         }
       }
+      }
       // params: { title: 'myOrders', isBusinessMan: true },
     },
     Setting: {
       screen: SettingNavigatorStack,
-      navigationOptions: {
-        tabBarLabel: string("Profile"),
+      navigationOptions : ({screenProps:{lang}}) =>{
+        return {
+        tabBarLabel:lang == 'en' ? "Profile":"الملف الشخصي",
         tabBarIcon: ({ tintColor, focused }) => {
           const image = focused
             ? require("./assets/images/user_profile.png")
@@ -223,6 +240,7 @@ export const CustomerTabNavigator = createBottomTabNavigator(
             />
           );
         }
+      }
       },
       params: { isBusinessMan: true }
     }
@@ -245,6 +263,7 @@ export const CustomerTabNavigator = createBottomTabNavigator(
         width: 100
       }
     },
+    lazy: true,
     transitionConfig: () => ({
       screenInterpolator: CardStackStyleInterpolator.forHorizontal,
     }),

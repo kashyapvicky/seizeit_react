@@ -249,7 +249,7 @@ class Address extends Component {
         fontSize={18}
         color={transparent ? colors.primary : "#FFFFFF"}
         onPress={() => this.pressButton(action)}
-        title={title.toUpperCase()}
+        title={string(title).toUpperCase()}
       />
     );
   };

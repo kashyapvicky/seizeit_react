@@ -27,6 +27,7 @@ import { normalize } from "../../utilities/helpers/normalizeText";
 import ScrollableTabView from "../../components/ScrollableTab";
 import { screenDimensions } from "../../utilities/contsants";
 import { getGroups} from '../../utilities/method'
+import moment from "moment";
 
 class Orders extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class Orders extends Component {
       allOrders:[],
       tabs: [
         {
-          title: "Active Orders"
+          title: "Active Orders",
         },
         {
           title: "Past Orders"
@@ -52,16 +53,23 @@ class Orders extends Component {
   }
   /******************** Api Function  *****************/
   buttonStatus = value => {
-    debugger;
     switch (value) {
       case 1:
-        return "Confirm Order";
+        return {name:"Confirm Order",
+        value: "Confirm Order",
+      }
       case 2:
-        return "Packed Order";
+          return {name:"Packed Order",
+          value: "Packed Order",
+        }
       case 3:
-        return "Dispatched";
+          return {name:"Dispatched",
+          value: "Dispatched",
+        }
       case 4:
-        return "Delivered";
+          return {name:"Delivered",
+          value: "Delivered",
+        }
       default:
         return "";
     }
@@ -99,17 +107,20 @@ class Orders extends Component {
   };
 
   filterActiveandPastOrder = (orders,tabPage) =>{
+    if(orders && orders.length > 0){
+      let activeOrder = orders.filter((e,i)=> {
+        return e.status > 0 && e.status <= 4 ;
+     });
+     let pastOrder = orders.filter((pastOd,k)=> {
+      return pastOd.status > 4 ;
+     });
+     debugger
+     let groupsActiveOrder =getGroups(activeOrder)
+     let groupsPastOrder =getGroups(pastOrder)
+     this.groupOrderArray(groupsActiveOrder,groupsPastOrder,tabPage)
+    }
     debugger
-    let activeOrder = orders.filter((e,i)=> {
-      return e.status > 0 && e.status <= 4 ;
-   });
-   let pastOrder = orders.filter((pastOd,k)=> {
-    return pastOd.status > 4 ;
-   });
-   debugger
-   let groupsActiveOrder =getGroups(activeOrder)
-   let groupsPastOrder =getGroups(pastOrder)
-   this.groupOrderArray(groupsActiveOrder,groupsPastOrder,tabPage)
+   
           // Grouping Array
   }
   groupOrderArray = (groupsActive,groupsPastOrder,tabPage)=>{
@@ -142,7 +153,7 @@ class Orders extends Component {
   getOrders = status => {
     getRequest(`order/vendor_order_detail?status=${status}`)
       .then(res => {
-        if (res && res.data && res.data.length > 0) {
+        if (res && res.data && res.data.length > 0) { 
           this.filterActiveandPastOrder(res.data,0)
           this.setState({
             allOrders: res.data,
@@ -174,7 +185,7 @@ class Orders extends Component {
     }
   };
 
-  renderButton = (title, transparent,order) => {
+  renderButton = (title, transparent,order,action) => {
     return (
       <Button
         buttonStyle={{
@@ -187,8 +198,8 @@ class Orders extends Component {
         }}
         fontSize={14}
         color={transparent ? colors.primary : "#FFFFFF"}
-        onPress={() => this.pressButton(title,order)}
-        title={title}
+        onPress={() => this.pressButton(action,order)}
+        title={string(title)}
       />
     );
   };
@@ -317,7 +328,7 @@ class Orders extends Component {
                       fontSize: normalize(13)
                     }}
                   >
-                   {`${string("Order placed at")}`} 6:45 pm
+                   {`${string("Order placed at")}`} {moment(order.createdAt).format('LT')}
                   </Text>
                 </View>
                 <View
@@ -328,9 +339,10 @@ class Orders extends Component {
                 >
                   {order.status < 4 ?
                     this.renderButton(
-                      this.buttonStatus(order.status),
+                      this.buttonStatus(order.status).name,
                       false,
-                      order
+                      order,
+                      this.buttonStatus(order.status).value,
                   ): <Text
                   textAlign
                   style={[
@@ -380,7 +392,7 @@ class Orders extends Component {
   renderProductsList = (item, index) => {
     console.log(this.state.orders,"this.state.orders")
     return (
-      <View skey={index} tabLabel={item.title} style={{ paddingVertical: 16 }}>
+      <View skey={index} tabLabel={string(item.title)} style={{ paddingVertical: 16 }}>
         <FlatList
           bounces={true}
           // extraData={this.state}

@@ -209,7 +209,7 @@ class Home extends Component {
     return (
       <View
         key={index}
-        tabLabel={item.title}
+        tabLabel={string(item.title)}
         style={{ paddingVertical: 16, paddingHorizontal: 8 }}
       >
         {this.state.orders.length > 0 ? (
@@ -235,6 +235,7 @@ class Home extends Component {
   };
 
   renderItems = ({ item, index }) => {
+    let{user} = this.props.screenProps
     let buttons;
     if (item.status >= 4) {
       buttons = [
@@ -262,7 +263,7 @@ class Home extends Component {
           }
         ]}
       >
-        <OrderCommonItem item={item} />
+        <OrderCommonItem item={item} user={user}/>
 
         <View
           style={{
@@ -318,6 +319,7 @@ class Home extends Component {
     );
   };
   setStateForTabChange = event => {
+    debugger
     if (event) {
       this.getOrders(event.i + 1);
       this.setState({

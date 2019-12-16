@@ -33,12 +33,12 @@ export default ImageSelectPickerModal = ({isModalVisible,launchCamera,openImageL
                 borderTopRightRadius: 0,
                 borderTopLeftRadius: 0
             }]}>
-                <TouchableOpacity style={{ paddingVertical: 16 }} onPress={() => {
+                <TouchableOpacity style={{ paddingVertical: 16,alignItems:'flex-start' }} onPress={() => {
                     launchCamera()
                 }}>
                     <Text h5 >{string("Take Photo")}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ paddingVertical: 8 }}
+                <TouchableOpacity style={{ paddingVertical: 8,alignItems:'flex-start' }}
                     onPress={() => {
                         openImageLibrary()
                     }}
@@ -51,7 +51,7 @@ export default ImageSelectPickerModal = ({isModalVisible,launchCamera,openImageL
                         alignItems: 'center', justifyContent: 'center',
                         paddingTop: 36
                     }}>
-                    <Text h5 style={{ fontSize: 18, color: '#939699' }}>{string("Cancel")}</Text>
+                    <Text h5 style={{ fontSize: 18, color: '#939699' }}>{string("cancel")}</Text>
                 </TouchableOpacity>
             </View>
         </CustomModal>

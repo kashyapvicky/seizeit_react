@@ -15,6 +15,7 @@ import Ionicons from "react-native-vector-icons/MaterialCommunityIcons";
 import Icons from "react-native-vector-icons/Ionicons";
 import * as Animatable from "react-native-animatable";
 import { postRequest, getRequest } from "../../redux/request/Service";
+import i18 from 'i18n-js';
 
 //local imports
 import Button from "../../components/Button";
@@ -44,7 +45,16 @@ class Products extends Component {
       search_text: "",
       isModalVisible: false,
       fetchingStatus: false,
-      selectedProduct: null
+      selectedProduct: null,
+      productStatusArray :[{
+        name:'ACTIVE',
+        value:'ACTIVE',
+
+      },{
+        name:'SOLD OUT',
+        value:'SOLD OUT',
+
+      }]
     };
     this.current_page = 1;
   }
@@ -117,7 +127,7 @@ class Products extends Component {
   // Update Product Status
   updateroductStaus = (statusI, parentItem) => {
     let statusPro = parentItem.sold_out == 1 ? "ACTIVE" : "SOLD OUT";
-    if (statusPro == statusI) {
+    if (statusPro == statusI.value) {
       let { toastRef } = this.props.screenProps;
       let { setToastMessage } = this.props.screenProps.actions;
       let data = {};
@@ -168,7 +178,7 @@ class Products extends Component {
     this.setState({
       products: this.state.products.map(res => {
         if (parentItem.id == res.id) {
-          return { ...res, sold_out: statusI == "ACTIVE" ? 0 : 1 };
+          return { ...res, sold_out: statusI.value == "ACTIVE" ? 0 : 1 };
         } else {
           return { ...res };
         }
@@ -243,7 +253,7 @@ class Products extends Component {
           }
         ]}
       >
-        {["ACTIVE", "SOLD OUT"].map((item, index) => {
+        {this.state.productStatusArray.map((item, index) => {
           return (
             <TouchableOpacity
               onPress={() => this.updateroductStaus(item, parentItem)}
@@ -252,12 +262,14 @@ class Products extends Component {
                 //  duration={'300'}
                 style={[
                   {
-                    paddingVertical: 8
+                    paddingVertical: 8,
+                    alignItems:'flex-start',
+                    paddingHorizontal:8
                   }
                 ]}
               >
                 <Text p style={{ fontSize: normalize(14), color: "#96C50F" }}>
-                  {item}
+                  {string(item.name)}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -344,7 +356,9 @@ class Products extends Component {
                   fontWeight: "600"
                 }}
               >
-                {item.category ? item.category.name : ""}
+                {/* {i18.locale == 'ar' ? item.arabic_product_title : item.product_title} */}
+
+                {i18.locale == 'ar' ? item.arabic_name ? item.arabic_name : '' : item.brand ? item.brand.name.toUpperCase() : ''}
               </Text>
               <TouchableOpacity
                 onPress={() =>
@@ -359,7 +373,7 @@ class Products extends Component {
             </View>
             <View style={{alignItems:'flex-start',flex:1}}>
               <Text p style={{ color: "#000000" }}>
-                {item.product_title}
+              {i18.locale == 'ar' ? item.arabic_product_title : item.product_title}
               </Text>
             </View>
             <View
@@ -397,7 +411,7 @@ class Products extends Component {
                     fontSize: normalize(11)
                   }}
                 >
-                  {item.sold_out == 1 ? "SOLD OUT" : "ACTIVE"}
+                  {item.sold_out == 1 ? string("SOLD OUT") :string("ACTIVE")}
                   {"  "}
                   {item.sold_out == 1 ? (
                     <Icons

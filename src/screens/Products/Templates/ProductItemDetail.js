@@ -8,6 +8,7 @@ import Text from "../../../components/Text";
 import { Images } from "../../../utilities/contsants";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import Rating from "./Rating";
+import i18 from 'i18n-js';
 
 const ProductItemDetail = ({ product }) => {
   return (
@@ -24,7 +25,7 @@ const ProductItemDetail = ({ product }) => {
             // fontWeight: "600"
           }}
         >
-          {product.brand ? product.brand.name : ""}
+     {i18.locale == 'ar' ? product.arabic_name ? product.arabic_name : '' : product.brand ? product.brand.name.toUpperCase() : ''}
         </Text>
       </View>
       <View
@@ -42,7 +43,7 @@ const ProductItemDetail = ({ product }) => {
             lineHeight: 30
           }}
         >
-          {product.product_title}
+              {i18.locale == 'ar' ? product.arabic_product_title : product.product_title}
         </Text>
       </View>
       <View

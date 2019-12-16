@@ -174,10 +174,10 @@ class EnterMobile extends Component {
             </View>
           </TouchableOpacity>
 
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 20,alignItems:'flex-start'  }}>
               <Text style={styles.loginText}>{string("mobile number")}</Text>
             </View>
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 10,alignItems:'flex-start' }}>
               <Text style={styles.forgetPassMessage}>
                 {string("mobileEnterMessage")}
               </Text>

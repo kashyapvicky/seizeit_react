@@ -133,10 +133,12 @@ class AddNewProduct extends Component {
   }
 
   setProductData=(selectedProduct)=>{
+    let {lang} = this.props.screenProps.user
     debugger  
     this.setState({
-      productCategory:{name:selectedProduct.category.name,category_id:selectedProduct.category_id},
-      productSubCategory:{name:selectedProduct.subcategory.name,
+      productCategory:{name:(lang == 'ar') ?selectedProduct.category.arabic_name : selectedProduct.category.name,
+      category_id:selectedProduct.category_id},
+      productSubCategory:{name:(lang == 'ar') ?selectedProduct.subcategory.arabic_name :  selectedProduct.subcategory.name,
       id:selectedProduct.subcategory_id},
       productDes:selectedProduct.description,
       productPrice:`${selectedProduct.price}`,
@@ -163,12 +165,16 @@ class AddNewProduct extends Component {
 /*****************  Api Function  *************/
   getSubCategories = (category_id)=>{
     let {setIndicator} = this.props.screenProps.actions
+    let {lang} = this.props.screenProps.user
+
     let data ={}
     data['category_id'] = category_id
     postRequest('user/getsubcategory',data).then((res) => {  
+      console.log(res.success,"res.success")
       if(res && res.success && res.success.length > 0){
         this.setState({
-          subcategories : res.success,
+          subcategories:res.success.map(x=> ({...x,name :( lang == 'ar') ?x.arabic_name : x.name  })),
+
           productSubCategory:''
         })
       }   
@@ -179,10 +185,11 @@ class AddNewProduct extends Component {
   getBrands = ()=>{
     let {setIndicator} = this.props.screenProps.actions
     let data ={}
+    let {lang} = this.props.screenProps.user
     getRequest('order/get_brands').then((res) => {  
       if(res && res.success && res.success.length > 0){
         this.setState({
-          brands : res.success
+          brands : res.success.map(x=> ({...x,name :( lang == 'ar') ?x.arabic_name : x.name  })),
         })
       }   
       setIndicator(false)
@@ -191,10 +198,12 @@ class AddNewProduct extends Component {
   }
   getCategories = ()=>{
     let {setIndicator} = this.props.screenProps.actions
+    let {lang} = this.props.screenProps.user
     getRequest('user/fetchcategory').then((res) => {  
       if(res && res.success && res.success.length > 0){
+        console.log(res.success,"catrrr")
         this.setState({
-          categories : res.success
+          categories : res.success.map(x=> ({...x,name :( lang == 'ar') ?x.arabic_name : x.name  }))
         })
       }   
       setIndicator(false)
@@ -624,7 +633,7 @@ renderProductImgaes = () => {
    let  buttonTitle=string('Addaproduct')
     let action='AddProduct'
     if(params && params.selectedProduct){
-      buttonTitle=string('Update a Product')
+      buttonTitle=string('UpdateaProduct')
        action='UpdateProduct'
 
     }

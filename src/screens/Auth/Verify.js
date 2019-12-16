@@ -142,11 +142,11 @@ renderButton = (title, transparent, imageLeft, color, fontSize) => {
           </TouchableOpacity>
 
           <View>
-            <View style={{ marginTop: 20}}>
+            <View style={{ marginTop: 20,alignItems:'flex-start'}}>
               <Text style={styles.loginText}>{string("verifyMobile")}</Text>
             </View>
 
-            <View style={{ marginVertical: 15 }}>
+            <View style={{ marginVertical: 15,alignItems:'flex-start' }}>
               <Text style={styles.forgetPassMessage}>
                 {string("enter6Digit")}
                 <Text style={{ fontWeight: "bold" }}> {`${params.mobile}`}</Text>

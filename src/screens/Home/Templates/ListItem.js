@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity,TouchableWithoutFeedback, View, Image } from "react-native";
+import { TouchableOpacity, TouchableWithoutFeedback, View, Image } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as Animatable from 'react-native-animatable';
 
@@ -9,9 +9,8 @@ import { Images } from "../../../utilities/contsants";
 import Text from "../../../components/Text";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import { screenDimensions } from "../../../utilities/contsants";
-
-const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWishlist,onPressWishlist,horizontal}) => {
-
+import i18 from 'i18n-js';
+const Listitems = ({ item, index, imageHeight, onPress, onPressCart, onGetRefWishlist, onPressWishlist, horizontal }) => {
   return (
     <TouchableOpacity
       activeOpacity={9}
@@ -23,21 +22,21 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
           paddingVertical: 8,
           flex: 0.5,
           width: screenDimensions.width / 2 - 24,
-          paddingBottom:16,
+          paddingBottom: 32,
           marginRight: (index + 1) % 2 != 0 ? 16 : horizontal ? 16 : 0
         }
       ]}
     >
-     <TouchableWithoutFeedback onPress={() => onPressWishlist && onPressWishlist()}
-       >
-          <Animatable.View ref={ref => onGetRefWishlist(ref)}   
+      <TouchableWithoutFeedback onPress={() => onPressWishlist && onPressWishlist()}
+      >
+        <Animatable.View ref={ref => onGetRefWishlist(ref)}
           // animation={'rubberBand'}
           style={{ position: "absolute", right: 8, top: 15, zIndex: 100 }}>
-            {
-              item.isFevorite ? 
-             <Ionicons name={'md-heart'} color={'#b20000'} size={28}/>
-              :<Image source={require("../../../assets/images/ic_favourite_0.png")} />
-            }
+          {
+            item.isFevorite ?
+              <Ionicons name={'md-heart'} color={'#b20000'} size={28} />
+              : <Image source={require("../../../assets/images/ic_favourite_0.png")} />
+          }
         </Animatable.View>
       </TouchableWithoutFeedback>
 
@@ -57,7 +56,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
             style={{ borderRadius: 8, width: "100%", height: imageHeight }}
             source={{
               uri: item.pics && item.pics.length > 0 ?
-                 item.pics[0].pic
+                item.pics[0].pic
                 : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_CxVo-e0CajwrW3CZsXsasW9zRIi1TieY7KbDSdHTYIaz8kkg"
             }}
           />
@@ -75,10 +74,12 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
                 // fontWeight: "600"
               }}
             >
-              {item.brand ?item.brand.name.toUpperCase() : '' }
+              {i18.locale == 'ar' ? item.arabic_name ? item.arabic_name : '' : item.brand ? item.brand.name.toUpperCase() : ''}
+
+              {}
             </Text>
           </View>
-          <View style={{alignItems:'flex-start'}}>
+          <View style={{ alignItems: 'flex-start' }}>
             <Text
               p
               style={{
@@ -87,7 +88,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
                 fontWeight: "normal"
               }}
             >
-              {item.product_title}
+              {i18.locale == 'ar' ? item.arabic_product_title : item.product_title}
             </Text>
           </View>
           <View
@@ -95,7 +96,7 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
               flexDirection: "row",
               justifyContent: "space-between",
               paddingTop: 6,
-              flex:1,
+              flex: 1,
             }}
           >
             <Text h5 style={{ color: "#000000", fontSize: normalize(13) }}>
@@ -108,12 +109,12 @@ const Listitems = ({ item, index, imageHeight, onPress, onPressCart,onGetRefWish
               {item.isCart ? (
                 <Image source={Images.removeCart} />
               ) : (
-                <Image source={Images.addCart} />
-              )}
+                  <Image source={Images.addCart} />
+                )}
             </TouchableOpacity>
           </View>
         </View>
-    
+
       </View>
     </TouchableOpacity>
   );

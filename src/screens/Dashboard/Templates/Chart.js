@@ -91,9 +91,9 @@ export default LineChartComponet = props => {
           style={{
             marginVertical: 4,
             borderRadius: 5,
-            transform: [
-              { scaleX: I18nManager.isRTL ?-1 :1}, 
-            ],
+            // transform: [
+            //   { scaleX: I18nManager.isRTL ?-1 :1}, 
+            // ],
           }}
         />
       </View>

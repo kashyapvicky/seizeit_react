@@ -9,6 +9,7 @@
   "loginsuccess": "Login success",
   "logincancelled": "Login cancelled",
   "loginsmall": "Login",
+  "canceltext": "Cancel",
   "enter/mobile": "Email/Mobile Number",
   "password": "Password",
   "resendverificationcode": "Resend verification code",
@@ -314,6 +315,8 @@
   "Explore more in Trending":"Explore more in Trending",
   "Payment" :"Payment",
   "Items":"Items",
-  "Add note if any":"Add note if any"
-
+  "Add note if any":"Add note if any",
+"UpdateaProduct":"Update a Product",
+  "ACTIVE":"ACTIVE",
+  "SOLD OUT":"SOLD OUT"
 }

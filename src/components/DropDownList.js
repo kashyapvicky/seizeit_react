@@ -36,7 +36,9 @@ export default DropDownList = props => {
             //   duration={'500'} direction={'normal'}
             style={[
               {
-                paddingVertical: 8
+                alignItems:'flex-start',
+                paddingVertical: 8,
+                paddingHorizontal:8,
               }
             ]}
           >

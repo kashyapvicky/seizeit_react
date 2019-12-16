@@ -100,6 +100,7 @@ class VendorProduct extends Component {
                   slug: "allproduct",
                   status: 1,
                   name: "All",
+                  arabic_name:'الكل',
                   updated_at: 1557140964
                 }
               ];
@@ -234,10 +235,12 @@ class VendorProduct extends Component {
     );
   };
   renderProductsList = (item, index) => {
+    let {lang} = this.props.screenProps.user
+
     return (
       <View
         key={index}
-        tabLabel={item.name}
+        tabLabel={lang == 'ar' ? item.arabic_name : item.name}
         style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}
       >
         <View style={{ height: 6 }} />
@@ -398,7 +401,9 @@ class VendorProduct extends Component {
                 flex:0.5
               }}
             >
-             <Rating readOnly={true} showRating={false} 
+             <Rating 
+             imageSize={14}
+             readOnly={true} showRating={false} 
              defaultRating={this.state.vendorAverage}/>
         </TouchableOpacity>
       </Header>

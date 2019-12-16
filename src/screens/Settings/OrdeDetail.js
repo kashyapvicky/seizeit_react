@@ -21,6 +21,7 @@ import { Images } from "../../utilities/contsants";
 import { normalize } from "../../utilities/helpers/normalizeText";
 import CustomerInfo from "./Templates/CustomerInfo";
 import InvoiceInfo from "./Templates/InvoiceInfo";
+import i18 from 'i18n-js';
 
 
 class OrderDetails extends Component {
@@ -75,7 +76,9 @@ class OrderDetails extends Component {
           }
         ]}
       >
-        <ItemsProduct item={item.product_detail ? item.product_detail : item} />
+        <ItemsProduct 
+        {...this.props}
+        item={item.product_detail ? item.product_detail : item} />
       </TouchableOpacity>
     );
   };
@@ -153,7 +156,8 @@ export default OrderDetails;
 
 
 //ItemsProduct
-const ItemsProduct = ({ item }) => {
+const ItemsProduct = ({ item, screenProps}) => {
+  let {lang} = screenProps.user
   return (
     <View style={{ flexDirection: "row" }}>
       <View
@@ -189,13 +193,15 @@ const ItemsProduct = ({ item }) => {
               fontWeight: "600"
             }}
           >
-            CLOTHING
+             {i18.locale == 'ar' ?item.brand ? 
+             item.brand.arabic_name : '' : 
+             item.brand ? item.brand.name.toUpperCase() : ''}
           </Text>
           {/* <Ionicons  name={'dots-vertical'} size={28} color={'#D8D8D8'} /> */}
         </View>
         <View style={{alignItems:'flex-start',flex:1}}> 
           <Text p style={{ color: "#000000" }}>
-            {item.product_title}
+          {lang == 'ar'  ? item ?  item.arabic_product_title : item.product_title : ''}
           </Text>
         </View>
         <View

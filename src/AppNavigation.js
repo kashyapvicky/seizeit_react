@@ -256,6 +256,8 @@ async requestPermission() {
   };
 
   render() {
+    let { lang } = this.props.user;
+
     return (
       <Fragment>
         {Platform.OS == "ios" && (
@@ -281,6 +283,7 @@ async requestPermission() {
             }}
             screenProps={{
               ...this.props,
+              lang:lang,
               setI18nConfig: (lang, isRtl) => setI18nConfig(lang, isRtl),
               toastRef: { show: (text, color) => this.showMessage(text, color) }
             }}

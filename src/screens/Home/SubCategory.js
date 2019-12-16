@@ -66,10 +66,11 @@ class SubCategory extends Component {
     let { params } = this.props.navigation.state;
     if (params && params.category) {
       let { category } = params;
+      let {lang} = this.props.screenProps.user
       debugger;
       this.setState(
         {
-          name: category.name,
+          name:lang == 'ar' ? category.arabic_name : category.name,
           catId: category.category_id
         },
         () => {}
@@ -100,6 +101,7 @@ class SubCategory extends Component {
                   slug: "allproduct",
                   status: 1,
                   name: "All",
+                  arabic_name:'الكل',
                   updated_at: 1557140964
                 }
               ];
@@ -240,11 +242,11 @@ class SubCategory extends Component {
     );
   };
   renderProductsList = (item, index) => {
-    console.log(this.state.products, "this.state.products");
+    let {lang} = this.props.screenProps.user
     return (
       <View
         key={index}
-        tabLabel={item.name}
+        tabLabel={lang == 'ar' ? item.arabic_name : item.name}
         style={{ flex: 1, paddingHorizontal: 16, marginTop: 8 }}
       >
         <View style={{ height: 6 }} />
@@ -341,6 +343,8 @@ class SubCategory extends Component {
 
   /************** Cart Method  **************/
   render() {
+    let {lang} = this.props.screenProps.user
+
     return (
       <LazyHOC>
 

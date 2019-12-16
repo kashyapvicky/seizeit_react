@@ -7,6 +7,7 @@ import Text from "../../../components/Text";
 import { string } from "../../../utilities/languages/i18n";
 import { normalize } from "../../../utilities/helpers/normalizeText";
 import { Images } from "../../../utilities/contsants";
+import i18 from 'i18n-js';
 
 export default OrderPlacedListItem = ({
   item,
@@ -85,8 +86,8 @@ export default OrderPlacedListItem = ({
                         lineHeight: 20
                       }}
                     >
-                      {product_detail ? product_detail.product_title : ''}
-                    </Text>
+                     {i18.locale == 'ar'  ? product_detail ?  product_detail.arabic_product_title : product_detail.product_title : ''}
+                     </Text>
                     <View
                       style={{
                         justifyContent: "flex-end",

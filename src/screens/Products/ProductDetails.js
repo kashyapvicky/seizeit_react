@@ -200,11 +200,12 @@ export default class ProductDetail extends Component {
     }
   };
   renderDescription = () => {
+    let {lang} = this.props.screenProps.user
     let { product } = this.state;
     return (
       <View>
         <Text p style={[styles.labelHeading, { fontSize: normalize(16) }]}>
-          {`${product.description}`}
+          {`${lang == 'ar' ?product.arabic_description:product.description}`}
         </Text>
       </View>
     );

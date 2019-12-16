@@ -367,8 +367,10 @@ closeModal() {
     return (
       <View style={detailStyles.fill}>
         <Animated.ScrollView
+
           style={detailStyles.fill}
           scrollEventThrottle={1}
+          showVerticalIndicator={false}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
             {
